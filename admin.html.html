@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel — अनुराग खाजड़</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.4.0/tabler-icons.min.css"/>
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f0f5ea;
+      --border-light: #ccd9be;
+      --border-mid: #a8bf94;
+      --text-primary: #0f1f07;
+      --text-secondary: #2e4a18;
+      --text-tertiary: #527035;
+      --accent: #2d5a0a;
+      --accent-mid: #4d8018;
+      --accent-light: #deeeca;
+      --accent-bar: #a8d070;
+      --warn: #6b3a06;
+      --warn-light: #f5e0c0;
+      --danger: #7a2810;
+      --danger-light: #fad8d8;
+      --info: #0e4a8a;
+      --info-light: #d4e8f8;
+      --purple: #3d348f;
+      --purple-light: #e0defa;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --shadow: 0 2px 16px rgba(59,109,17,.12);
+    }
+    body.dark {
+      --bg-primary: #141d0c;
+      --bg-secondary: #1a2610;
+      --border-light: #263818;
+      --border-mid: #364e22;
+      --text-primary: #e0f0c8;
+      --text-secondary: #aad088;
+      --text-tertiary: #7aaa55;
+      --accent-light: #1a3005;
+      --shadow: 0 2px 16px rgba(0,0,0,.4);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5;background:var(--bg-secondary);color:var(--text-primary);transition:background .2s,color .2s}
+    .layout{display:flex;height:100vh;min-height:760px}
+
+    /* SIDEBAR */
+    .sidebar{width:248px;background:var(--bg-primary);border-right:1.5px solid var(--border-light);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transition:background .2s}
+    .logo{padding:18px 16px 14px;border-bottom:1.5px solid var(--border-light)}
+    .logo-top{display:flex;align-items:center;gap:10px}
+    .logo-icon{width:42px;height:42px;background:var(--accent-light);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px}
+    .logo-title{font-size:15px;font-weight:700;color:var(--text-primary)}
+    .logo-sub{font-size:12px;color:var(--text-secondary);margin-top:2px}
+    .logo-mfr{font-size:11px;color:var(--text-tertiary);margin-top:8px;padding-top:8px;border-top:1px solid var(--border-light)}
+    .nav{flex:1;padding:8px 0;overflow-y:auto}
+    .ns{padding:12px 16px 4px;font-size:10.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.08em}
+    .ni{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13.5px;color:var(--text-secondary);cursor:pointer;border-left:3px solid transparent;transition:all .15s}
+    .ni:hover{background:var(--bg-secondary);color:var(--text-primary)}
+    .ni.active{color:var(--accent);background:var(--accent-light);border-left:3px solid var(--accent);font-weight:600}
+    .ni i{font-size:17px;flex-shrink:0}
+    .nbadge{margin-left:auto;background:#fad8d8;color:var(--danger);font-size:10px;padding:2px 7px;border-radius:999px;font-weight:700}
+
+    /* MAIN */
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .topbar{background:var(--bg-primary);border-bottom:1.5px solid var(--border-light);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .ptitle{font-size:16px;font-weight:700;color:var(--text-primary)}
+    .ptitle span{font-size:13px;font-weight:400;color:var(--text-secondary);margin-left:8px}
+    .tbr{display:flex;align-items:center;gap:12px}
+    .icb{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);cursor:pointer;font-size:18px;transition:background .15s}
+    .icb:hover{background:var(--bg-secondary)}
+    .av{width:32px;height:32px;border-radius:50%;background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+    .content{flex:1;overflow-y:auto;padding:22px 24px}
+    .section{display:none}.section.active{display:block}
+
+    /* LANG SWITCH */
+    .lang-switch{display:flex;background:var(--bg-secondary);border:1px solid var(--border-mid);border-radius:999px;padding:3px}
+    .lang-btn{font-size:12px;font-weight:600;padding:4px 13px;border-radius:999px;cursor:pointer;border:none;background:transparent;color:var(--text-secondary);transition:all .18s}
+    .lang-btn.active{background:var(--accent);color:#fff;box-shadow:0 1px 6px rgba(59,109,17,.35)}
+
+    /* METRICS */
+    .mrow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .mc{background:var(--bg-primary);border:1px solid var(--border-light);border-radius:var(--radius);padding:16px 18px;position:relative;transition:transform .15s,box-shadow .15s;box-shadow:var(--shadow)}
+    .mc:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(59,109,17,.15)}
+    .ml{font-size:11.5px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+    .mv{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1}
+    .mch{font-size:12px;margin-top:6px;font-weight:500}
+    .mch.up{color:var(--accent)}.mch.dn{color:var(--danger)}
+    .mico{position:absolute;top:14px;right:14px;font-size:22px;color:var(--text-tertiary)}
+
+    /* CARDS & GRID */
+    .g2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-bottom:20px}
+    .card{background:var(--bg-primary);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow)}
+    .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .ct{font-size:14px;font-weight:700;color:var(--text-primary)}
+    .bsm{font-size:12px;padding:6px 12px;border:1px solid var(--border-mid);border-radius:var(--radius);cursor:pointer;background:transparent;color:var(--text-secondary);font-weight:500;transition:background .15s}
+    .bsm:hover{background:var(--bg-secondary)}
+
+    /* BARS */
+    .bars{display:flex;align-items:flex-end;gap:6px;height:100px;padding-top:8px}
+    .bw{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+    .b{width:100%;background:var(--accent-bar);border-radius:4px 4px 0 0;cursor:pointer;transition:background .15s}
+    .b:hover{background:var(--accent-mid)}
+    .bl{font-size:10px;color:var(--text-secondary);font-weight:500}
+
+    /* ORDER ROWS */
+    .or{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-light);font-size:13px}
+    .or:last-child{border:none}
+    .oid{color:var(--text-secondary);width:84px;flex-shrink:0;font-weight:600}
+    .onm{flex:1;color:var(--text-primary);font-weight:600}
+    .oam{color:var(--text-primary);width:68px;text-align:right;font-weight:700}
+    .pill{font-size:10.5px;padding:3px 10px;border-radius:999px;font-weight:700}
+    .s-d{background:var(--accent-light);color:var(--accent)}
+    .s-p{background:var(--warn-light);color:var(--warn)}
+    .s-c{background:var(--danger-light);color:var(--danger)}
+    .s-r{background:var(--info-light);color:var(--info)}
+    .s-new{background:var(--purple-light);color:var(--purple)}
+
+    /* TOP PRODUCTS */
+    .tpr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border-light);font-size:13px}
+    .tpr:last-child{border:none}
+    .trk{width:16px;font-size:11px;font-weight:700;color:var(--text-tertiary)}
+    .tpico{width:30px;height:30px;border-radius:7px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .tpnm{flex:1;color:var(--text-primary);font-weight:600}
+    .tpbw{width:80px}
+    .tpbb{height:6px;background:var(--bg-secondary);border-radius:3px;overflow:hidden}
+    .tpbf{height:6px;border-radius:3px;background:var(--accent-mid)}
+    .tps{width:40px;text-align:right;color:var(--text-secondary);font-weight:600}
+
+    /* TABLE */
+    .tw{background:var(--bg-primary);border:1px solid var(--border-light);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow)}
+    .dt{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+    .dt th{padding:11px 14px;text-align:left;font-size:11.5px;font-weight:700;color:var(--text-secondary);border-bottom:1.5px solid var(--border-light);background:var(--bg-secondary);letter-spacing:.04em}
+    .dt td{padding:11px 14px;color:var(--text-primary);border-bottom:1px solid var(--border-light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .dt tr:last-child td{border:none}
+    .dt tr:hover td{background:var(--bg-secondary)}
+    .ab{background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:16px;padding:4px;margin:0 2px;border-radius:5px;transition:background .15s}
+    .ab:hover{color:var(--text-primary);background:var(--bg-secondary)}
+
+    /* FILTER ROW */
+    .frow{display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+    .fc{font-size:12.5px;padding:6px 14px;border:1px solid var(--border-mid);border-radius:999px;cursor:pointer;background:transparent;color:var(--text-secondary);font-weight:500;transition:all .15s}
+    .fc.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent);font-weight:700}
+    .fc:hover{background:var(--bg-secondary)}
+    .si{flex:1;max-width:260px;padding:7px 12px;border:1px solid var(--border-mid);border-radius:var(--radius);font-size:13px;background:var(--bg-secondary);color:var(--text-primary)}
+    .si:focus{outline:none;border-color:var(--accent)}
+
+    /* TAGS */
+    .tag{display:inline-flex;align-items:center;font-size:11.5px;padding:3px 9px;border-radius:999px;font-weight:700}
+    .tg{background:var(--accent-light);color:var(--accent)}
+    .ta{background:var(--warn-light);color:var(--warn)}
+    .tb{background:var(--info-light);color:var(--info)}
+    .tp{background:var(--purple-light);color:var(--purple)}
+    .tc{background:var(--danger-light);color:var(--danger)}
+
+    /* BUTTONS */
+    .bpr{background:var(--accent);color:#fff;border:none;padding:9px 18px;border-radius:var(--radius);font-size:13px;cursor:pointer;font-weight:700;transition:background .15s}
+    .bpr:hover{background:var(--accent-mid)}
+
+    /* FORM */
+    .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+    .fgr{display:flex;flex-direction:column;gap:5px}
+    .fgl{font-size:12.5px;font-weight:600;color:var(--text-secondary)}
+    .fgi,.fgs,.fgt{padding:9px 12px;border:1px solid var(--border-mid);border-radius:var(--radius);font-size:13.5px;background:var(--bg-primary);color:var(--text-primary);transition:border-color .15s}
+    .fgi:focus,.fgs:focus,.fgt:focus{outline:none;border-color:var(--accent)}
+
+    /* SETTINGS TABS */
+    .stabs{display:flex;gap:0;margin-bottom:18px;border-bottom:1.5px solid var(--border-light)}
+    .stab{padding:9px 16px;font-size:13px;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1.5px;transition:all .15s;font-weight:500}
+    .stab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+
+    /* NOTIFICATIONS */
+    .notitem{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-light);align-items:flex-start}
+    .notitem:last-child{border:none}
+    .ndot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0}
+    .nd-i{background:var(--info)}.nd-w{background:#c97f10}.nd-s{background:#148060}.nd-d{background:var(--danger)}
+    .ntxt{font-size:13px;color:var(--text-primary);line-height:1.6}
+    .ntm{font-size:11.5px;color:var(--text-tertiary);margin-top:3px;font-weight:500}
+
+    /* TOGGLES */
+    .togrow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-light);font-size:13.5px;color:var(--text-primary)}
+    .togrow:last-child{border:none}
+    .tog{width:38px;height:22px;border-radius:999px;cursor:pointer;position:relative;flex-shrink:0;transition:background .2s}
+    .tog.on{background:var(--accent)}.tog.off{background:var(--border-mid)}
+    .tog::after{content:'';position:absolute;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
+    .tog.on::after{left:19px}.tog.off::after{left:3px}
+
+    /* MISC */
+    .cropbadge{font-size:11px;padding:2px 9px;border-radius:999px;font-weight:700}
+    .cb-m{background:var(--accent-light);color:var(--accent)}
+    .cb-d{background:var(--warn-light);color:var(--warn)}
+    .cb-g{background:var(--info-light);color:var(--info)}
+    .slot-chip{display:inline-block;font-size:12px;padding:5px 13px;border-radius:999px;border:1px solid var(--border-mid);margin:3px;cursor:pointer;color:var(--text-secondary);font-weight:500}
+    .slot-chip.booked{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
+    .slot-chip.pending{background:var(--warn-light);color:var(--warn);border-color:var(--warn)}
+    .pbar{height:7px;background:var(--bg-secondary);border-radius:4px;overflow:hidden;margin-top:6px}
+    .pbfill{height:7px;border-radius:4px}
+    .revcard{background:var(--bg-secondary);border-radius:var(--radius);padding:13px 16px;margin-bottom:10px;border:1px solid var(--border-light)}
+    .stars{color:#c07a10;font-size:14px}
+    .revtxt{font-size:13px;color:var(--text-primary);margin:5px 0;line-height:1.6}
+    .revmeta{font-size:11.5px;color:var(--text-tertiary);font-weight:500}
+    .map-placeholder{background:var(--bg-secondary);border-radius:var(--radius-lg);height:180px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text-secondary);font-size:13px;margin-bottom:16px;border:1.5px dashed var(--border-mid)}
+    .map-placeholder span{font-size:32px}
+    .stat-box{background:var(--bg-secondary);border-radius:var(--radius);padding:12px 16px;display:flex;flex-direction:column;gap:4px;border:1px solid var(--border-light)}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:var(--bg-primary);border-radius:var(--radius-lg);padding:26px 28px;width:500px;max-width:92vw;max-height:85vh;overflow-y:auto;position:relative;box-shadow:0 12px 50px rgba(0,0,0,.25)}
+    .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-secondary)}
+    .modal-title{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:18px}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:28px;right:28px;background:var(--accent);color:#fff;font-size:13.5px;padding:12px 22px;border-radius:var(--radius);z-index:2000;display:none;box-shadow:0 4px 20px rgba(0,0,0,.3);font-weight:600}
+    .toast.show{display:block;animation:slideUp .3s ease}
+    @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+
+
+    /* Lang hide/show */
+    [data-lang="en"]{display:none}
+    body.lang-en [data-lang="hi"]{display:none}
+    body.lang-en [data-lang="en"]{display:revert}
+    span[data-lang],div[data-lang],td[data-lang],th[data-lang]{display:none}
+    body.lang-en span[data-lang="en"],body.lang-en div[data-lang="en"],body.lang-en td[data-lang="en"],body.lang-en th[data-lang="en"]{display:revert}
+    body:not(.lang-en) span[data-lang="hi"],body:not(.lang-en) div[data-lang="hi"],body:not(.lang-en) td[data-lang="hi"],body:not(.lang-en) th[data-lang="hi"]{display:revert}
+
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-thumb{background:var(--border-mid);border-radius:3px}
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+
+<!-- Add Product Modal -->
+<div class="modal-overlay" id="addProductModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('addProductModal')"><i class="ti ti-x"></i></button>
+    <div class="modal-title">+ <span data-lang="hi">नया उत्पाद जोड़ें</span><span data-lang="en">Add New Product</span></div>
+    <div class="fg">
+      <div class="fgr"><label class="fgl">Product ID</label><input class="fgi" placeholder="KHJ-P007"/></div>
+      <div class="fgr"><label class="fgl"><span data-lang="hi">श्रेणी</span><span data-lang="en">Category</span></label>
+        <select class="fgs"><option>Insecticide</option><option>Fertilizer</option><option>Fungicide</option><option>Herbicide</option></select>
+      </div>
+    </div>
+    <div class="fgr" style="margin-bottom:10px"><label class="fgl"><span data-lang="hi">नाम (हिंदी)</span><span data-lang="en">Name (Hindi)</span></label><input class="fgi" placeholder="उत्पाद का नाम हिंदी में"/></div>
+    <div class="fgr" style="margin-bottom:10px"><label class="fgl"><span data-lang="hi">नाम (अंग्रेजी)</span><span data-lang="en">Name (English)</span></label><input class="fgi" placeholder="Product name in English"/></div>
+    <div class="fg">
+      <div class="fgr"><label class="fgl"><span data-lang="hi">मूल मूल्य (₹/L)</span><span data-lang="en">Base Price (₹/L)</span></label><input class="fgi" placeholder="0"/></div>
+      <div class="fgr"><label class="fgl"><span data-lang="hi">शेल्फ लाइफ</span><span data-lang="en">Shelf Life</span></label><input class="fgi" placeholder="2 Years"/></div>
+    </div>
+    <div class="fgr" style="margin-bottom:14px"><label class="fgl"><span data-lang="hi">लागू फसलें</span><span data-lang="en">Applicable Crops</span></label><input class="fgi" placeholder="Moong, Rice, Wheat..."/></div>
+    <button class="bpr" onclick="closeModal('addProductModal');showToast(getLang('उत्पाद सफलतापूर्वक जोड़ा गया!','Product added successfully!'))">
+      <span data-lang="hi">सेव करें</span><span data-lang="en">Save Product</span>
+    </button>
+  </div>
+</div>
+
+<!-- Push Notification Modal -->
+<div class="modal-overlay" id="pushModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('pushModal')"><i class="ti ti-x"></i></button>
+    <div class="modal-title">📢 <span data-lang="hi">नई Push Notification</span><span data-lang="en">New Push Notification</span></div>
+    <div class="fgr" style="margin-bottom:10px"><label class="fgl"><span data-lang="hi">शीर्षक</span><span data-lang="en">Title</span></label><input class="fgi" placeholder="Notification title..."/></div>
+    <div class="fgr" style="margin-bottom:10px"><label class="fgl"><span data-lang="hi">संदेश</span><span data-lang="en">Message</span></label><textarea class="fgt" rows="3" style="resize:none" placeholder="Message body..."></textarea></div>
+    <div class="fg">
+      <div class="fgr"><label class="fgl"><span data-lang="hi">भाषा</span><span data-lang="en">Target Language</span></label>
+        <select class="fgs"><option>हिंदी</option><option>English</option><option>Both / दोनों</option></select>
+      </div>
+      <div class="fgr"><label class="fgl"><span data-lang="hi">फसल</span><span data-lang="en">Target Crop</span></label>
+        <select class="fgs"><option>All Farmers</option><option>Moong</option><option>Dhaan</option><option>Wheat</option><option>Soybean</option></select>
+      </div>
+    </div>
+    <div style="margin-top:12px"><button class="bpr" onclick="closeModal('pushModal');showToast(getLang('Notification भेजी गई!','Notification sent!'))">
+      <span data-lang="hi">भेजें</span><span data-lang="en">Send Notification</span>
+    </button></div>
+  </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('orderModal')"><i class="ti ti-x"></i></button>
+    <div class="modal-title" id="orderModalTitle">Order Details</div>
+    <div id="orderModalBody" style="font-size:12px;line-height:1.8;color:var(--text-primary)"></div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-top">
+        <div class="logo-icon">🌿</div>
+        <div>
+          <div class="logo-title"><span data-lang="hi">अनुराग खाजड़</span><span data-lang="en">Anurag Khajar</span></div>
+          <div class="logo-sub">Admin Panel</div>
+        </div>
+      </div>
+      <div class="logo-mfr">Dudani Pesticides Pvt. Ltd. · Pipariya, MP</div>
+    </div>
+    <nav class="nav">
+      <div class="ns"><span data-lang="hi">अवलोकन</span><span data-lang="en">Overview</span></div>
+      <div class="ni active" onclick="show('dashboard',this)"><i class="ti ti-layout-dashboard"></i>
+        <span data-lang="hi">डैशबोर्ड</span><span data-lang="en">Dashboard</span>
+      </div>
+      <div class="ns"><span data-lang="hi">ऑर्डर और डिलीवरी</span><span data-lang="en">Orders & Delivery</span></div>
+      <div class="ni" onclick="show('orders',this)"><i class="ti ti-shopping-cart"></i>
+        <span data-lang="hi">ऑर्डर</span><span data-lang="en">Orders</span><span class="nbadge">14</span>
+      </div>
+      <div class="ni" onclick="show('tracking',this)"><i class="ti ti-truck-delivery"></i>
+        <span data-lang="hi">लाइव ट्रैकिंग</span><span data-lang="en">Live Tracking</span>
+      </div>
+      <div class="ni" onclick="show('payments',this)"><i class="ti ti-credit-card"></i>
+        <span data-lang="hi">भुगतान</span><span data-lang="en">Payments</span>
+      </div>
+      <div class="ns"><span data-lang="hi">उत्पाद</span><span data-lang="en">Products</span></div>
+      <div class="ni" onclick="show('products',this)"><i class="ti ti-flask"></i>
+        <span data-lang="hi">स्प्रे उत्पाद</span><span data-lang="en">Spray Products</span>
+      </div>
+      <div class="ni" onclick="show('packages',this)"><i class="ti ti-package"></i>
+        <span data-lang="hi">पैकेज और मूल्य</span><span data-lang="en">Packages & Pricing</span>
+      </div>
+      <div class="ni" onclick="show('inventory',this)"><i class="ti ti-stack"></i>
+        <span data-lang="hi">इन्वेंटरी</span><span data-lang="en">Inventory</span>
+      </div>
+      <div class="ns"><span data-lang="hi">किसान</span><span data-lang="en">Farmers</span></div>
+      <div class="ni" onclick="show('farmers',this)"><i class="ti ti-users"></i>
+        <span data-lang="hi">किसान</span><span data-lang="en">Farmers</span><span class="nbadge">3</span>
+      </div>
+      <div class="ni" onclick="show('crops',this)"><i class="ti ti-plant"></i>
+        <span data-lang="hi">फसल प्रबंधन</span><span data-lang="en">Crop Management</span>
+      </div>
+      <div class="ni" onclick="show('adviser',this)"><i class="ti ti-calendar"></i>
+        <span data-lang="hi">सलाहकार बुकिंग</span><span data-lang="en">Adviser Bookings</span>
+      </div>
+      <div class="ni" onclick="show('complaints',this)"><i class="ti ti-message-report"></i>
+        <span data-lang="hi">शिकायतें</span><span data-lang="en">Complaints</span><span class="nbadge">5</span>
+      </div>
+      <div class="ns"><span data-lang="hi">सिस्टम</span><span data-lang="en">System</span></div>
+      <div class="ni" onclick="show('notifications',this)"><i class="ti ti-bell"></i>
+        <span data-lang="hi">सूचनाएं</span><span data-lang="en">Notifications</span>
+      </div>
+      <div class="ni" onclick="show('settings',this)"><i class="ti ti-settings"></i>
+        <span data-lang="hi">सेटिंग्स</span><span data-lang="en">Settings</span>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="ptitle" id="ptitle">
+          <span id="ptitleText"><span data-lang="hi">डैशबोर्ड</span><span data-lang="en">Dashboard</span></span>
+          <span><span data-lang="hi">अनुराग खाजड़ — कृषि की दुकान</span><span data-lang="en">Anurag Khajar — Agriculture Shop</span></span>
+        </div>
+      </div>
+      <div class="tbr">
+        <div class="lang-switch">
+          <button class="lang-btn active" id="btn-hi" onclick="setLang('hi')">हिंदी</button>
+          <button class="lang-btn" id="btn-en" onclick="setLang('en')">English</button>
+        </div>
+        <div class="icb" onclick="show('notifications',document.querySelector('[onclick*=notifications]'))"><i class="ti ti-bell"></i></div>
+        <div class="icb" onclick="toggleDark()"><i class="ti ti-moon" id="themeIcon"></i></div>
+        <div class="icb" onclick="showToast(getLang('एक्सपोर्ट शुरू हुआ...','Export initiated...'))"><i class="ti ti-download"></i></div>
+        <div class="av">AK</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="section active" id="sec-dashboard">
+        <div class="mrow">
+          <div class="mc">
+            <div class="ml"><span data-lang="hi">आज की आय</span><span data-lang="en">Today's Revenue</span></div>
+            <div class="mv">₹18,640</div>
+            <div class="mch up"><span data-lang="hi">↑ +12% कल की तुलना में</span><span data-lang="en">↑ +12% vs yesterday</span></div>
+            <i class="ti ti-currency-rupee mico"></i>
+          </div>
+          <div class="mc">
+            <div class="ml"><span data-lang="hi">नए ऑर्डर</span><span data-lang="en">New Orders</span></div>
+            <div class="mv">38</div>
+            <div class="mch up"><span data-lang="hi">↑ +6 आज</span><span data-lang="en">↑ +6 today</span></div>
+            <i class="ti ti-shopping-cart mico"></i>
+          </div>
+          <div class="mc">
+            <div class="ml"><span data-lang="hi">सक्रिय किसान</span><span data-lang="en">Active Farmers</span></div>
+            <div class="mv">124</div>
+            <div class="mch up"><span data-lang="hi">↑ +8 इस सप्ताह</span><span data-lang="en">↑ +8 this week</span></div>
+            <i class="ti ti-users mico"></i>
+          </div>
+          <div class="mc">
+            <div class="ml"><span data-lang="hi">खुली शिकायतें</span><span data-lang="en">Open Complaints</span></div>
+            <div class="mv" style="color:var(--danger)">5</div>
+            <div class="mch dn"><span data-lang="hi">↑ ध्यान चाहिए</span><span data-lang="en">↑ needs attention</span></div>
+            <i class="ti ti-message-report mico"></i>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="ch">
+              <span class="ct"><span data-lang="hi">साप्ताहिक बिक्री (₹)</span><span data-lang="en">Weekly Sales (₹)</span></span>
+              <button class="bsm"><span data-lang="hi">सब देखें</span><span data-lang="en">View all</span></button>
+            </div>
+            <div class="bars">
+              <div class="bw"><div class="b" style="height:48%"></div><div class="bl"><span data-lang="hi">सोम</span><span data-lang="en">Mon</span></div></div>
+              <div class="bw"><div class="b" style="height:63%"></div><div class="bl"><span data-lang="hi">मंगल</span><span data-lang="en">Tue</span></div></div>
+              <div class="bw"><div class="b" style="height:55%"></div><div class="bl"><span data-lang="hi">बुध</span><span data-lang="en">Wed</span></div></div>
+              <div class="bw"><div class="b" style="height:78%"></div><div class="bl"><span data-lang="hi">गुरु</span><span data-lang="en">Thu</span></div></div>
+              <div class="bw"><div class="b" style="height:69%"></div><div class="bl"><span data-lang="hi">शुक्र</span><span data-lang="en">Fri</span></div></div>
+              <div class="bw"><div class="b" style="height:88%"></div><div class="bl"><span data-lang="hi">शनि</span><span data-lang="en">Sat</span></div></div>
+              <div class="bw"><div class="b" style="height:100%;background:var(--accent-mid)"></div><div class="bl"><span data-lang="hi">रवि</span><span data-lang="en">Sun</span></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><span class="ct"><span data-lang="hi">शीर्ष उत्पाद</span><span data-lang="en">Top Products</span></span></div>
+            <div class="tpr"><span class="trk">1</span><div class="tpico">🧴</div><span class="tpnm">JEEVAN</span><div class="tpbw"><div class="tpbb"><div class="tpbf" style="width:100%"></div></div></div><span class="tps">142</span></div>
+            <div class="tpr"><span class="trk">2</span><div class="tpico">🛡️</div><span class="tpnm">SURAKSHA</span><div class="tpbw"><div class="tpbb"><div class="tpbf" style="width:80%"></div></div></div><span class="tps">114</span></div>
+            <div class="tpr"><span class="trk">3</span><div class="tpico">🧪</div><span class="tpnm">SHAKTI</span><div class="tpbw"><div class="tpbb"><div class="tpbf" style="width:62%"></div></div></div><span class="tps">88</span></div>
+            <div class="tpr"><span class="trk">4</span><div class="tpico">🪣</div><span class="tpnm">GHATAK</span><div class="tpbw"><div class="tpbb"><div class="tpbf" style="width:50%"></div></div></div><span class="tps">72</span></div>
+            <div class="tpr"><span class="trk">5</span><div class="tpico">🌿</div><span class="tpnm">VIKAS</span><div class="tpbw"><div class="tpbb"><div class="tpbf" style="width:38%"></div></div></div><span class="tps">55</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="ch">
+            <span class="ct"><span data-lang="hi">हाल के ऑर्डर</span><span data-lang="en">Recent Orders</span></span>
+            <button class="bsm" onclick="show('orders',document.querySelector('[onclick*=orders]'))"><span data-lang="hi">सभी →</span><span data-lang="en">All →</span></button>
+          </div>
+          <div class="or"><span class="oid">#KHJ-0038</span><span class="onm">रमेश यादव</span><span class="tag tg">JEEVAN 1L</span><span class="oam">₹680</span><span class="pill s-r"><span data-lang="hi">प्रोसेसिंग</span><span data-lang="en">Processing</span></span></div>
+          <div class="or"><span class="oid">#KHJ-0037</span><span class="onm">सुनीता पाटिल</span><span class="tag ta">GHATAK 5L</span><span class="oam">₹2,400</span><span class="pill s-d"><span data-lang="hi">डिलीवर</span><span data-lang="en">Delivered</span></span></div>
+          <div class="or"><span class="oid">#KHJ-0036</span><span class="onm">मोहन कुशवाहा</span><span class="tag tb">SHAKTI 500ml</span><span class="oam">₹320</span><span class="pill s-p"><span data-lang="hi">लंबित</span><span data-lang="en">Pending</span></span></div>
+          <div class="or"><span class="oid">#KHJ-0035</span><span class="onm">गीता शर्मा</span><span class="tag tp">SURAKSHA 1L</span><span class="oam">₹750</span><span class="pill s-d"><span data-lang="hi">डिलीवर</span><span data-lang="en">Delivered</span></span></div>
+          <div class="or"><span class="oid">#KHJ-0034</span><span class="onm">प्रकाश वर्मा</span><span class="tag tc">VIKAS 500ml</span><span class="oam">₹260</span><span class="pill s-c"><span data-lang="hi">रद्द</span><span data-lang="en">Cancelled</span></span></div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="section" id="sec-orders">
+        <div class="frow">
+          <button class="fc active" onclick="filterOrders('all',this)"><span data-lang="hi">सभी (38)</span><span data-lang="en">All (38)</span></button>
+          <button class="fc" onclick="filterOrders('pending',this)"><span data-lang="hi">लंबित (8)</span><span data-lang="en">Pending (8)</span></button>
+          <button class="fc" onclick="filterOrders('processing',this)"><span data-lang="hi">प्रोसेसिंग (6)</span><span data-lang="en">Processing (6)</span></button>
+          <button class="fc" onclick="filterOrders('delivered',this)"><span data-lang="hi">डिलीवर (21)</span><span data-lang="en">Delivered (21)</span></button>
+          <button class="fc" onclick="filterOrders('cancelled',this)"><span data-lang="hi">रद्द (3)</span><span data-lang="en">Cancelled (3)</span></button>
+          <input class="si" id="ordersSearch" placeholder="ऑर्डर / किसान खोजें..." oninput="searchOrders(this.value)"/>
+          <button class="bsm" onclick="showToast(getLang('एक्सपोर्ट हो रहा है...','Exporting...'))"><i class="ti ti-download" style="font-size:11px"></i> <span data-lang="hi">निर्यात</span><span data-lang="en">Export</span></button>
+        </div>
+        <div class="tw">
+          <table class="dt" id="ordersTable">
+            <thead><tr>
+              <th style="width:80px"><span data-lang="hi">ऑर्डर ID</span><span data-lang="en">Order ID</span></th>
+              <th><span data-lang="hi">किसान</span><span data-lang="en">Farmer</span></th>
+              <th style="width:90px"><span data-lang="hi">मोबाइल</span><span data-lang="en">Mobile</span></th>
+              <th><span data-lang="hi">उत्पाद</span><span data-lang="en">Product</span></th>
+              <th style="width:65px"><span data-lang="hi">पैकेज</span><span data-lang="en">Package</span></th>
+              <th style="width:45px"><span data-lang="hi">मात्रा</span><span data-lang="en">Qty</span></th>
+              <th style="width:60px"><span data-lang="hi">राशि</span><span data-lang="en">Amount</span></th>
+              <th style="width:65px"><span data-lang="hi">भुगतान</span><span data-lang="en">Payment</span></th>
+              <th style="width:70px"><span data-lang="hi">स्थिति</span><span data-lang="en">Status</span></th>
+              <th style="width:60px"><span data-lang="hi">कार्य</span><span data-lang="en">Actions</span></th>
+            </tr></thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+        <div style="font-size:11px;color:var(--text-tertiary);text-align:center">
+          <span id="orderCount"><span data-lang="hi">8 ऑर्डर दिख रहे हैं</span><span data-lang="en">Showing 8 orders</span></span>
+        </div>
+      </div>
+
+      <!-- LIVE TRACKING -->
+      <div class="section" id="sec-tracking">
+        <div class="mrow" style="grid-template-columns:repeat(3,1fr)">
+          <div class="mc"><div class="ml"><span data-lang="hi">डिलीवरी पर</span><span data-lang="en">Out for Delivery</span></div><div class="mv">6</div><i class="ti ti-truck-delivery mico"></i></div>
+          <div class="mc"><div class="ml">OTP <span data-lang="hi">लंबित</span><span data-lang="en">Pending</span></div><div class="mv" style="color:var(--warn)">2</div><i class="ti ti-key mico"></i></div>
+          <div class="mc"><div class="ml"><span data-lang="hi">आज डिलीवर</span><span data-lang="en">Delivered Today</span></div><div class="mv">14</div><i class="ti ti-check mico"></i></div>
+        </div>
+        <div class="map-placeholder">
+          <span>🗺️</span>
+          <span><span data-lang="hi">लाइव मैप — पिपरिया + सोहागपुर + होशंगाबाद</span><span data-lang="en">Live Map — Pipariya + Sohagpur + Hoshangabad</span></span>
+          <span style="font-size:10px"><span data-lang="hi">6 सक्रिय डिलीवरी एजेंट</span><span data-lang="en">6 active delivery agents</span></span>
+        </div>
+        <div class="tw">
+          <table class="dt">
+            <thead><tr>
+              <th>Order</th><th><span data-lang="hi">किसान</span><span data-lang="en">Farmer</span></th>
+              <th><span data-lang="hi">पता</span><span data-lang="en">Address</span></th>
+              <th><span data-lang="hi">डिलीवरी बॉय</span><span data-lang="en">Delivery Boy</span></th>
+              <th>OTP</th><th>ETA</th>
+              <th><span data-lang="hi">कार्य</span><span data-lang="en">Action</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td>#KHJ-0038</td><td>रमेश यादव</td><td>ग्राम टिकरी, पिपरिया</td><td>अजय 📞98000 01234</td><td><span class="pill s-p">Pending</span></td><td>~45 min</td><td><button class="bsm" style="font-size:10px" onclick="showToast(getLang('OTP भेजा गया!','OTP Sent!'))">Send OTP</button></td></tr>
+              <tr><td>#KHJ-0036</td><td>मोहन कुशवाहा</td><td>वार्ड 5, सोहागपुर</td><td>राजू 📞97001 55432</td><td><span class="pill s-d">✓ Verified</span></td><td>Done</td><td><button class="bsm" style="font-size:10px">Done ✓</button></td></tr>
+              <tr><td>#KHJ-0033</td><td>दिनेश राठौर</td><td>खेतिया रोड, पिपरिया</td><td>अजय 📞98000 01234</td><td><span class="pill s-p">Pending</span></td><td>~10 min</td><td><button class="bsm" style="font-size:10px" onclick="showToast(getLang('OTP भेजा गया!','OTP Sent!'))">Send OTP</button></td></tr>
+              <tr><td>#KHJ-0031</td><td>Mahesh Lokhande</td><td>Sohagpur, MP</td><td>विनोद 📞95003 22110</td><td><span class="pill s-new">Not Sent</span></td><td>~2 hrs</td><td><button class="bsm" style="font-size:10px" onclick="showToast(getLang('OTP भेजा गया!','OTP Sent!'))">Send OTP</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PAYMENTS -->
+      <div class="section" id="sec-payments">
+        <div class="mrow">
+          <div class="mc"><div class="ml"><span data-lang="hi">कुल संग्रह</span><span data-lang="en">Total Collected</span></div><div class="mv">₹1.84L</div><div class="mch up"><span data-lang="hi">इस माह</span><span data-lang="en">This month</span></div></div>
+          <div class="mc"><div class="ml">UPI</div><div class="mv">58%</div><div class="mch up">22 <span data-lang="hi">ऑर्डर</span><span data-lang="en">orders</span></div></div>
+          <div class="mc"><div class="ml">COD</div><div class="mv">29%</div><div class="mch">11 <span data-lang="hi">ऑर्डर</span><span data-lang="en">orders</span></div></div>
+          <div class="mc"><div class="ml">NEFT</div><div class="mv">13%</div><div class="mch">5 <span data-lang="hi">ऑर्डर</span><span data-lang="en">orders</span></div></div>
+        </div>
+        <div class="tw">
+          <table class="dt">
+            <thead><tr>
+              <th>Order ID</th><th><span data-lang="hi">किसान</span><span data-lang="en">Farmer</span></th>
+              <th><span data-lang="hi">राशि</span><span data-lang="en">Amount</span></th>
+              <th>GST(5%)</th><th><span data-lang="hi">डिलीवरी</span><span data-lang="en">Delivery</span></th>
+              <th><span data-lang="hi">कुल</span><span data-lang="en">Total</span></th>
+              <th><span data-lang="hi">तरीका</span><span data-lang="en">Method</span></th>
+              <th><span data-lang="hi">स्थिति</span><span data-lang="en">Status</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td>#KHJ-0038</td><td>रमेश यादव</td><td>₹1,296</td><td>₹64</td><td>₹100</td><td>₹1,460</td><td><span class="pill s-r">UPI</span></td><td><span class="pill s-r"><span data-lang="hi">प्रोसेसिंग</span><span data-lang="en">Processing</span></span></td></tr>
+              <tr><td>#KHJ-0037</td><td>सुनीता पाटिल</td><td>₹2,286</td><td>₹114</td><td><span data-lang="hi">मुफ्त</span><span data-lang="en">Free</span></td><td>₹2,400</td><td><span class="pill s-d">COD</span></td><td><span class="pill s-d"><span data-lang="hi">एकत्र</span><span data-lang="en">Collected</span></span></td></tr>
+              <tr><td>#KHJ-0036</td><td>मोहन कुशवाहा</td><td>₹914</td><td>₹46</td><td>₹100</td><td>₹1,060</td><td><span class="pill s-p">NEFT</span></td><td><span class="pill s-p"><span data-lang="hi">लंबित</span><span data-lang="en">Pending</span></span></td></tr>
+              <tr><td>#KHJ-0035</td><td>गीता शर्मा</td><td>₹714</td><td>₹36</td><td><span data-lang="hi">मुफ्त</span><span data-lang="en">Free</span></td><td>₹750</td><td><span class="pill s-d">UPI</span></td><td><span class="pill s-d"><span data-lang="hi">एकत्र</span><span data-lang="en">Collected</span></span></td></tr>
+              <tr><td>#KHJ-0034</td><td>प्रकाश वर्मा</td><td>₹495</td><td>₹25</td><td>₹100</td><td>₹620</td><td><span class="pill s-c">UPI</span></td><td><span class="pill s-c"><span data-lang="hi">वापसी</span><span data-lang="en">Refunded</span></span></td></tr>
+              <tr><td>#KHJ-0033</td><td>दिनेश राठौर</td><td>₹1,981</td><td>₹99</td><td><span data-lang="hi">मुफ्त</span><span data-lang="en">Free</span></td><td>₹2,080</td><td><span class="pill s-d">COD</span></td><td><span class="pill s-d"><span data-lang="hi">एकत्र</span><span data-lang="en">Collected</span></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="ch"><span class="ct">GST <span data-lang="hi">सारांश — मई 2026</span><span data-lang="en">Summary — May 2026</span></span></div>
+            <div style="font-size:12px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text-secondary)"><span data-lang="hi">कुल कर योग्य</span><span data-lang="en">Total Taxable</span></span><strong>₹1,75,238</strong></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">CGST (2.5%)</span><strong>₹4,381</strong></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--text-secondary)">SGST (2.5%)</span><strong>₹4,381</strong></div>
+              <div style="border-top:.5px solid var(--border-light);padding-top:8px;display:flex;justify-content:space-between"><span style="color:var(--text-secondary)"><span data-lang="hi">शुद्ध राजस्व</span><span data-lang="en">Net Revenue</span></span><strong style="color:var(--accent)">₹1,84,000</strong></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><span class="ct"><span data-lang="hi">बकाया राशि</span><span data-lang="en">Outstanding Dues</span></span></div>
+            <div style="font-size:12px;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span>मोहन कुशवाहा</span><span style="color:var(--warn);font-weight:600">₹1,060 <span class="pill s-p">NEFT</span></span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center"><span>Mahesh Lokhande</span><span style="color:var(--warn);font-weight:600">₹3,400 <span class="pill s-p">NEFT</span></span></div>
+              <div style="border-top:.5px solid var(--border-light);padding-top:8px;display:flex;justify-content:space-between"><span style="color:var(--text-secondary)"><span data-lang="hi">कुल बकाया</span><span data-lang="en">Total Outstanding</span></span><strong style="color:var(--danger)">₹4,460</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div class="section" id="sec-products">
+        <div class="frow">
+          <button class="fc active"><span data-lang="hi">सभी (6)</span><span data-lang="en">All (6)</span></button>
+          <button class="fc">🐛 Insecticide</button>
+          <button class="fc">🌱 Fertilizer</button>
+          <button class="fc">🍄 Fungicide</button>
+          <button class="fc">🌿 Herbicide</button>
+          <button class="bpr" style="margin-left:auto;font-size:11px;padding:5px 12px" onclick="openModal('addProductModal')">+ <span data-lang="hi">उत्पाद जोड़ें</span><span data-lang="en">Add Product</span></button>
+        </div>
+        <div class="tw">
+          <table class="dt">
+            <thead><tr>
+              <th>ID</th><th><span data-lang="hi">नाम</span><span data-lang="en">Name</span></th>
+              <th><span data-lang="hi">श्रेणी</span><span data-lang="en">Category</span></th>
+              <th><span data-lang="hi">मूल्य</span><span data-lang="en">Price</span></th>
+              <th><span data-lang="hi">फसलें</span><span data-lang="en">Crops</span></th>
+              <th><span data-lang="hi">शेल्फ</span><span data-lang="en">Shelf</span></th>
+              <th><span data-lang="hi">कार्य</span><span data-lang="en">Actions</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td>KHJ-P001</td><td>🧴 JEEVAN (जीवन)</td><td><span class="tag tg">Insecticide</span></td><td>₹680/L</td><td>Moong, Rice, Wheat, Soybean</td><td>2 Yr</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>KHJ-P002</td><td>🪣 GHATAK (घातक)</td><td><span class="tag ta">Fertilizer</span></td><td>₹520/L</td><td>Rice, Wheat, Maize, Tomato</td><td>3 Yr</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>KHJ-P003</td><td>🟢 DANGER (डेंजर)</td><td><span class="tag ta">Fertilizer</span></td><td>₹520/L</td><td>Soybean, Moong, Chickpea</td><td>3 Yr</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>KHJ-P004</td><td>🧪 SHAKTI (शक्ति)</td><td><span class="tag tc" style="background:#F4C0D1;color:#72243E">Fungicide</span></td><td>₹620/L</td><td>Rice, Tomato, Potato</td><td>2 Yr</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>KHJ-P005</td><td>🌿 VIKAS (विकास)</td><td><span class="tag tg" style="background:#C0DD97;color:#27500A">Herbicide</span></td><td>₹480/L</td><td>Wheat, Rice, Maize, Bajra</td><td>2 Yr</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>KHJ-P006</td><td>🛡️ SURAKSHA (सुरक्षा)</td><td><span class="tag tg">Insecticide</span></td><td>₹750/L</td><td>Cotton, Moong, Soybean</td><td>2 Yr</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PACKAGES -->
+      <div class="section" id="sec-packages">
+        <div style="margin-bottom:12px;font-size:12px;color:var(--text-secondary)">
+          <span data-lang="hi">प्रत्येक उत्पाद के लिए मल्टी-साइज पैकेज। कीमतें GST सहित।</span>
+          <span data-lang="en">Multi-size packages per product. Prices inclusive of GST.</span>
+        </div>
+        <div class="tw">
+          <table class="dt">
+            <thead><tr>
+              <th><span data-lang="hi">उत्पाद</span><span data-lang="en">Product</span></th>
+              <th>250 ml</th><th>500 ml</th>
+              <th>1L</th><th>5L</th>
+              <th><span data-lang="hi">खुराक/एकड़</span><span data-lang="en">Dose/acre</span></th>
+              <th><span data-lang="hi">छिड़काव</span><span data-lang="en">Spray Freq</span></th>
+              <th><span data-lang="hi">संपादित</span><span data-lang="en">Edit</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td>🧴 JEEVAN</td><td>₹180</td><td>₹350</td><td>₹680</td><td>₹3,100</td><td>200 ml</td><td><span data-lang="hi">हर 15 दिन</span><span data-lang="en">Every 15 days</span></td><td><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>🪣 GHATAK</td><td>₹140</td><td>₹270</td><td>₹520</td><td>₹2,400</td><td>200 ml</td><td><span data-lang="hi">हर 20 दिन</span><span data-lang="en">Every 20 days</span></td><td><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>🟢 DANGER</td><td>₹140</td><td>₹270</td><td>₹520</td><td>₹2,400</td><td>200 ml</td><td><span data-lang="hi">हर 25 दिन</span><span data-lang="en">Every 25 days</span></td><td><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>🧪 SHAKTI</td><td>₹165</td><td>₹320</td><td>₹620</td><td>—</td><td>150 ml</td><td><span data-lang="hi">हर 10-14 दिन</span><span data-lang="en">Every 10-14 days</span></td><td><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>🌿 VIKAS</td><td>—</td><td>₹260</td><td>₹480</td><td>₹2,200</td><td>300 ml</td><td><span data-lang="hi">एक बार</span><span data-lang="en">Once (post-sowing)</span></td><td><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>🛡️ SURAKSHA</td><td>₹200</td><td>₹390</td><td>₹750</td><td>₹3,400</td><td>200 ml</td><td><span data-lang="hi">हर 12-15 दिन</span><span data-lang="en">Every 12-15 days</span></td><td><button class="ab"><i class="ti ti-edit"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- INVENTORY -->
+      <div class="section" id="sec-inventory">
+        <div class="mrow" style="grid-template-columns:repeat(3,1fr)">
+          <div class="mc"><div class="ml">Total SKUs</div><div class="mv">24</div></div>
+          <div class="mc"><div class="ml"><span data-lang="hi">कम स्टॉक</span><span data-lang="en">Low Stock</span></div><div class="mv" style="color:var(--danger)">3</div></div>
+          <div class="mc"><div class="ml"><span data-lang="hi">स्टॉक मूल्य</span><span data-lang="en">Stock Value</span></div><div class="mv">₹3.2L</div></div>
+        </div>
+        <div class="tw">
+          <table class="dt">
+            <thead><tr>
+              <th><span data-lang="hi">उत्पाद</span><span data-lang="en">Product</span></th>
+              <th><span data-lang="hi">आकार</span><span data-lang="en">Size</span></th>
+              <th><span data-lang="hi">स्टॉक</span><span data-lang="en">Stock</span></th>
+              <th><span data-lang="hi">रीऑर्डर</span><span data-lang="en">Reorder Lvl</span></th>
+              <th>Batch</th>
+              <th><span data-lang="hi">समाप्ति</span><span data-lang="en">Expiry</span></th>
+              <th><span data-lang="hi">कार्य</span><span data-lang="en">Action</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td>🧴 JEEVAN</td><td>1L</td><td style="color:var(--accent);font-weight:600">88</td><td>30</td><td>JVN-240501</td><td>May 2026</td><td><button class="bsm" onclick="showToast(getLang('रीस्टॉक अनुरोध भेजा!','Restock request sent!'))"><span data-lang="hi">रीस्टॉक</span><span data-lang="en">Restock</span></button></td></tr>
+              <tr><td>🪣 GHATAK</td><td>5L</td><td style="color:var(--warn);font-weight:600">12</td><td>20</td><td>GHK-240312</td><td>Mar 2027</td><td><button class="bsm" style="border-color:var(--danger);color:var(--danger)" onclick="showToast('⚠ Reorder alert sent')">⚠ <span data-lang="hi">रीऑर्डर</span><span data-lang="en">Reorder</span></button></td></tr>
+              <tr><td>🧪 SHAKTI</td><td>500ml</td><td style="color:var(--warn);font-weight:600">8</td><td>25</td><td>SKT-241101</td><td>Nov 2026</td><td><button class="bsm" style="border-color:var(--danger);color:var(--danger)" onclick="showToast('⚠ Reorder alert sent')">⚠ <span data-lang="hi">रीऑर्डर</span><span data-lang="en">Reorder</span></button></td></tr>
+              <tr><td>🛡️ SURAKSHA</td><td>1L</td><td style="color:var(--accent);font-weight:600">56</td><td>20</td><td>SRK-250102</td><td>Jan 2027</td><td><button class="bsm" onclick="showToast(getLang('रीस्टॉक!','Restock sent!'))"><span data-lang="hi">रीस्टॉक</span><span data-lang="en">Restock</span></button></td></tr>
+              <tr><td>🟢 DANGER</td><td>250ml</td><td style="color:var(--danger);font-weight:600">4</td><td>30</td><td>DNG-240801</td><td>Aug 2026</td><td><button class="bsm" style="border-color:var(--danger);color:var(--danger)" onclick="showToast('⚠ Critical — Reorder sent')">⚠ Critical</button></td></tr>
+              <tr><td>🌿 VIKAS</td><td>1L</td><td style="color:var(--accent);font-weight:600">72</td><td>25</td><td>VKS-250201</td><td>Feb 2027</td><td><button class="bsm" onclick="showToast(getLang('रीस्टॉक!','Restock sent!'))"><span data-lang="hi">रीस्टॉक</span><span data-lang="en">Restock</span></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FARMERS -->
+      <div class="section" id="sec-farmers">
+        <div class="frow">
+          <button class="fc active"><span data-lang="hi">सभी किसान</span><span data-lang="en">All Farmers</span></button>
+          <button class="fc"><span data-lang="hi">नए</span><span data-lang="en">New</span></button>
+          <button class="fc"><span data-lang="hi">हिंदी ऐप</span><span data-lang="en">Hindi App</span></button>
+          <button class="fc">English App</button>
+          <input class="si" id="farmersSearch" placeholder="नाम या मोबाइल से खोजें..."/>
+        </div>
+        <div class="tw">
+          <table class="dt">
+            <thead><tr>
+              <th><span data-lang="hi">नाम</span><span data-lang="en">Name</span></th>
+              <th><span data-lang="hi">मोबाइल</span><span data-lang="en">Mobile</span></th>
+              <th><span data-lang="hi">भाषा</span><span data-lang="en">Lang</span></th>
+              <th><span data-lang="hi">गांव</span><span data-lang="en">Village</span></th>
+              <th><span data-lang="hi">फसलें</span><span data-lang="en">Crops</span></th>
+              <th><span data-lang="hi">ऑर्डर</span><span data-lang="en">Orders</span></th>
+              <th><span data-lang="hi">जुड़े</span><span data-lang="en">Joined</span></th>
+              <th><span data-lang="hi">कार्य</span><span data-lang="en">Actions</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td><strong>रमेश यादव</strong></td><td>+91 98103 44210</td><td><span class="pill s-p">हिंदी</span></td><td>ग्राम टिकरी, पिपरिया</td><td><span class="cropbadge cb-m">मूंग</span> <span class="cropbadge cb-d">धान</span></td><td>7</td><td>Mar 2026</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-phone"></i></button></td></tr>
+              <tr><td><strong>सुनीता पाटिल</strong></td><td>+91 91234 56789</td><td><span class="pill s-p">हिंदी</span></td><td>वार्ड 3, होशंगाबाद</td><td><span class="cropbadge cb-g">गेहूं</span></td><td>12</td><td>Jan 2026</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-phone"></i></button></td></tr>
+              <tr><td><strong>Mahesh Lokhande</strong></td><td>+91 80023 11234</td><td><span class="pill s-r">English</span></td><td>Sohagpur, MP</td><td><span class="cropbadge cb-m">Moong</span> <span class="cropbadge cb-g">Wheat</span></td><td>3</td><td>May 2026</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-phone"></i></button></td></tr>
+              <tr><td><strong>दिनेश राठौर</strong></td><td>+91 99832 10023</td><td><span class="pill s-p">हिंदी</span></td><td>खेतिया रोड, पिपरिया</td><td><span class="cropbadge cb-d">धान</span></td><td>5</td><td>Feb 2026</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-phone"></i></button></td></tr>
+              <tr><td><strong>मोहन कुशवाहा</strong></td><td>+91 80023 11234</td><td><span class="pill s-p">हिंदी</span></td><td>वार्ड 7, पिपरिया</td><td><span class="cropbadge cb-m">मूंग</span></td><td>2</td><td>Apr 2026</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-phone"></i></button></td></tr>
+              <tr><td><strong>गीता शर्मा</strong></td><td>+91 70001 22345</td><td><span class="pill s-p">हिंदी</span></td><td>सोहागपुर रोड, पिपरिया</td><td><span class="cropbadge cb-g">गेहूं</span> <span class="cropbadge cb-m">मूंग</span></td><td>4</td><td>Feb 2026</td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="ab"><i class="ti ti-phone"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CROPS -->
+      <div class="section" id="sec-crops">
+        <div class="g2">
+          <div class="card">
+            <div class="ch"><span class="ct"><span data-lang="hi">फसल-वार मांग</span><span data-lang="en">Crop-wise Demand</span></span></div>
+            <div style="font-size:12px;display:flex;flex-direction:column;gap:8px">
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>🌿 <span data-lang="hi">मूंग</span><span data-lang="en">Moong Bean</span></span><strong>48</strong></div><div class="pbar"><div class="pbfill" style="width:100%;background:var(--accent)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>🌾 <span data-lang="hi">धान</span><span data-lang="en">Rice/Dhaan</span></span><strong>42</strong></div><div class="pbar"><div class="pbfill" style="width:88%;background:#B8860B"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>🌾 <span data-lang="hi">गेहूं</span><span data-lang="en">Wheat</span></span><strong>36</strong></div><div class="pbar"><div class="pbfill" style="width:75%;background:#C0550A"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>🫘 <span data-lang="hi">सोयाबीन</span><span data-lang="en">Soybean</span></span><strong>22</strong></div><div class="pbar"><div class="pbfill" style="width:46%;background:var(--accent)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>🌽 <span data-lang="hi">मक्का</span><span data-lang="en">Maize</span></span><strong>18</strong></div><div class="pbar"><div class="pbfill" style="width:38%;background:#EF9F27"></div></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><span class="ct"><span data-lang="hi">अनुशंसित उत्पाद</span><span data-lang="en">Recommended Products</span></span></div>
+            <div class="tpr"><div class="tpico">🌿</div><span class="tpnm">Moong</span><span class="tag tg" style="font-size:9px">JEEVAN</span><span class="tag ta" style="font-size:9px;margin-left:3px">GHATAK</span></div>
+            <div class="tpr"><div class="tpico">🌾</div><span class="tpnm">Rice / Dhaan</span><span class="tag tg" style="font-size:9px">SURAKSHA</span><span class="tag tc" style="font-size:9px;margin-left:3px;background:#F4C0D1;color:#72243E">SHAKTI</span></div>
+            <div class="tpr"><div class="tpico">🌾</div><span class="tpnm">Wheat / Gehun</span><span class="tag tg" style="font-size:9px;background:#C0DD97;color:#27500A">VIKAS</span><span class="tag ta" style="font-size:9px;margin-left:3px">GHATAK</span></div>
+            <div class="tpr"><div class="tpico">🫘</div><span class="tpnm">Soybean</span><span class="tag tg" style="font-size:9px">JEEVAN</span><span class="tag ta" style="font-size:9px;margin-left:3px">DANGER</span></div>
+            <div class="tpr"><div class="tpico">🌽</div><span class="tpnm">Maize</span><span class="tag tg" style="font-size:9px">SURAKSHA</span><span class="tag ta" style="font-size:9px;margin-left:3px">VIKAS</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><span class="ct"><span data-lang="hi">मौसम कैलेंडर — पिपरिया</span><span data-lang="en">Season Calendar — Pipariya</span></span></div>
+          <table class="dt" style="min-width:500px">
+            <thead><tr>
+              <th><span data-lang="hi">फसल</span><span data-lang="en">Crop</span></th>
+              <th><span data-lang="hi">बुवाई</span><span data-lang="en">Sowing</span></th>
+              <th><span data-lang="hi">छिड़काव</span><span data-lang="en">Spray Window</span></th>
+              <th><span data-lang="hi">कटाई</span><span data-lang="en">Harvest</span></th>
+              <th><span data-lang="hi">उत्पाद</span><span data-lang="en">Products</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td>🌿 Moong</td><td>Jun–Jul</td><td>Jul–Aug</td><td>Sep–Oct</td><td>JEEVAN, GHATAK</td></tr>
+              <tr><td>🌾 Dhaan</td><td>Jun–Jul</td><td>Aug–Sep</td><td>Nov</td><td>SURAKSHA, SHAKTI</td></tr>
+              <tr><td>🌾 Gehun (Rabi)</td><td>Oct–Nov</td><td>Dec–Feb</td><td>Mar–Apr</td><td>VIKAS, GHATAK</td></tr>
+              <tr><td>🫘 Soybean</td><td>Jun–Jul</td><td>Jul–Sep</td><td>Oct</td><td>JEEVAN, DANGER</td></tr>
+              <tr><td>🌽 Maize</td><td>Jun</td><td>Jul–Aug</td><td>Sep–Oct</td><td>SURAKSHA, VIKAS</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ADVISER -->
+      <div class="section" id="sec-adviser">
+        <div class="mrow" style="grid-template-columns:repeat(3,1fr)">
+          <div class="mc"><div class="ml"><span data-lang="hi">आज की बुकिंग</span><span data-lang="en">Today's Bookings</span></div><div class="mv">8</div></div>
+          <div class="mc"><div class="ml"><span data-lang="hi">इस सप्ताह</span><span data-lang="en">This Week</span></div><div class="mv">34</div></div>
+          <div class="mc"><div class="ml"><span data-lang="hi">पुष्टि लंबित</span><span data-lang="en">Pending</span></div><div class="mv" style="color:var(--warn)">5</div></div>
+        </div>
+        <div class="tw">
+          <table class="dt">
+            <thead><tr>
+              <th><span data-lang="hi">किसान</span><span data-lang="en">Farmer</span></th>
+              <th><span data-lang="hi">मोबाइल</span><span data-lang="en">Mobile</span></th>
+              <th><span data-lang="hi">समस्या</span><span data-lang="en">Problem</span></th>
+              <th><span data-lang="hi">स्लॉट</span><span data-lang="en">Slot</span></th>
+              <th><span data-lang="hi">स्थिति</span><span data-lang="en">Status</span></th>
+              <th><span data-lang="hi">कार्य</span><span data-lang="en">Action</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td>रमेश यादव</td><td>98103 44210</td><td>Leaf spots on Moong</td><td>9:00 AM · 26 May</td><td><span class="slot-chip booked"><span data-lang="hi">पुष्टि</span><span data-lang="en">Confirmed</span></span></td><td><button class="ab"><i class="ti ti-phone"></i></button><button class="ab" onclick="showToast('Updated!')"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>सुनीता पाटिल</td><td>91234 56789</td><td>Pest on Wheat</td><td>11:00 AM · 26 May</td><td><span class="slot-chip pending"><span data-lang="hi">लंबित</span><span data-lang="en">Pending</span></span></td><td><button class="ab"><i class="ti ti-phone"></i></button><button class="ab" onclick="showToast('Confirmed!')"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>दिनेश राठौर</td><td>99832 10023</td><td>Rice blight</td><td>2:00 PM · 27 May</td><td><span class="slot-chip booked"><span data-lang="hi">पुष्टि</span><span data-lang="en">Confirmed</span></span></td><td><button class="ab"><i class="ti ti-phone"></i></button><button class="ab" onclick="showToast('Updated!')"><i class="ti ti-edit"></i></button></td></tr>
+              <tr><td>Mahesh Lokhande</td><td>80023 11234</td><td>Yellowing in Soybean</td><td>10:00 AM · 28 May</td><td><span class="slot-chip pending"><span data-lang="hi">लंबित</span><span data-lang="en">Pending</span></span></td><td><button class="ab"><i class="ti ti-phone"></i></button><button class="ab" onclick="showToast('Confirmed!')"><i class="ti ti-edit"></i></button></td></tr>
+            </tbody>
+          </table>
+          <div style="padding:12px 14px;border-top:.5px solid var(--border-light)">
+            <div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:6px"><span data-lang="hi">उपलब्ध स्लॉट</span><span data-lang="en">Available Slots</span></div>
+            <span class="slot-chip booked">9:00 AM</span><span class="slot-chip booked">10:00 AM</span><span class="slot-chip pending">11:00 AM</span><span class="slot-chip">12:00 PM</span><span class="slot-chip booked">2:00 PM</span><span class="slot-chip">3:00 PM</span><span class="slot-chip">4:00 PM</span><span class="slot-chip pending">5:00 PM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPLAINTS -->
+      <div class="section" id="sec-complaints">
+        <div class="frow">
+          <button class="fc active"><span data-lang="hi">सभी (5)</span><span data-lang="en">All (5)</span></button>
+          <button class="fc"><span data-lang="hi">गुणवत्ता</span><span data-lang="en">Quality</span></button>
+          <button class="fc"><span data-lang="hi">डिलीवरी</span><span data-lang="en">Delivery</span></button>
+          <button class="fc"><span data-lang="hi">गलत आइटम</span><span data-lang="en">Wrong Item</span></button>
+          <button class="fc"><span data-lang="hi">हल किया</span><span data-lang="en">Resolved</span></button>
+        </div>
+        <div class="tw">
+          <table class="dt">
+            <thead><tr>
+              <th>Ticket</th><th><span data-lang="hi">किसान</span><span data-lang="en">Farmer</span></th>
+              <th><span data-lang="hi">प्रकार</span><span data-lang="en">Type</span></th>
+              <th><span data-lang="hi">विवरण</span><span data-lang="en">Description</span></th>
+              <th><span data-lang="hi">दर्ज</span><span data-lang="en">Filed</span></th>
+              <th><span data-lang="hi">स्थिति</span><span data-lang="en">Status</span></th>
+              <th><span data-lang="hi">कार्य</span><span data-lang="en">Action</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td>#CMP-005</td><td>रमेश यादव</td><td><span class="tag tc"><span data-lang="hi">गुणवत्ता</span><span data-lang="en">Quality</span></span></td><td><span data-lang="hi">JEEVAN का असर कम</span><span data-lang="en">JEEVAN less effective — pests not dying</span></td><td>25 May</td><td><span class="pill s-p"><span data-lang="hi">खुला</span><span data-lang="en">Open</span></span></td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="bsm" style="font-size:10px" onclick="showToast(getLang('जवाब भेजा','Reply sent'))"><span data-lang="hi">जवाब</span><span data-lang="en">Reply</span></button></td></tr>
+              <tr><td>#CMP-004</td><td>सुनीता पाटिल</td><td><span class="tag ta"><span data-lang="hi">डिलीवरी</span><span data-lang="en">Delivery</span></span></td><td><span data-lang="hi">3 दिन हो गए, ऑर्डर नहीं आया</span><span data-lang="en">3 days passed, order not arrived</span></td><td>24 May</td><td><span class="pill s-p"><span data-lang="hi">खुला</span><span data-lang="en">Open</span></span></td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="bsm" style="font-size:10px" onclick="showToast(getLang('जवाब भेजा','Reply sent'))"><span data-lang="hi">जवाब</span><span data-lang="en">Reply</span></button></td></tr>
+              <tr><td>#CMP-003</td><td>दिनेश राठौर</td><td><span class="tag tb"><span data-lang="hi">गलत आइटम</span><span data-lang="en">Wrong Item</span></span></td><td><span data-lang="hi">GHATAK ऑर्डर, DANGER आया</span><span data-lang="en">Ordered GHATAK, received DANGER</span></td><td>22 May</td><td><span class="pill s-r"><span data-lang="hi">जारी है</span><span data-lang="en">In Progress</span></span></td><td><button class="ab"><i class="ti ti-eye"></i></button><button class="bsm" style="font-size:10px" onclick="showToast(getLang('जवाब भेजा','Reply sent'))"><span data-lang="hi">जवाब</span><span data-lang="en">Reply</span></button></td></tr>
+              <tr><td>#CMP-002</td><td>Mahesh Lokhande</td><td><span class="tag tg"><span data-lang="hi">अन्य</span><span data-lang="en">Other</span></span></td><td>App not loading in English mode</td><td>20 May</td><td><span class="pill s-d"><span data-lang="hi">हल किया</span><span data-lang="en">Resolved</span></span></td><td><button class="ab"><i class="ti ti-eye"></i></button></td></tr>
+              <tr><td>#CMP-001</td><td>मोहन कुशवाहा</td><td><span class="tag tc"><span data-lang="hi">गुणवत्ता</span><span data-lang="en">Quality</span></span></td><td><span data-lang="hi">VIKAS से फसल को नुकसान</span><span data-lang="en">Crop damaged due to VIKAS</span></td><td>18 May</td><td><span class="pill s-d"><span data-lang="hi">हल किया</span><span data-lang="en">Resolved</span></span></td><td><button class="ab"><i class="ti ti-eye"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div class="section" id="sec-notifications">
+        <div class="g2">
+          <div class="card">
+            <div class="ch"><span class="ct"><span data-lang="hi">सिस्टम अलर्ट</span><span data-lang="en">System Alerts</span></span></div>
+            <div class="notitem"><div class="ndot nd-d"></div><div><div class="ntxt"><span data-lang="hi">DANGER 250ml — केवल 4 यूनिट बचे। तुरंत रीऑर्डर करें।</span><span data-lang="en">DANGER 250ml critically low — only 4 units left.</span></div><div class="ntm">2 hrs ago</div></div></div>
+            <div class="notitem"><div class="ndot nd-w"></div><div><div class="ntxt"><span data-lang="hi">SHAKTI 500ml रीऑर्डर स्तर से नीचे (8 यूनिट)।</span><span data-lang="en">SHAKTI 500ml below reorder level (8 units).</span></div><div class="ntm">5 hrs ago</div></div></div>
+            <div class="notitem"><div class="ndot nd-i"></div><div><div class="ntxt"><span data-lang="hi">रमेश यादव की शिकायत — JEEVAN गुणवत्ता। 24 घंटे में जवाब दें।</span><span data-lang="en">Complaint by रमेश यादव — JEEVAN quality issue.</span></div><div class="ntm">Yesterday</div></div></div>
+            <div class="notitem"><div class="ndot nd-s"></div><div><div class="ntxt"><span data-lang="hi">सुनीता पाटिल की बुकिंग — 11:00 AM, 26 मई।</span><span data-lang="en">Adviser booking confirmed — सुनीता पाटिल · 11 AM, 26 May.</span></div><div class="ntm">Yesterday</div></div></div>
+            <div class="notitem"><div class="ndot nd-i"></div><div><div class="ntxt"><span data-lang="hi">नया किसान: Mahesh Lokhande (+91 80023 11234) — English।</span><span data-lang="en">New farmer registered: Mahesh Lokhande via OTP.</span></div><div class="ntm">Today</div></div></div>
+          </div>
+          <div class="card">
+            <div class="ch">
+              <span class="ct"><span data-lang="hi">Push Notifications</span></span>
+              <button class="bpr" style="font-size:10px;padding:4px 10px" onclick="openModal('pushModal')">+ <span data-lang="hi">नई</span><span data-lang="en">New</span></button>
+            </div>
+            <div class="revcard"><div class="stars">📢</div><div class="revtxt"><strong>मूंग किसान — JEEVAN छिड़काव!</strong> अपनी फसल को कीटों से बचाएं। अभी ऑर्डर करें।</div><div class="revmeta">84 farmers · Hindi · 24 May · 71% open</div></div>
+            <div class="revcard"><div class="stars">📢</div><div class="revtxt"><strong>Wheat Farmers — VIKAS now in stock.</strong> Order 5L pack.</div><div class="revmeta">36 farmers · English · 20 May · 58% open</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="section" id="sec-settings">
+        <div class="stabs">
+          <div class="stab active" onclick="sstab('store',this)"><span data-lang="hi">दुकान</span><span data-lang="en">Store</span></div>
+          <div class="stab" onclick="sstab('app',this)"><span data-lang="hi">ऐप सुविधाएं</span><span data-lang="en">App Features</span></div>
+          <div class="stab" onclick="sstab('delivery',this)"><span data-lang="hi">डिलीवरी</span><span data-lang="en">Delivery</span></div>
+          <div class="stab" onclick="sstab('payment',this)"><span data-lang="hi">भुगतान</span><span data-lang="en">Payments</span></div>
+        </div>
+        <div id="st-store">
+          <div class="card">
+            <div class="ch"><span class="ct"><span data-lang="hi">दुकान की जानकारी</span><span data-lang="en">Store Information</span></span></div>
+            <div class="fg">
+              <div class="fgr"><label class="fgl"><span data-lang="hi">दुकान का नाम (हिंदी)</span><span data-lang="en">Shop Name (Hindi)</span></label><input class="fgi" value="अनुराग खाजड़"/></div>
+              <div class="fgr"><label class="fgl"><span data-lang="hi">दुकान का नाम (अंग्रेजी)</span><span data-lang="en">Shop Name (English)</span></label><input class="fgi" value="Anurag Khajar – Agriculture Shop"/></div>
+              <div class="fgr"><label class="fgl"><span data-lang="hi">फोन</span><span data-lang="en">Phone</span></label><input class="fgi" value="+91 98000 00001"/></div>
+              <div class="fgr"><label class="fgl"><span data-lang="hi">निर्माता</span><span data-lang="en">Manufacturer</span></label><input class="fgi" value="Dudani Pesticides Pvt. Ltd."/></div>
+            </div>
+            <div class="fgr" style="margin-bottom:10px"><label class="fgl"><span data-lang="hi">पूरा पता</span><span data-lang="en">Full Address</span></label><textarea class="fgt" rows="2" style="resize:none">खाजड़ मार्केट, पिपरिया, मध्यप्रदेश – 461775</textarea></div>
+            <button class="bpr" onclick="showToast(getLang('दुकान की जानकारी सेव!','Store info saved!'))"><span data-lang="hi">बदलाव सेव करें</span><span data-lang="en">Save changes</span></button>
+          </div>
+        </div>
+        <div id="st-app" style="display:none">
+          <div class="card">
+            <div class="ch"><span class="ct"><span data-lang="hi">ऐप सुविधा टॉगल</span><span data-lang="en">App Feature Toggles</span></span></div>
+            <div class="togrow"><span><span data-lang="hi">हिंदी भाषा</span><span data-lang="en">Hindi language</span></span><div class="tog on" onclick="togClick(this)"></div></div>
+            <div class="togrow"><span><span data-lang="hi">अंग्रेजी भाषा</span><span data-lang="en">English language</span></span><div class="tog on" onclick="togClick(this)"></div></div>
+            <div class="togrow"><span><span data-lang="hi">डार्क मोड</span><span data-lang="en">Dark mode</span></span><div class="tog on" onclick="togClick(this)"></div></div>
+            <div class="togrow"><span><span data-lang="hi">आवाज़ से खोजें</span><span data-lang="en">Voice search</span></span><div class="tog on" onclick="togClick(this)"></div></div>
+            <div class="togrow"><span><span data-lang="hi">फसल सलाहकार बुकिंग</span><span data-lang="en">Crop adviser booking</span></span><div class="tog on" onclick="togClick(this)"></div></div>
+            <div class="togrow"><span><span data-lang="hi">किसान शिकायत</span><span data-lang="en">Complaint filing</span></span><div class="tog on" onclick="togClick(this)"></div></div>
+            <div class="togrow"><span><span data-lang="hi">लाइव ट्रैकिंग</span><span data-lang="en">Live tracking</span></span><div class="tog on" onclick="togClick(this)"></div></div>
+            <div class="togrow"><span>OTP <span data-lang="hi">डिलीवरी पुष्टि</span><span data-lang="en">delivery confirmation</span></span><div class="tog on" onclick="togClick(this)"></div></div>
+          </div>
+        </div>
+        <div id="st-delivery" style="display:none">
+          <div class="card">
+            <div class="ch"><span class="ct"><span data-lang="hi">डिलीवरी कॉन्फ़िगरेशन</span><span data-lang="en">Delivery Configuration</span></span></div>
+            <div class="fg">
+              <div class="fgr"><label class="fgl"><span data-lang="hi">सामान्य डिलीवरी</span><span data-lang="en">Standard delivery (days)</span></label><input class="fgi" value="3–5 working days"/></div>
+              <div class="fgr"><label class="fgl"><span data-lang="hi">डिलीवरी शुल्क</span><span data-lang="en">Delivery charge (₹)</span></label><input class="fgi" value="100"/></div>
+              <div class="fgr"><label class="fgl"><span data-lang="hi">मुफ्त डिलीवरी (₹ से ऊपर)</span><span data-lang="en">Free above (₹)</span></label><input class="fgi" value="999"/></div>
+              <div class="fgr"><label class="fgl"><span data-lang="hi">सेवा क्षेत्र</span><span data-lang="en">Service area</span></label><input class="fgi" value="Pipariya, Hoshangabad, Sohagpur"/></div>
+            </div>
+            <button class="bpr" onclick="showToast(getLang('सेव!','Saved!'))"><span data-lang="hi">सेव करें</span><span data-lang="en">Save</span></button>
+          </div>
+        </div>
+        <div id="st-payment" style="display:none">
+          <div class="card">
+            <div class="ch"><span class="ct"><span data-lang="hi">भुगतान तरीके</span><span data-lang="en">Payment Methods</span></span></div>
+            <div class="togrow"><span>UPI / QR (GPay, PhonePe, Paytm)</span><div class="tog on" onclick="togClick(this)"></div></div>
+            <div class="togrow"><span><span data-lang="hi">नकद डिलीवरी</span><span data-lang="en">Cash on Delivery</span></span><div class="tog on" onclick="togClick(this)"></div></div>
+            <div class="togrow"><span>Bank Transfer / NEFT</span><div class="tog on" onclick="togClick(this)"></div></div>
+            <div class="togrow"><span>GST (5%) <span data-lang="hi">सभी ऑर्डर पर</span><span data-lang="en">on all orders</span></span><div class="tog on" onclick="togClick(this)"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const orders = [
+  {id:'#KHJ-0038', farmer:'रमेश यादव', mobile:'98103 44210', product:'🧴 JEEVAN', pkg:'1L', qty:2, amt:'₹1,360', pay:'UPI', status:'Processing', statusClass:'s-r'},
+  {id:'#KHJ-0037', farmer:'सुनीता पाटिल', mobile:'91234 56789', product:'🪣 GHATAK', pkg:'5L', qty:1, amt:'₹2,400', pay:'COD', status:'Delivered', statusClass:'s-d'},
+  {id:'#KHJ-0036', farmer:'मोहन कुशवाहा', mobile:'80023 11234', product:'🧪 SHAKTI', pkg:'500ml', qty:3, amt:'₹960', pay:'NEFT', status:'Pending', statusClass:'s-p'},
+  {id:'#KHJ-0035', farmer:'गीता शर्मा', mobile:'70001 22345', product:'🛡️ SURAKSHA', pkg:'1L', qty:1, amt:'₹750', pay:'UPI', status:'Delivered', statusClass:'s-d'},
+  {id:'#KHJ-0034', farmer:'प्रकाश वर्मा', mobile:'99832 10023', product:'🌿 VIKAS', pkg:'500ml', qty:2, amt:'₹520', pay:'UPI', status:'Cancelled', statusClass:'s-c'},
+  {id:'#KHJ-0033', farmer:'दिनेश राठौर', mobile:'93001 88120', product:'🟢 DANGER', pkg:'1L', qty:4, amt:'₹2,080', pay:'COD', status:'Delivered', statusClass:'s-d'},
+  {id:'#KHJ-0032', farmer:'राजकुमार पटेल', mobile:'94501 33210', product:'🧴 JEEVAN', pkg:'250ml', qty:6, amt:'₹1,080', pay:'UPI', status:'Delivered', statusClass:'s-d'},
+  {id:'#KHJ-0031', farmer:'Mahesh Lokhande', mobile:'80023 11234', product:'🛡️ SURAKSHA', pkg:'5L', qty:1, amt:'₹3,400', pay:'NEFT', status:'Pending', statusClass:'s-p'},
+];
+
+let currentLang = 'hi';
+
+function getLang(hi, en){ return currentLang === 'en' ? en : hi; }
+
+function setLang(lang) {
+  currentLang = lang;
+  if(lang === 'en'){
+    document.body.classList.add('lang-en');
+    document.getElementById('btn-en').classList.add('active');
+    document.getElementById('btn-hi').classList.remove('active');
+    document.getElementById('ordersSearch').placeholder = 'Search order / farmer...';
+    document.getElementById('farmersSearch').placeholder = 'Search by name or mobile...';
+  } else {
+    document.body.classList.remove('lang-en');
+    document.getElementById('btn-hi').classList.add('active');
+    document.getElementById('btn-en').classList.remove('active');
+    document.getElementById('ordersSearch').placeholder = 'ऑर्डर / किसान खोजें...';
+    document.getElementById('farmersSearch').placeholder = 'नाम या मोबाइल से खोजें...';
+  }
+  showToast(lang === 'en' ? 'Switched to English' : 'हिंदी में बदला गया');
+  renderOrders(orders);
+}
+
+// ── Navigation ──
+const titlesHi = {dashboard:'डैशबोर्ड',orders:'ऑर्डर',tracking:'लाइव ट्रैकिंग',payments:'भुगतान',products:'स्प्रे उत्पाद',packages:'पैकेज और मूल्य',inventory:'इन्वेंटरी',farmers:'किसान',crops:'फसल प्रबंधन',adviser:'सलाहकार बुकिंग',complaints:'शिकायतें',notifications:'सूचनाएं',settings:'सेटिंग्स'};
+const titlesEn = {dashboard:'Dashboard',orders:'Orders',tracking:'Live Tracking',payments:'Payments',products:'Spray Products',packages:'Packages & Pricing',inventory:'Inventory',farmers:'Farmers',crops:'Crop Management',adviser:'Adviser Bookings',complaints:'Complaints',notifications:'Notifications',settings:'Settings'};
+
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  const hi = titlesHi[id]||id, en = titlesEn[id]||id;
+  document.getElementById('ptitleText').innerHTML = `<span data-lang="hi">${hi}</span><span data-lang="en" style="${currentLang==='en'?'':'display:none'}">${en}</span>`;
+  if(currentLang==='en'){
+    document.querySelectorAll('#ptitleText [data-lang="hi"]').forEach(e=>e.style.display='none');
+    document.querySelectorAll('#ptitleText [data-lang="en"]').forEach(e=>e.style.display='');
+  }
+}
+
+// ── Orders table ──
+function renderOrders(data) {
+  const tbody = document.getElementById('ordersBody');
+  const statusLabel = {
+    'Processing': getLang('प्रोसेसिंग','Processing'),
+    'Delivered': getLang('डिलीवर','Delivered'),
+    'Pending': getLang('लंबित','Pending'),
+    'Cancelled': getLang('रद्द','Cancelled')
+  };
+  tbody.innerHTML = data.map(o => `
+    <tr>
+      <td>${o.id}</td><td>${o.farmer}</td><td>${o.mobile}</td>
+      <td>${o.product}</td><td>${o.pkg}</td><td>${o.qty}</td>
+      <td style="font-weight:600">${o.amt}</td>
+      <td><span class="pill ${o.statusClass}">${o.pay}</span></td>
+      <td><span class="pill ${o.statusClass}">${statusLabel[o.status]||o.status}</span></td>
+      <td>
+        <button class="ab" onclick="viewOrder('${o.id}')"><i class="ti ti-eye"></i></button>
+        <button class="ab" onclick="showToast(getLang('अपडेट किया!','Updated!'))"><i class="ti ti-edit"></i></button>
+      </td>
+    </tr>`).join('');
+}
+
+function filterOrders(type, el) {
+  el.closest('.frow').querySelectorAll('.fc').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  const map = {all:null,pending:'Pending',processing:'Processing',delivered:'Delivered',cancelled:'Cancelled'};
+  const filter = map[type];
+  const filtered = filter ? orders.filter(o=>o.status===filter) : orders;
+  renderOrders(filtered);
+}
+
+function searchOrders(q) {
+  const lq = q.toLowerCase();
+  renderOrders(q ? orders.filter(o=>o.farmer.toLowerCase().includes(lq)||o.id.toLowerCase().includes(lq)||o.product.toLowerCase().includes(lq)) : orders);
+}
+
+function viewOrder(id) {
+  const o = orders.find(x=>x.id===id);
+  if(!o) return;
+  document.getElementById('orderModalTitle').textContent = `Order ${o.id}`;
+  document.getElementById('orderModalBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px">
+      <div><strong>Farmer:</strong> ${o.farmer}</div>
+      <div><strong>Mobile:</strong> ${o.mobile}</div>
+      <div><strong>Product:</strong> ${o.product}</div>
+      <div><strong>Package:</strong> ${o.pkg} × ${o.qty}</div>
+      <div><strong>Amount:</strong> ${o.amt}</div>
+      <div><strong>Payment:</strong> ${o.pay}</div>
+    </div>
+    <div style="margin-top:12px;padding:10px;background:var(--bg-secondary);border-radius:8px">
+      <strong>Status:</strong> <span class="pill ${o.statusClass}" style="font-size:11px">${o.status}</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="bpr" onclick="closeModal('orderModal');showToast(getLang('स्टेटस अपडेट!','Status updated!'))">Update Status</button>
+      <button class="bsm" onclick="showToast(getLang('Invoice बना!','Invoice generated!'))">Generate Invoice</button>
+    </div>`;
+  openModal('orderModal');
+}
+
+// Settings tabs
+function sstab(id, el) {
+  ['store','app','delivery','payment'].forEach(t=>{const e=document.getElementById('st-'+t);if(e)e.style.display='none';});
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  const st = document.getElementById('st-'+id);
+  if(st) st.style.display='block';
+  el.classList.add('active');
+}
+
+// Filter chips
+document.querySelectorAll('.frow .fc').forEach(c=>{
+  c.addEventListener('click', function(){
+    if(this.closest('#sec-orders .frow') || this.closest('#sec-farmers .frow') || this.closest('#sec-complaints .frow')) return;
+    this.closest('.frow').querySelectorAll('.fc').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+function togClick(el){
+  if(el.classList.contains('on')){el.classList.remove('on');el.classList.add('off');}
+  else{el.classList.remove('off');el.classList.add('on');}
+  showToast(getLang('सेटिंग अपडेट!','Setting updated!'));
+}
+
+function toggleDark(){
+  const b=document.body, icon=document.getElementById('themeIcon');
+  if(b.classList.contains('dark')){b.classList.remove('dark');icon.className='ti ti-moon';}
+  else{b.classList.add('dark');icon.className='ti ti-sun';}
+}
+
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
+});
+
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+
+// Init
+renderOrders(orders);
+document.getElementById('ordersSearch').placeholder = 'ऑर्डर / किसान खोजें...';
+document.getElementById('farmersSearch').placeholder = 'नाम या मोबाइल से खोजें...';
+</script>
+</body>
+</html>

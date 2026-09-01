@@ -1,0 +1,3534 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>स्प्रे सूची - अनुराग खाजड़</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --g1: #0d3318; --g2: #1a4a1e; --g3: #2e6b35; --g4: #3d8b46; --g5: #4caf50;
+      --g-pale: #e8f5e9; --g-border: #b8ddb9;
+      --o1: #bf4d00; --o2: #e07020; --o3: #f59332; --o-pale: #fff3e0;
+      --r: #e53935; --white: #fff; --bg: #f3f7f2;
+      --t1: #111; --t2: #444; --t3: #888; --t4: #bbb;
+      --card-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
+      --card-shadow-hover: 0 8px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+      --radius: 14px; --radius-sm: 8px; --radius-lg: 20px;
+      --header-h: 60px;
+      --transition: 0.18s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      font-family: 'Noto Sans Devanagari', 'Baloo 2', sans-serif;
+      background: var(--bg);
+      color: var(--t1);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ══════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════ */
+    header {
+      background: linear-gradient(135deg, var(--g1) 0%, var(--g2) 60%, var(--g3) 100%);
+      position: sticky; top: 0; z-index: 200;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 2vw, 14px);
+      padding: 10px clamp(12px, 4vw, 20px);
+      height: var(--header-h);
+    }
+
+    /* ── Back Button ── */
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      color: #fff;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: clamp(0.78rem, 2.5vw, 0.92rem);
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background var(--transition);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.25); }
+
+    .spray-dropdown-wrap { position: relative; flex-shrink: 0; }
+    .header-title-btn {
+      background: var(--o2);
+      border: none; border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: clamp(0.82rem, 3vw, 1rem);
+      font-weight: 800; color: #fff;
+      cursor: pointer; letter-spacing: 0.3px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      transition: background var(--transition);
+      white-space: nowrap;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .header-title-btn:hover { background: var(--o1); }
+    .header-title-btn .arrow {
+      display: inline-block;
+      transition: transform 0.22s ease;
+      font-style: normal;
+    }
+    .header-title-btn.open .arrow { transform: rotate(180deg); }
+
+    /* ══════════════════════════════════════
+       SPRAY DROPDOWN — exact reference match
+    ══════════════════════════════════════ */
+    .spray-dropdown-panel {
+      display: none;
+      position: absolute; top: calc(100% + 8px); left: 0;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.20), 0 2px 8px rgba(0,0,0,0.10);
+      width: 220px;
+      z-index: 500;
+      overflow: hidden;
+      transform-origin: top left;
+      animation: dropIn 0.2s cubic-bezier(0.34,1.1,0.64,1);
+    }
+    @keyframes dropIn {
+      from { opacity:0; transform: translateY(-8px) scaleY(0.92); }
+      to   { opacity:1; transform: translateY(0)   scaleY(1); }
+    }
+    .spray-dropdown-panel.open { display: block; }
+
+    .spray-dropdown-header {
+      background: var(--g1);
+      padding: 12px 16px;
+      font-size: 0.8rem; font-weight: 800;
+      color: rgba(255,255,255,0.92);
+      letter-spacing: 0.4px;
+      display: flex; align-items: center; gap: 7px;
+    }
+
+    /* Each row */
+    .spray-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 16px;
+      height: 52px;
+      cursor: pointer;
+      border-bottom: 1px solid #ececec;
+      transition: background 0.14s ease;
+      position: relative;
+      background: #fff;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .spray-dropdown-item:last-child { border-bottom: none; }
+    .spray-dropdown-item:hover  { background: #f4faf4; }
+    .spray-dropdown-item:active { background: #e4f4e4; }
+
+    /* Active / selected state */
+    .spray-dropdown-item.active-spray { background: #f0faf0; }
+    .spray-dropdown-item.active-spray::after {
+      content: '';
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%);
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--g5);
+    }
+
+    /* Green circle badge */
+    .spray-num-circle {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--g2);
+      color: #fff;
+      font-size: 0.95rem; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+    }
+
+    /* Spray label text */
+    .spray-item-label {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #111;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-search {
+      flex: 1;
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.97);
+      border-radius: 10px;
+      height: 40px;
+      padding: 0 10px;
+      gap: 6px;
+      min-width: 0;
+    }
+    .search-icon { font-size: 0.95rem; color: var(--o2); flex-shrink: 0; }
+    .header-search input {
+      flex: 1; border: none; outline: none;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.9rem; font-weight: 500;
+      color: var(--t1); background: transparent; min-width: 0;
+    }
+    .header-search input::placeholder { color: var(--t3); }
+    .mic-btn {
+      background: none; border: none; font-size: 1.1rem;
+      cursor: pointer; color: var(--t3); flex-shrink: 0;
+      padding: 2px; transition: color var(--transition);
+    }
+    .mic-btn.listening { color: var(--r); animation: micPulse 0.7s infinite; }
+    @keyframes micPulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+
+    .header-actions {
+      display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+    }
+    .cart-btn {
+      display: flex; align-items: center; gap: 4px;
+      background: rgba(255,255,255,0.12);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer; color: #fff;
+      font-size: 0.82rem; font-weight: 800;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      white-space: nowrap;
+      transition: background var(--transition);
+      position: relative;
+    }
+    .cart-btn:hover { background: rgba(255,255,255,0.2); }
+    .cart-icon-svg { width: 24px; height: 22px; flex-shrink: 0; }
+    .cart-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: var(--o2); color: #fff;
+      font-size: 0.65rem; font-weight: 900;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--g2);
+      opacity: 0; transform: scale(0);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .cart-badge.visible { opacity: 1; transform: scale(1); }
+    .cart-badge.pop { animation: badgePop 0.3s ease; }
+    @keyframes badgePop { 0%{transform:scale(1)}50%{transform:scale(1.6)}100%{transform:scale(1)} }
+    .cart-label { display: none; }
+    @media(min-width:480px) { .cart-label { display: inline; } }
+
+    .lang-pill {
+      display: flex; align-items: center; gap: 4px;
+      background: rgba(255,255,255,0.1);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 10px; padding: 6px 9px;
+      cursor: pointer; color: #fff;
+      font-size: 0.75rem; font-weight: 800;
+      white-space: nowrap;
+      transition: background var(--transition);
+    }
+    .lang-pill:hover { background: rgba(255,255,255,0.2); }
+
+    /* ══════════════════════════════════════
+       FILTER TABS
+    ══════════════════════════════════════ */
+    .filter-wrap {
+      background: var(--g2);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .filter-bar {
+      display: flex; gap: 6px;
+      padding: 10px clamp(12px, 4vw, 20px);
+      overflow-x: auto; overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-tab {
+      border: 1.5px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; color: rgba(255,255,255,0.8);
+      white-space: nowrap;
+      transition: all var(--transition);
+      flex-shrink: 0;
+    }
+    .filter-tab.active { background: #fff; border-color: #fff; color: var(--g2); }
+    .filter-tab:hover:not(.active) { background: rgba(255,255,255,0.15); color: #fff; }
+
+    /* ══════════════════════════════════════
+       MAIN
+    ══════════════════════════════════════ */
+    main {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: clamp(14px, 4vw, 24px) clamp(12px, 4vw, 20px) 100px;
+    }
+
+    /* ══════════════════════════════════════
+       PRODUCTS GRID
+    ══════════════════════════════════════ */
+    .products-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media(min-width: 480px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+    @media(min-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+    @media(min-width: 1024px) { .products-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+
+    /* ══════════════════════════════════════
+       PRODUCT CARD — updated layout
+    ══════════════════════════════════════ */
+    .product-card {
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: transform var(--transition), box-shadow var(--transition);
+      display: flex; flex-direction: column;
+      animation: cardIn 0.35s ease both;
+      scroll-margin-top: 80px;
+    }
+    @keyframes cardIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    .product-card:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
+    .product-card:active { transform: scale(0.99); }
+    .product-card.highlight-spray {
+      animation: sprayHighlight 1.2s ease;
+    }
+    @keyframes sprayHighlight {
+      0%{box-shadow: 0 0 0 3px var(--g5), var(--card-shadow)}
+      60%{box-shadow: 0 0 0 4px var(--g5), var(--card-shadow-hover)}
+      100%{box-shadow: var(--card-shadow)}
+    }
+
+    .product-img-wrap {
+      width: 100%; height: clamp(130px, 28vw, 175px);
+      background: linear-gradient(135deg, #eef7ee, #f6fcf5);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    .product-body {
+      padding: 11px 13px 13px;
+      flex: 1; display: flex; flex-direction: column; gap: 7px;
+    }
+
+    /* Name row with heart + share inline */
+    .product-name-row {
+      display: flex; align-items: flex-start; gap: 6px;
+    }
+    .product-name {
+      flex: 1;
+      font-size: clamp(0.92rem, 2.5vw, 1.02rem);
+      font-weight: 800; color: var(--t1);
+      line-height: 1.25;
+      min-width: 0;
+    }
+    .name-icons {
+      display: flex; align-items: center; gap: 2px;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .icon-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 1.05rem; padding: 3px;
+      transition: transform var(--transition);
+      border-radius: 6px; line-height: 1;
+    }
+    .icon-btn:hover { transform: scale(1.25); }
+    .icon-btn:active { transform: scale(0.88); }
+    .icon-btn.liked { color: var(--r); }
+
+    .category-tag {
+      font-size: 0.76rem; font-weight: 700;
+      color: var(--t2);
+      display: flex; align-items: center; gap: 3px;
+    }
+    .detail-link {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 0.74rem; font-weight: 700;
+      color: var(--o2); background: none; border: none;
+      cursor: pointer; padding: 3px 0;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      transition: color var(--transition);
+    }
+    .detail-link:hover { color: var(--o1); }
+
+    .card-meta-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+
+    .price-row {
+      display: flex; align-items: baseline; gap: 4px;
+      font-size: 1rem; font-weight: 900; color: var(--t1);
+    }
+    .price-unit { font-size: 0.76rem; font-weight: 600; color: var(--t3); }
+
+    .dosage-row {
+      font-size: 0.78rem; color: var(--t3); font-weight: 600;
+      display: flex; align-items: center; gap: 3px;
+      padding: 5px 8px;
+      background: var(--bg);
+      border-radius: 6px;
+    }
+
+    .details-btn {
+      width: 100%;
+      background: var(--g2);
+      color: #fff; border: none;
+      border-radius: 10px;
+      padding: clamp(10px, 2.5vw, 13px);
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: clamp(0.86rem, 2.2vw, 0.93rem);
+      font-weight: 800; cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: background var(--transition), transform 0.1s;
+      margin-top: auto;
+    }
+    .details-btn:hover { background: var(--g3); }
+    .details-btn:active { transform: scale(0.98); }
+
+    /* ══════════════════════════════════════
+       EMPTY STATE
+    ══════════════════════════════════════ */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: clamp(40px, 12vw, 80px) 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      animation: cardIn 0.4s ease;
+    }
+    .empty-state-icon { font-size: 3.5rem; animation: float 2s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)} }
+    .empty-state-text { font-size: 1.1rem; font-weight: 800; color: var(--t2); }
+    .empty-state-sub { font-size: 0.88rem; color: var(--t3); font-weight: 600; }
+
+    /* ══════════════════════════════════════
+       DETAIL PAGE
+    ══════════════════════════════════════ */
+    .detail-page {
+      position: fixed; inset: 0; z-index: 700;
+      background: var(--bg);
+      transform: translateX(100%);
+      transition: transform 0.38s cubic-bezier(0.32,0.72,0,1);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .detail-page.open { transform: translateX(0); }
+
+    .dp-header {
+      background: linear-gradient(135deg, var(--g1) 0%, var(--g2) 100%);
+      padding: 0 clamp(12px, 4vw, 20px);
+      height: 58px;
+      display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .dp-back-btn {
+      background: rgba(255,255,255,0.12); border: none; border-radius: 8px;
+      width: 36px; height: 36px; color: #fff; font-size: 1.2rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition); flex-shrink: 0;
+    }
+    .dp-back-btn:hover { background: rgba(255,255,255,0.22); }
+    .dp-header-name { flex: 1; font-size: clamp(0.88rem, 3vw, 1.05rem); font-weight: 900; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dp-header-cat { background: var(--o2); color: #fff; font-size: 0.72rem; font-weight: 800; padding: 4px 10px; border-radius: 20px; flex-shrink: 0; }
+
+    .dp-body { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 90px; -webkit-overflow-scrolling: touch; }
+
+    .dp-hero {
+      background: linear-gradient(160deg, var(--g1) 0%, var(--g3) 100%);
+      padding: clamp(16px, 5vw, 28px);
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    @media(min-width: 600px) { .dp-hero { flex-direction: row; align-items: flex-start; } }
+    .dp-hero-bottle {
+      flex-shrink: 0; background: rgba(255,255,255,0.1); border-radius: 14px;
+      width: 90px; height: 115px; display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .dp-hero-info { flex: 1; text-align: center; }
+    @media(min-width: 600px) { .dp-hero-info { text-align: left; } }
+    .dp-hero-name { font-size: clamp(1.2rem, 4vw, 1.6rem); font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 4px; }
+    .dp-hero-mfr { font-size: 0.8rem; color: rgba(255,255,255,0.65); font-weight: 600; margin-bottom: 10px; }
+    .dp-hero-badges { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+    @media(min-width: 600px) { .dp-hero-badges { justify-content: flex-start; } }
+    .dp-badge { background: rgba(255,255,255,0.15); color: #fff; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.25); }
+    .dp-badge.orange { background: var(--o2); border-color: transparent; }
+
+    .dp-tabs {
+      display: flex; gap: 0; background: #fff;
+      border-bottom: 2px solid #e5ede5;
+      position: sticky; top: 0; z-index: 10;
+      overflow-x: auto; overflow-y: hidden;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }
+    .dp-tabs::-webkit-scrollbar { display: none; }
+    .dp-tab {
+      padding: 13px 16px; font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.82rem; font-weight: 800;
+      color: var(--t3); border: none; background: none;
+      cursor: pointer; white-space: nowrap;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .dp-tab.active { color: var(--g2); border-bottom-color: var(--g5); }
+    .dp-tab:hover:not(.active) { color: var(--g3); }
+
+    .dp-panel { display: none; padding: clamp(14px, 4vw, 20px); }
+    .dp-panel.active { display: block; }
+
+    .dp-section { margin-bottom: 18px; }
+    .dp-section-title {
+      font-size: 0.72rem; font-weight: 900; color: var(--g3);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+    }
+    .dp-section-title::after { content: ''; flex: 1; height: 1.5px; background: var(--g-border); border-radius: 2px; }
+
+    .dp-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .dp-info-cell { background: #fff; border-radius: 10px; padding: 10px 12px; border: 1.5px solid #eaeee9; }
+    .dp-info-cell-label { font-size: 0.68rem; font-weight: 800; color: var(--t3); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
+    .dp-info-cell-val { font-size: 0.9rem; font-weight: 800; color: var(--t1); }
+
+    .dp-desc { font-size: 0.9rem; font-weight: 500; color: var(--t2); line-height: 1.75; background: #fff; border-radius: 10px; padding: 14px; border: 1.5px solid #eaeee9; }
+    .dp-crops { display: flex; flex-wrap: wrap; gap: 6px; }
+    .dp-crop-chip { background: var(--g-pale); border: 1.5px solid var(--g-border); border-radius: 16px; padding: 5px 12px; font-size: 0.82rem; font-weight: 700; color: var(--g2); }
+
+    .dosage-card { background: linear-gradient(135deg, var(--g-pale), #fff); border: 2px solid var(--g-border); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 14px; }
+    .dosage-icon { font-size: 2.4rem; flex-shrink: 0; }
+    .dosage-text-big { font-size: clamp(1.1rem, 4vw, 1.4rem); font-weight: 900; color: var(--g2); }
+    .dosage-text-sub { font-size: 0.78rem; font-weight: 600; color: var(--t2); margin-top: 2px; }
+
+    .mixing-steps { display: flex; flex-direction: column; gap: 8px; }
+    .mixing-step { display: flex; align-items: center; gap: 12px; background: #fff; border-radius: 10px; padding: 11px 14px; border: 1.5px solid #eaeee9; }
+    .mixing-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--g2); color: #fff; font-size: 0.82rem; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .mixing-step-text { font-size: 0.88rem; font-weight: 700; color: var(--t1); }
+
+    .ingredients-list { display: flex; flex-direction: column; gap: 7px; }
+    .ingredient-row { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 10px; padding: 11px 14px; border: 1.5px solid #eaeee9; }
+    .ingredient-icon { font-size: 1.2rem; }
+    .ingredient-name { flex: 1; font-size: 0.88rem; font-weight: 700; color: var(--t1); }
+    .ingredient-pct { font-size: 0.9rem; font-weight: 900; color: var(--o2); background: var(--o-pale); padding: 3px 10px; border-radius: 16px; }
+
+    .dp-warning { background: #fff8f0; border: 2px solid #f0c080; border-radius: 10px; padding: 14px 16px; font-size: 0.85rem; font-weight: 600; color: #7a4a00; line-height: 1.65; display: flex; gap: 8px; align-items: flex-start; }
+
+    /* ══════════════════════════════════════
+       STICKY BUY BAR
+    ══════════════════════════════════════ */
+    .dp-buy-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #fff; border-top: 1.5px solid #e5ede5;
+      padding: 10px clamp(12px, 4vw, 20px);
+      display: flex; gap: 12px; align-items: center;
+      z-index: 800;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    }
+    .dp-buy-bar.show { transform: translateY(0); }
+    .dp-buy-price { flex: 1; min-width: 0; }
+    .dp-buy-price-label { font-size: 0.7rem; font-weight: 600; color: var(--t3); }
+    .dp-buy-price-val { font-size: 1.15rem; font-weight: 900; color: var(--g2); }
+    .dp-buy-btn { background: var(--o2); color: #fff; border: none; border-radius: 12px; padding: 12px clamp(18px, 5vw, 28px); font-family: 'Noto Sans Devanagari', sans-serif; font-size: 0.95rem; font-weight: 900; cursor: pointer; transition: background var(--transition), transform 0.1s; white-space: nowrap; flex-shrink: 0; }
+    .dp-buy-btn:hover { background: var(--o1); }
+    .dp-buy-btn:active { transform: scale(0.97); }
+
+    /* ══════════════════════════════════════
+       QTY SHEET
+    ══════════════════════════════════════ */
+    .qty-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 900; align-items: flex-end; justify-content: center; }
+    .qty-overlay.show { display: flex; }
+    .qty-sheet { background: #fff; border-radius: 22px 22px 0 0; width: 100%; max-width: 520px; padding: 0 0 env(safe-area-inset-bottom, 24px); box-shadow: 0 -8px 40px rgba(0,0,0,0.2); animation: sheetUp 0.32s cubic-bezier(0.34,1.1,0.64,1); max-height: 90vh; overflow-y: auto; }
+    @keyframes sheetUp { from{transform:translateY(100%);opacity:0.5}to{transform:translateY(0);opacity:1} }
+    .sheet-handle { width: 40px; height: 4px; background: #dde; border-radius: 2px; margin: 12px auto 0; }
+    .sheet-product-preview { display: flex; align-items: center; gap: 12px; padding: 16px 20px 14px; border-bottom: 1px solid #f3f3f3; }
+    .sheet-thumb { width: 58px; height: 58px; border-radius: 10px; background: #f0f8f0; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; flex-shrink: 0; }
+    .sheet-product-name { font-size: 1rem; font-weight: 900; color: var(--t1); margin-bottom: 3px; }
+    .sheet-product-price { font-size: 0.88rem; font-weight: 700; color: var(--g3); }
+    .sheet-question { padding: 16px 20px 6px; font-size: 1.05rem; font-weight: 900; color: var(--t1); }
+    .sheet-hint { padding: 0 20px 12px; font-size: 0.82rem; font-weight: 600; color: var(--t3); }
+
+    .pkg-options { display: flex; flex-direction: column; margin: 0 20px; border: 1.5px solid #e8e8e8; border-radius: 12px; overflow: hidden; }
+    .pkg-option { display: flex; align-items: center; gap: 12px; padding: 13px 14px; cursor: pointer; transition: background var(--transition); border-bottom: 1px solid #f3f3f3; position: relative; }
+    .pkg-option:last-child { border-bottom: none; }
+    .pkg-option:hover { background: var(--g-pale); }
+    .pkg-option.selected { background: #f0faf0; }
+    .pkg-radio { width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color var(--transition); }
+    .pkg-option.selected .pkg-radio { border-color: var(--g5); }
+    .pkg-radio-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--g5); display: none; }
+    .pkg-option.selected .pkg-radio-dot { display: block; }
+    .pkg-info { flex: 1; }
+    .pkg-label { font-size: 0.95rem; font-weight: 800; color: var(--t1); }
+    .pkg-desc { font-size: 0.76rem; font-weight: 600; color: var(--t3); margin-top: 1px; }
+    .pkg-price { font-size: 0.95rem; font-weight: 900; color: var(--g2); }
+
+    .qty-stepper-row { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 0; }
+    .qty-label { font-size: 0.95rem; font-weight: 800; color: var(--t1); }
+    .qty-stepper { display: flex; align-items: center; border: 2px solid var(--g2); border-radius: 10px; overflow: hidden; }
+    .qty-step-btn { width: 44px; height: 44px; background: var(--g2); color: #fff; border: none; cursor: pointer; font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: background var(--transition); }
+    .qty-step-btn:hover { background: var(--g3); }
+    .qty-step-btn:active { background: var(--g4); }
+    .qty-num { min-width: 48px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; font-weight: 900; color: var(--t1); background: #fff; }
+
+    .sheet-total-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 0; border-top: 1.5px dashed #e5e5e5; margin-top: 14px; }
+    .sheet-total-label { font-size: 0.95rem; font-weight: 700; color: var(--t2); }
+    .sheet-total-amt { font-size: 1.15rem; font-weight: 900; color: var(--g2); }
+    .sheet-add-btn { margin: 14px 20px; width: calc(100% - 40px); background: var(--o2); color: #fff; border: none; border-radius: 12px; padding: 14px; font-family: 'Noto Sans Devanagari', sans-serif; font-size: 1rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background var(--transition), transform 0.1s; letter-spacing: 0.3px; }
+    .sheet-add-btn:hover { background: var(--o1); }
+    .sheet-add-btn:active { transform: scale(0.98); }
+
+    /* ══════════════════════════════════════
+       CART PANEL
+    ══════════════════════════════════════ */
+    .cart-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 400; justify-content: flex-end; }
+    .cart-overlay.show { display: flex; }
+    .cart-panel { background: #fff; width: min(380px, 100vw); height: 100%; display: flex; flex-direction: column; box-shadow: -6px 0 30px rgba(0,0,0,0.15); animation: slideRight 0.28s ease; }
+    @keyframes slideRight { from{transform:translateX(100%)}to{transform:translateX(0)} }
+    .cart-header { background: linear-gradient(135deg, var(--g1), var(--g2)); padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .cart-header-title { font-size: 1.1rem; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 8px; }
+    .cart-close-btn { background: rgba(255,255,255,0.15); border: none; color: #fff; font-size: 1rem; cursor: pointer; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: background var(--transition); }
+    .cart-close-btn:hover { background: rgba(255,255,255,0.25); }
+    .cart-items-list { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; -webkit-overflow-scrolling: touch; }
+    .cart-item { display: flex; align-items: center; gap: 10px; background: var(--bg); border-radius: 12px; padding: 10px 12px; border: 1.5px solid var(--g-border); }
+    .cart-item-thumb { width: 48px; height: 48px; border-radius: 8px; background: #f0f8f0; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; }
+    .cart-item-info { flex: 1; min-width: 0; }
+    .cart-item-name { font-size: 0.85rem; font-weight: 800; color: var(--t1); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cart-item-pkg { font-size: 0.74rem; font-weight: 600; color: var(--t3); }
+    .cart-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+    .cart-item-price { font-size: 0.9rem; font-weight: 900; color: var(--g2); }
+    .mini-stepper { display: flex; align-items: center; border: 1.5px solid var(--g2); border-radius: 7px; overflow: hidden; }
+    .mini-step { width: 28px; height: 28px; background: var(--g2); color: #fff; border: none; cursor: pointer; font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: background var(--transition); }
+    .mini-step:hover { background: var(--g3); }
+    .mini-num { width: 30px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 900; color: var(--t1); }
+    .cart-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--t3); gap: 10px; }
+    .cart-empty-icon { font-size: 3.5rem; animation: float 2s ease-in-out infinite; }
+    .cart-empty-text { font-size: 1rem; font-weight: 700; color: var(--t2); }
+    .cart-empty-sub { font-size: 0.82rem; font-weight: 600; color: var(--t3); text-align: center; max-width: 200px; }
+    .cart-footer { padding: 14px; border-top: 1.5px solid #eee; flex-shrink: 0; }
+    .cart-subtotal { display: flex; justify-content: space-between; font-size: 0.95rem; font-weight: 800; color: var(--t1); margin-bottom: 10px; padding: 10px 12px; background: var(--g-pale); border-radius: 8px; }
+    .checkout-btn { width: 100%; background: var(--o2); color: #fff; border: none; border-radius: 12px; padding: 13px; font-family: 'Noto Sans Devanagari', sans-serif; font-size: 0.95rem; font-weight: 900; cursor: pointer; transition: background var(--transition), transform 0.1s; }
+    .checkout-btn:hover { background: var(--o1); }
+    .checkout-btn:active { transform: scale(0.98); }
+
+    /* ══════════════════════════════════════
+       TOAST
+    ══════════════════════════════════════ */
+    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--g1); color: #fff; padding: 10px 22px; border-radius: 24px; font-size: 0.88rem; font-weight: 700; opacity: 0; transition: all 0.28s ease; z-index: 9999; pointer-events: none; white-space: nowrap; max-width: calc(100vw - 40px); overflow: hidden; text-overflow: ellipsis; box-shadow: 0 4px 20px rgba(0,0,0,0.22); }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer { background: var(--g2); color: rgba(255,255,255,0.7); text-align: center; padding: 12px; font-size: 0.82rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media(max-width: 320px) { .header-title-btn { font-size: 0.75rem; padding: 7px 10px; } .lang-pill { display: none; } }
+    @media(max-width: 480px) { .dp-info-grid { grid-template-columns: 1fr; } .dp-hero { padding: 18px 16px; } }
+    @media(min-width: 768px) { .cart-panel { width: 380px; } }
+
+    .product-card { transition: opacity 0.2s ease, transform 0.2s ease, box-shadow var(--transition); }
+    .product-card.fade-out { opacity: 0; transform: scale(0.97); }
+
+    /* ══════════════════════════════════════
+       ORDER SUMMARY FULL-SCREEN PAGE
+    ══════════════════════════════════════ */
+    .order-page {
+      position: fixed; inset: 0; z-index: 1000;
+      background: var(--bg);
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.32,0.72,0,1);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .order-page.open { transform: translateX(0); }
+
+    /* Order Page Header */
+    .op-header {
+      background: linear-gradient(135deg, var(--g1) 0%, var(--g2) 60%, var(--g3) 100%);
+      padding: 0 clamp(12px,4vw,20px);
+      height: 64px; flex-shrink: 0;
+      display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 3px 16px rgba(0,0,0,0.3);
+    }
+    .op-header-leaf {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: 2px solid rgba(255,255,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+      cursor: pointer; transition: background var(--transition);
+    }
+    .op-header-leaf:hover { background: rgba(255,255,255,0.22); }
+    .op-header-center {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    }
+    .op-header-cart-row {
+      display: flex; align-items: center; gap: 7px;
+    }
+    .op-header-cart-icon { font-size: 1.3rem; }
+    .op-header-title { font-size: clamp(1rem,3.5vw,1.2rem); font-weight: 900; color: #fff; letter-spacing: 0.3px; }
+    .op-header-shop { font-size: 0.72rem; font-weight: 700; color: rgba(255,255,255,0.75); letter-spacing: 0.4px; }
+    .op-header-close {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.2);
+      color: #fff; font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition); flex-shrink: 0;
+    }
+    .op-header-close:hover { background: rgba(255,255,255,0.25); }
+
+    /* Order Page Body */
+    .op-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+    /* Stats bar */
+    .op-stats {
+      background: #fff; border-bottom: 1.5px solid #e8f0e8;
+      padding: 12px clamp(12px,4vw,20px);
+      display: flex; gap: 16px; align-items: center;
+    }
+    .op-stats-title { font-size: 0.88rem; font-weight: 900; color: var(--t1); flex: 1; }
+    .op-stat-chip {
+      background: var(--g-pale); border: 1.5px solid var(--g-border);
+      border-radius: 20px; padding: 4px 12px;
+      font-size: 0.78rem; font-weight: 800; color: var(--g2);
+      display: flex; align-items: center; gap: 4px; white-space: nowrap;
+    }
+
+    /* Main content area with wheat illustration */
+    .op-content-wrap {
+      display: flex; gap: 0; position: relative;
+      min-height: 300px;
+    }
+    .op-medicines-col {
+      flex: 1; padding: clamp(12px,4vw,20px);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .op-wheat-col {
+      width: clamp(90px,20vw,140px);
+      flex-shrink: 0; display: flex; align-items: flex-start; justify-content: center;
+      padding-top: 20px; padding-right: 10px;
+    }
+    @media(max-width:480px) { .op-wheat-col { width: 70px; } }
+
+    /* Medicine Card */
+    .op-med-card {
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
+      display: flex; align-items: stretch; overflow: hidden;
+      animation: cardIn 0.3s ease both;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .op-med-card:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+    .op-med-strip {
+      width: 6px; flex-shrink: 0;
+    }
+    .op-med-body { flex: 1; padding: 12px 10px 12px 14px; min-width: 0; }
+    .op-med-name {
+      font-size: clamp(0.88rem,2.5vw,1rem); font-weight: 900; color: var(--t1);
+      line-height: 1.2; margin-bottom: 2px;
+    }
+    .op-med-dosage { font-size: 0.74rem; font-weight: 600; color: var(--t3); margin-bottom: 8px; }
+    .op-med-pkg { font-size: 0.76rem; font-weight: 700; color: var(--g3); margin-bottom: 6px; }
+    .op-med-controls {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .op-qty-btn {
+      background: var(--g2); color: #fff; border: none;
+      border-radius: 7px; padding: 5px 10px;
+      font-size: 0.75rem; font-weight: 800;
+      cursor: pointer; font-family: 'Noto Sans Devanagari', sans-serif;
+      transition: background var(--transition), transform 0.1s;
+      display: flex; align-items: center; gap: 3px; white-space: nowrap;
+    }
+    .op-qty-btn:hover { background: var(--g3); }
+    .op-qty-btn:active { transform: scale(0.95); }
+    .op-qty-btn.minus { background: #6d4c41; }
+    .op-qty-btn.minus:hover { background: #5d4037; }
+    .op-qty-display {
+      background: var(--g-pale); border: 2px solid var(--g-border);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 0.78rem; font-weight: 900; color: var(--g2);
+      text-align: center; white-space: nowrap;
+    }
+    .op-med-right {
+      display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between;
+      padding: 12px 12px 12px 6px; flex-shrink: 0;
+    }
+    .op-med-price { font-size: 0.9rem; font-weight: 900; color: var(--g2); }
+    .op-med-total { font-size: 0.78rem; color: var(--t3); font-weight: 600; }
+    .op-remove-btn {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: #ffebee; border: 2px solid #ffcdd2;
+      color: var(--r); font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition), transform 0.15s;
+      margin-top: 6px; flex-shrink: 0;
+    }
+    .op-remove-btn:hover { background: #ffcdd2; transform: scale(1.1); }
+    .op-remove-btn:active { transform: scale(0.9); }
+
+    /* Empty state for order page */
+    .op-empty {
+      text-align: center; padding: 60px 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+    }
+    .op-empty-icon { font-size: 4rem; animation: float 2.5s ease-in-out infinite; }
+    .op-empty-text { font-size: 1.1rem; font-weight: 800; color: var(--t2); }
+    .op-empty-sub { font-size: 0.88rem; color: var(--t3); font-weight: 600; }
+    .op-empty-btn {
+      background: var(--g2); color: #fff; border: none;
+      border-radius: 12px; padding: 12px 24px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.95rem; font-weight: 900; cursor: pointer;
+      transition: background var(--transition);
+    }
+    .op-empty-btn:hover { background: var(--g3); }
+
+    /* Delivery Address Section */
+    .op-delivery-section {
+      margin: 0 clamp(12px,4vw,20px) 14px;
+      background: linear-gradient(135deg, #e8f5e9, #f1faf1);
+      border: 2.5px solid var(--g-border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .op-delivery-header {
+      padding: 16px 18px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 10px;
+      transition: background var(--transition);
+      user-select: none;
+    }
+    .op-delivery-header:hover { background: rgba(76,175,80,0.08); }
+    .op-delivery-header-text {
+      flex: 1; font-size: clamp(0.92rem,2.5vw,1rem);
+      font-weight: 900; color: var(--g2);
+    }
+    .op-delivery-arrow {
+      font-size: 1rem; color: var(--g3);
+      transition: transform 0.25s ease;
+    }
+    .op-delivery-section.expanded .op-delivery-arrow { transform: rotate(180deg); }
+
+    .op-address-form {
+      display: none; padding: 0 18px 18px;
+      flex-direction: column; gap: 10px;
+    }
+    .op-delivery-section.expanded .op-address-form { display: flex; }
+    .op-form-field {
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    .op-form-label {
+      font-size: 0.75rem; font-weight: 800; color: var(--g2); letter-spacing: 0.3px;
+    }
+    .op-form-input {
+      background: #fff; border: 2px solid var(--g-border);
+      border-radius: 10px; padding: 10px 14px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.9rem; font-weight: 600; color: var(--t1);
+      outline: none; transition: border-color var(--transition);
+    }
+    .op-form-input:focus { border-color: var(--g5); }
+    .op-form-input::placeholder { color: var(--t4); }
+    .op-address-save-btn {
+      background: var(--g2); color: #fff; border: none;
+      border-radius: 12px; padding: 12px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.95rem; font-weight: 900; cursor: pointer;
+      transition: background var(--transition), transform 0.1s;
+      margin-top: 4px;
+    }
+    .op-address-save-btn:hover { background: var(--g3); }
+    .op-address-save-btn:active { transform: scale(0.98); }
+    .op-address-saved-badge {
+      background: #e8f5e9; border: 1.5px solid var(--g-border);
+      border-radius: 8px; padding: 8px 14px;
+      font-size: 0.82rem; font-weight: 700; color: var(--g2);
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    /* Payment Section */
+    .op-payment-section {
+      margin: 0 clamp(12px,4vw,20px) 14px;
+      background: linear-gradient(135deg, #fff8e1, #fffde7);
+      border: 2.5px solid #f9cc4a;
+      border-radius: 16px; overflow: hidden;
+    }
+    .op-payment-header {
+      padding: 18px; cursor: pointer;
+      display: flex; align-items: center; gap: 12px;
+      transition: background var(--transition);
+    }
+    .op-payment-header:hover { background: rgba(249,204,74,0.15); }
+    .op-payment-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .op-payment-text {
+      flex: 1; font-size: clamp(0.95rem,2.8vw,1.05rem);
+      font-weight: 900; color: #7a5c00;
+    }
+    .op-payment-total-chip {
+      background: #f9cc4a; color: #5a3e00;
+      border-radius: 20px; padding: 5px 14px;
+      font-size: 0.9rem; font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    /* Payment Modal */
+    .payment-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 1200;
+      align-items: flex-end; justify-content: center;
+    }
+    .payment-overlay.show { display: flex; }
+    .payment-sheet {
+      background: #fff; border-radius: 22px 22px 0 0;
+      width: 100%; max-width: 520px;
+      padding: 0 0 env(safe-area-inset-bottom,24px);
+      animation: sheetUp 0.32s cubic-bezier(0.34,1.1,0.64,1);
+      max-height: 85vh; overflow-y: auto;
+    }
+    .payment-sheet-handle { width: 40px; height: 4px; background: #dde; border-radius: 2px; margin: 12px auto 0; }
+    .payment-sheet-header {
+      padding: 16px 20px; border-bottom: 1.5px solid #f0f0f0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .payment-sheet-title { font-size: 1.05rem; font-weight: 900; color: var(--t1); }
+    .payment-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--t3); padding: 4px 8px; }
+    .payment-total-box {
+      margin: 16px 20px; background: linear-gradient(135deg, var(--g1), var(--g2));
+      border-radius: 14px; padding: 18px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .payment-total-label { font-size: 0.88rem; font-weight: 700; color: rgba(255,255,255,0.75); }
+    .payment-total-amt { font-size: 1.8rem; font-weight: 900; color: #fff; }
+    .payment-methods { padding: 0 20px 16px; }
+    .payment-method-title { font-size: 0.78rem; font-weight: 900; color: var(--t3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .payment-method-btn {
+      width: 100%; background: #fff; border: 2px solid #e5ede5;
+      border-radius: 12px; padding: 14px 18px; margin-bottom: 8px;
+      cursor: pointer; display: flex; align-items: center; gap: 12px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .payment-method-btn:hover { border-color: var(--g5); background: #f9fdf9; }
+    .payment-method-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .payment-method-name { font-size: 0.95rem; font-weight: 800; color: var(--t1); }
+    .payment-method-desc { font-size: 0.75rem; color: var(--t3); font-weight: 600; }
+    .payment-confirm-btn {
+      margin: 0 20px 20px; width: calc(100% - 40px);
+      background: linear-gradient(135deg, #f9cc4a, #f0a800);
+      color: #5a3e00; border: none; border-radius: 14px;
+      padding: 16px; font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 1rem; font-weight: 900; cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(249,204,74,0.4);
+    }
+    .payment-confirm-btn:hover { box-shadow: 0 6px 28px rgba(249,204,74,0.55); }
+    .payment-confirm-btn:active { transform: scale(0.98); }
+
+    /* Order Page Footer */
+    .op-footer {
+      background: var(--g2); color: rgba(255,255,255,0.7);
+      text-align: center; padding: 10px;
+      font-size: 0.78rem; font-weight: 500; flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+       ORDER SUMMARY PAGE — PREMIUM REDESIGN
+    ══════════════════════════════════════ */
+    .summary-page {
+      position: fixed; inset: 0; z-index: 1100;
+      background: #f0f6f0;
+      transform: translateX(100%);
+      transition: transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      will-change: transform;
+    }
+    .summary-page.open {
+      transform: translateX(0);
+    }
+    /* Stagger card animations when page opens */
+    .summary-page.open .sum-card,
+    .summary-page.open .sum-delivery-card,
+    .summary-page.open .sum-customer-card,
+    .summary-page.open .sum-grand-total-card {
+      animation: sumCardIn 0.45s cubic-bezier(0.34,1.1,0.64,1) both;
+    }
+    @keyframes sumCardIn {
+      from { opacity: 0; transform: translateY(26px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── Premium Sticky Header ── */
+    .sum-header {
+      background: linear-gradient(135deg, #081f0e 0%, #0d3318 40%, #1a5222 80%, #236829 100%);
+      flex-shrink: 0;
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+    }
+    /* Subtle noise texture overlay */
+    .sum-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; border-radius: inherit;
+    }
+
+    .sum-header-top {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px clamp(14px,4vw,20px) 12px;
+      position: relative; z-index: 1;
+    }
+    .sum-back-btn {
+      background: rgba(255,255,255,0.13); border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 22px; padding: 9px 16px; color: #fff;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.88rem; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: background var(--transition), transform 0.1s;
+      flex-shrink: 0; min-height: 44px;
+    }
+    .sum-back-btn:hover { background: rgba(255,255,255,0.22); }
+    .sum-back-btn:active { transform: scale(0.95); }
+
+    .sum-header-title {
+      flex: 1; text-align: center;
+      font-size: clamp(1rem,3.5vw,1.15rem); font-weight: 900; color: #fff;
+      letter-spacing: 0.3px;
+    }
+    .sum-header-close {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.18);
+      color: #fff; font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background var(--transition), transform 0.1s;
+    }
+    .sum-header-close:hover { background: rgba(255,255,255,0.22); }
+    .sum-header-close:active { transform: scale(0.92); }
+
+    /* Progress Steps Bar */
+    .sum-steps-bar {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; padding: 10px clamp(14px,4vw,20px) 14px;
+      position: relative; z-index: 1;
+    }
+    .sum-step {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .sum-step-circle {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 900;
+      flex-shrink: 0;
+    }
+    .sum-step.done .sum-step-circle {
+      background: #4caf50; color: #fff;
+      box-shadow: 0 0 0 3px rgba(76,175,80,0.3);
+    }
+    .sum-step.active .sum-step-circle {
+      background: #f9cc4a; color: #5a3e00;
+      box-shadow: 0 0 0 3px rgba(249,204,74,0.3);
+    }
+    .sum-step-label {
+      font-size: 0.72rem; font-weight: 700;
+      color: rgba(255,255,255,0.75);
+      white-space: nowrap;
+    }
+    .sum-step.done .sum-step-label { color: #81c784; }
+    .sum-step.active .sum-step-label { color: #f9cc4a; }
+    .sum-step-line {
+      flex: 1; height: 2px; min-width: 20px; max-width: 40px;
+      background: rgba(255,255,255,0.2); margin: 0 8px;
+      position: relative;
+    }
+    .sum-step-line.done { background: rgba(76,175,80,0.5); }
+
+    /* ── Order Info Banner ── */
+    .sum-success-banner {
+      background: rgba(255,255,255,0.08);
+      border-top: 1px solid rgba(255,255,255,0.12);
+      border-bottom: none;
+      padding: 14px clamp(14px,4vw,20px) 18px;
+      display: flex; gap: 14px; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .sum-check-circle {
+      width: 50px; height: 50px; border-radius: 50%;
+      background: linear-gradient(135deg, #43a047, #2e7d32);
+      border: 3px solid rgba(255,255,255,0.35);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .sum-success-text { flex: 1; min-width: 0; }
+    .sum-success-title {
+      font-size: clamp(0.92rem,2.8vw,1.05rem); font-weight: 900; color: #fff;
+      margin-bottom: 7px; line-height: 1.3;
+    }
+    .sum-meta-row {
+      display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 5px;
+    }
+    .sum-meta-chip {
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px; padding: 4px 10px;
+      font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.88);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .sum-addr-line {
+      font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.7);
+      margin-top: 4px; line-height: 1.45;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* ── Body ── */
+    .sum-body {
+      flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      padding: clamp(14px,4vw,20px);
+      display: flex; flex-direction: column; gap: 14px;
+      padding-bottom: 120px;
+    }
+
+    /* ── Section Cards — premium rounded with shadow ── */
+    .sum-card {
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .sum-card-header {
+      padding: 16px 18px 13px;
+      border-bottom: 1.5px solid #eef4ee;
+      display: flex; align-items: center; gap: 10px;
+      background: linear-gradient(to bottom, #fafffe, #fff);
+    }
+    .sum-card-icon-wrap {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--g-pale); border: 1.5px solid var(--g-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .sum-card-title {
+      font-size: 0.96rem; font-weight: 900; color: var(--g1);
+      flex: 1; letter-spacing: 0.2px;
+    }
+    .sum-item-count {
+      background: var(--g2); color: #fff;
+      border-radius: 20px; padding: 3px 11px;
+      font-size: 0.72rem; font-weight: 800;
+    }
+
+    /* ── Medicine Rows ── */
+    .sum-med-row {
+      display: flex; align-items: stretch; border-bottom: 1px solid #f5f7f5;
+      transition: background 0.12s ease;
+    }
+    .sum-med-row:last-child { border-bottom: none; }
+    .sum-med-row:active { background: #f9fdf9; }
+    .sum-med-stripe { width: 5px; flex-shrink: 0; border-radius: 0; }
+    .sum-med-info { flex: 1; padding: 14px 12px 14px 16px; min-width: 0; }
+    .sum-med-name {
+      font-size: 0.96rem; font-weight: 900; color: var(--t1);
+      margin-bottom: 3px; line-height: 1.25;
+    }
+    .sum-med-sub {
+      font-size: 0.73rem; font-weight: 600; color: var(--t3);
+      margin-bottom: 6px;
+    }
+    .sum-med-qty-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--g-pale); border: 1px solid var(--g-border);
+      border-radius: 8px; padding: 3px 9px;
+      font-size: 0.71rem; font-weight: 800; color: var(--g2);
+    }
+    .sum-med-price-col {
+      display: flex; flex-direction: column; align-items: flex-end;
+      justify-content: center; padding: 14px 18px 14px 6px;
+      flex-shrink: 0; min-width: 80px;
+    }
+    .sum-med-unit-price {
+      font-size: 0.7rem; color: var(--t3); font-weight: 600; margin-bottom: 3px;
+    }
+    .sum-med-total-price {
+      font-size: 1.05rem; font-weight: 900; color: var(--g2);
+    }
+
+    /* ── Charges Breakdown ── */
+    .sum-charge-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 20px;
+      border-bottom: 1px solid #f5f7f5;
+    }
+    .sum-charge-row:last-child { border-bottom: none; }
+    .sum-charge-row.total-row {
+      background: linear-gradient(135deg, #081f0e, #0d3318, #1a5222);
+      padding: 18px 20px;
+      margin: 0;
+    }
+    .sum-charge-label {
+      font-size: 0.88rem; font-weight: 700; color: var(--t2);
+      display: flex; align-items: center; gap: 7px;
+    }
+    .sum-charge-label.total { font-size: 1.05rem; font-weight: 900; color: rgba(255,255,255,0.88); }
+    .sum-charge-val {
+      font-size: 0.92rem; font-weight: 800; color: var(--t1);
+    }
+    .sum-charge-val.green { color: #2e7d32; font-weight: 900; }
+    .sum-charge-val.total { font-size: 1.55rem; font-weight: 900; color: #f9cc4a; letter-spacing: -0.5px; }
+    .sum-divider {
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, #e0e8e0, transparent);
+      margin: 2px 20px;
+    }
+
+    /* ── Delivery Details Card Premium ── */
+    .sum-delivery-card {
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.03);
+      overflow: hidden; border: 1px solid rgba(0,0,0,0.04);
+    }
+    .sum-delivery-card-header {
+      padding: 16px 18px;
+      background: linear-gradient(135deg, #e8f5e9, #f1faf1);
+      border-bottom: 1.5px solid #d4ecd4;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sum-delivery-icon-box {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--g2); display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0; color: #fff;
+    }
+    .sum-delivery-info { flex: 1; }
+    .sum-delivery-title { font-size: 0.94rem; font-weight: 900; color: var(--g1); }
+    .sum-delivery-sub { font-size: 0.72rem; font-weight: 600; color: var(--g3); margin-top: 1px; }
+    .sum-delivery-addr-preview {
+      padding: 14px 18px;
+      font-size: 0.88rem; font-weight: 600; color: var(--t2);
+      line-height: 1.55; display: flex; align-items: flex-start; gap: 8px;
+    }
+    .sum-delivery-addr-preview span { flex: 1; }
+
+    /* ── Grand Total Premium Card ── */
+    .sum-grand-total-card {
+      background: linear-gradient(135deg, #0d6e1e, #1a8f2d, #2aaa3e);
+      border-radius: 22px;
+      box-shadow: 0 8px 32px rgba(13,110,30,0.35), 0 2px 8px rgba(0,0,0,0.12);
+      overflow: hidden;
+      border: none;
+      position: relative;
+    }
+    .sum-grand-total-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .sum-grand-total-inner {
+      padding: 22px 22px 20px;
+      position: relative; z-index: 1;
+    }
+    .sum-grand-total-label {
+      font-size: 0.82rem; font-weight: 700;
+      color: rgba(255,255,255,0.8);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .sum-grand-total-amount {
+      font-size: 2.6rem; font-weight: 900; color: #fff;
+      letter-spacing: -1px; line-height: 1;
+      margin-bottom: 12px;
+    }
+    .sum-grand-total-amount span {
+      font-size: 1.4rem; font-weight: 700; letter-spacing: 0;
+    }
+    .sum-grand-total-chips {
+      display: flex; flex-wrap: wrap; gap: 7px;
+    }
+    .sum-grand-chip {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px; padding: 5px 12px;
+      font-size: 0.73rem; font-weight: 700;
+      color: rgba(255,255,255,0.92);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .sum-grand-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.18);
+      margin: 0 22px;
+    }
+    .sum-grand-breakdown {
+      padding: 14px 22px 18px;
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .sum-grand-breakdown-row {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sum-grand-breakdown-label {
+      font-size: 0.83rem; font-weight: 600;
+      color: rgba(255,255,255,0.72);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .sum-grand-breakdown-val {
+      font-size: 0.9rem; font-weight: 800;
+      color: rgba(255,255,255,0.9);
+    }
+    .sum-grand-breakdown-val.free {
+      color: #a8ffb8; font-weight: 900;
+    }
+
+    /* ── Enhanced Card Styles ── */
+    .sum-card {
+      background: #fff; border-radius: 22px;
+      box-shadow: 0 6px 28px rgba(0,0,0,0.09), 0 1px 4px rgba(0,0,0,0.04);
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .sum-card-header {
+      padding: 18px 20px 15px;
+      border-bottom: 1.5px solid #eef4ee;
+      display: flex; align-items: center; gap: 12px;
+      background: linear-gradient(to bottom, #fafffe, #fff);
+    }
+    .sum-card-icon-wrap {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--g-pale); border: 1.5px solid var(--g-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .sum-card-title {
+      font-size: 1.05rem; font-weight: 900; color: var(--g1);
+      flex: 1; letter-spacing: 0.2px;
+    }
+    .sum-item-count {
+      background: var(--g2); color: #fff;
+      border-radius: 20px; padding: 4px 13px;
+      font-size: 0.75rem; font-weight: 800;
+    }
+
+    /* ── Enhanced Medicine Rows ── */
+    .sum-med-row {
+      display: flex; align-items: stretch; border-bottom: 1px solid #f0f5f0;
+      transition: background 0.12s ease;
+    }
+    .sum-med-row:last-child { border-bottom: none; }
+    .sum-med-row:active { background: #f4fdf4; }
+    .sum-med-stripe { width: 6px; flex-shrink: 0; border-radius: 0; }
+    .sum-med-info { flex: 1; padding: 16px 14px 16px 18px; min-width: 0; }
+    .sum-med-name {
+      font-size: 1.05rem; font-weight: 900; color: var(--t1);
+      margin-bottom: 4px; line-height: 1.25;
+    }
+    .sum-med-sub {
+      font-size: 0.8rem; font-weight: 600; color: var(--t3);
+      margin-bottom: 8px;
+    }
+    .sum-med-qty-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--g-pale); border: 1.5px solid var(--g-border);
+      border-radius: 10px; padding: 5px 12px;
+      font-size: 0.78rem; font-weight: 800; color: var(--g2);
+    }
+    .sum-med-price-col {
+      display: flex; flex-direction: column; align-items: flex-end;
+      justify-content: center; padding: 16px 20px 16px 8px;
+      flex-shrink: 0; min-width: 90px;
+    }
+    .sum-med-unit-price {
+      font-size: 0.74rem; color: var(--t3); font-weight: 600; margin-bottom: 4px;
+    }
+    .sum-med-total-price {
+      font-size: 1.15rem; font-weight: 900; color: var(--g2);
+    }
+
+    /* ── Enhanced Charges Breakdown ── */
+    .sum-charge-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 15px 22px;
+      border-bottom: 1px solid #f0f5f0;
+    }
+    .sum-charge-row:last-child { border-bottom: none; }
+    .sum-charge-label {
+      font-size: 0.92rem; font-weight: 700; color: var(--t2);
+      display: flex; align-items: center; gap: 7px;
+    }
+    .sum-charge-val {
+      font-size: 0.96rem; font-weight: 800; color: var(--t1);
+    }
+    .sum-charge-val.green { color: #1e7e34; font-weight: 900; }
+    .sum-divider {
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, #d8e8d8, transparent);
+      margin: 4px 22px;
+    }
+
+    /* ── Enhanced Delivery Card ── */
+    .sum-delivery-card {
+      background: #fff; border-radius: 22px;
+      box-shadow: 0 6px 28px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.03);
+      overflow: hidden; border: 1px solid rgba(0,0,0,0.04);
+    }
+    .sum-delivery-card-header {
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #e8f5e9, #f1faf1);
+      border-bottom: 1.5px solid #c8e6c9;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sum-delivery-icon-box {
+      width: 44px; height: 44px; border-radius: 13px;
+      background: var(--g2); display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0; color: #fff;
+      box-shadow: 0 3px 10px rgba(26,74,30,0.3);
+    }
+    .sum-delivery-info { flex: 1; }
+    .sum-delivery-title { font-size: 1rem; font-weight: 900; color: var(--g1); }
+    .sum-delivery-sub { font-size: 0.75rem; font-weight: 700; color: var(--g3); margin-top: 2px; }
+    .sum-delivery-addr-preview {
+      padding: 16px 20px 18px;
+      font-size: 0.95rem; font-weight: 600; color: var(--t2);
+      line-height: 1.6; display: flex; align-items: flex-start; gap: 10px;
+    }
+    .sum-delivery-addr-preview span { flex: 1; }
+
+    /* ── Customer Info Card ── */
+    .sum-customer-card {
+      background: #fff; border-radius: 22px;
+      box-shadow: 0 6px 28px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.03);
+      overflow: hidden; border: 1px solid rgba(0,0,0,0.04);
+    }
+    .sum-customer-header {
+      padding: 18px 20px;
+      background: linear-gradient(135deg, #e8f5e9, #f1faf1);
+      border-bottom: 1.5px solid #c8e6c9;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sum-customer-icon-box {
+      width: 44px; height: 44px; border-radius: 13px;
+      background: linear-gradient(135deg, #1a4a1e, #2e6b35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+      box-shadow: 0 3px 10px rgba(26,74,30,0.3);
+    }
+    .sum-customer-info-text { flex: 1; }
+    .sum-customer-title { font-size: 1rem; font-weight: 900; color: var(--g1); }
+    .sum-customer-sub { font-size: 0.75rem; font-weight: 700; color: var(--g3); margin-top: 2px; }
+    .sum-customer-body {
+      padding: 16px 20px 18px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .sum-customer-row {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sum-customer-row-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--g-pale); border: 1px solid var(--g-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .sum-customer-row-info { flex: 1; }
+    .sum-customer-row-label {
+      font-size: 0.72rem; font-weight: 700; color: var(--t3);
+      text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .sum-customer-row-val {
+      font-size: 0.95rem; font-weight: 800; color: var(--t1);
+      margin-top: 1px;
+    }
+
+    /* ── Sticky Bottom CTA ── */
+    .sum-sticky-footer {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 1110;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-top: 1.5px solid rgba(0,0,0,0.07);
+      padding: 14px clamp(14px,4vw,22px) env(safe-area-inset-bottom, 16px);
+      display: none;
+      animation: footerSlideUp 0.3s cubic-bezier(0.34,1.1,0.64,1) both;
+    }
+    @keyframes footerSlideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+    .summary-page.open .sum-sticky-footer { display: block; }
+    .sum-footer-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .sum-footer-amount {
+      flex: 0 0 auto;
+      
+    }
+    .sum-footer-label {
+      font-size: 0.72rem; font-weight: 700; color: var(--t3); margin-bottom: 2px;
+    }
+    .sum-footer-total {
+      font-size: 1.5rem; font-weight: 900; color: var(--g1);
+      letter-spacing: -0.5px;
+    }
+    .sum-pay-btn {
+      background: linear-gradient(135deg, #1a8f2d, #0d6e1e, #0a5518);
+       color: #fff; border: none; border-radius: 18px;
+       padding: 18px 60px;
+       font-family: 'Noto Sans Devanagari', sans-serif;
+       font-size: 1.2rem; font-weight: 900; cursor: pointer;
+       box-shadow: 0 6px 24px rgba(13,110,30,0.45), 0 2px 8px rgba(0,0,0,0.12);
+       transition: transform 0.1s, box-shadow 0.2s;
+       white-space: nowrap; min-height: 64px;
+       display: flex; align-items: center; gap: 8px;
+       width: 80%;
+       justify-content: center;
+    }
+    .sum-pay-btn:hover { box-shadow: 0 8px 32px rgba(13,110,30,0.6), 0 2px 8px rgba(0,0,0,0.1); }
+    .sum-pay-btn:active { transform: scale(0.96); box-shadow: 0 3px 12px rgba(13,110,30,0.35); }
+
+    /* Secure badge */
+    .sum-secure-badge {
+      text-align: center;
+      font-size: 0.72rem; color: var(--t3); font-weight: 600;
+      padding: 8px 0 2px;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+
+    /* Wheat decoration */
+    .sum-wheat-divider {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 2px 0; opacity: 0.4; pointer-events: none; flex-shrink: 0;
+    }
+    .sum-wheat-line {
+      flex: 1; height: 1.5px;
+      background: linear-gradient(90deg, transparent, #b8ddb9, transparent);
+    }
+
+    /* Remove animation */
+    @keyframes removeItem {
+      to { opacity: 0; transform: translateX(-20px) scaleY(0.8); max-height: 0; margin: 0; padding: 0; }
+    }
+    .op-med-card.removing {
+      animation: removeItem 0.3s ease forwards;
+      overflow: hidden;
+    }
+
+    /* Wheat SVG illustration */
+    .wheat-svg-wrap { position: sticky; top: 20px; }
+
+    /* ══════════════════════════════════════
+       BACK BUTTON IN QTY SHEET
+    ══════════════════════════════════════ */
+    .sheet-back-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--g2); color: #fff;
+      border: none; border-radius: 20px;
+      padding: 8px 16px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.88rem; font-weight: 800;
+      cursor: pointer; align-self: flex-start;
+      margin-bottom: 4px;
+      transition: background var(--transition), transform 0.12s;
+      flex-shrink: 0;
+    }
+    .sheet-back-btn:hover { background: var(--g3); }
+    .sheet-back-btn:active { transform: scale(0.96); }
+
+    /* Slide-down close animation */
+    @keyframes sheetSlideDown {
+      from { transform: translateY(0); opacity: 1; }
+      to   { transform: translateY(100%); opacity: 0; }
+    }
+    .qty-sheet.closing {
+      animation: sheetSlideDown 0.28s cubic-bezier(0.4,0,0.6,1) forwards;
+    }
+
+    /* ══════════════════════════════════════
+       SIMPLIFIED ADDRESS — single textarea
+    ══════════════════════════════════════ */
+    .op-form-textarea {
+      background: #fff; border: 2px solid var(--g-border);
+      border-radius: 12px; padding: 14px 16px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.95rem; font-weight: 600; color: var(--t1);
+      outline: none; transition: border-color var(--transition);
+      resize: none; min-height: 110px; width: 100%;
+      line-height: 1.6;
+    }
+    .op-form-textarea:focus { border-color: var(--g5); box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
+    .op-form-textarea::placeholder { color: var(--t4); }
+
+    /* Address warning */
+    .addr-warning {
+      display: none;
+      background: #fff3cd; border: 1.5px solid #ffc107;
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 0.85rem; font-weight: 700; color: #7a5c00;
+      text-align: center;
+    }
+    .addr-warning.show { display: block; }
+
+    /* ══════════════════════════════════════
+       PAYMENT SECTION — DISABLED STATE
+    ══════════════════════════════════════ */
+    .op-payment-section.payment-locked {
+      opacity: 0.45;
+      pointer-events: none;
+      filter: grayscale(0.4);
+      cursor: not-allowed;
+    }
+    .op-payment-section.payment-locked .op-payment-header {
+      cursor: not-allowed;
+    }
+    /* Golden glow when unlocked */
+    .op-payment-section.payment-unlocked {
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .op-payment-section.payment-unlocked:hover {
+      box-shadow: 0 0 0 3px rgba(249,204,74,0.5), 0 8px 24px rgba(249,204,74,0.3);
+    }
+
+    /* ══════════════════════════════════════
+       MOBILE UX
+    ══════════════════════════════════════ */
+    @media(max-width: 600px) {
+      .sheet-back-btn { font-size: 0.9rem; padding: 9px 18px; }
+      .op-form-textarea { min-height: 130px; font-size: 1rem; }
+      .op-payment-section { position: sticky; bottom: 0; z-index: 10; margin-bottom: 0; border-radius: 16px 16px 0 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <a href="page2_faslen.html" class="back-btn" style="margin-right:4px;">← वापस</a>
+    <div class="spray-dropdown-wrap">
+      <button class="header-title-btn" id="headerTitle" onclick="toggleSprayDropdown()">
+        📋 स्प्रे सूची <span class="arrow">▾</span>
+      </button>
+      <div class="spray-dropdown-panel" id="sprayDropdown">
+        <div class="spray-dropdown-header" id="sprayDropdownHeader">📋 स्प्रे की सूची</div>
+        <div id="sprayDropdownItems"></div>
+      </div>
+    </div>
+
+    <div class="header-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="दवाइयाँ खोजें" oninput="searchProducts(this.value)" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="आवाज़ से खोजें">🎙️</button>
+    </div>
+
+    <div class="header-actions">
+      <button class="cart-btn" onclick="openCart()">
+        <svg class="cart-icon-svg" viewBox="0 0 36 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="34" height="28" rx="3" stroke="white" stroke-width="2" fill="none"/>
+          <line x1="1" y1="10" x2="35" y2="10" stroke="white" stroke-width="1.5"/>
+          <line x1="1" y1="19" x2="35" y2="19" stroke="white" stroke-width="1.5"/>
+          <line x1="13" y1="1" x2="13" y2="29" stroke="white" stroke-width="1.5"/>
+          <line x1="25" y1="1" x2="25" y2="29" stroke="white" stroke-width="1.5"/>
+        </svg>
+        <span class="cart-label" id="cartLabel">सूची देखें</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <div class="lang-pill" onclick="toggleLang()">🌐 <span id="langLabel">हिंदी</span></div>
+    </div>
+  </div>
+  <div class="filter-wrap">
+    <div class="filter-bar">
+      <button class="filter-tab active" onclick="filterCategory('all',this)" id="tab-all">सभी दवाइयाँ</button>
+      <button class="filter-tab" onclick="filterCategory('keetnashak',this)" id="tab-keetnashak">कीटनाशक 🐛</button>
+      <button class="filter-tab" onclick="filterCategory('urvarak',this)" id="tab-urvarak">उर्वरक 🌱</button>
+      <button class="filter-tab" onclick="filterCategory('fungicide',this)" id="tab-fungicide">फफूंदनाशक 🍄</button>
+      <button class="filter-tab" onclick="filterCategory('herbicide',this)" id="tab-herbicide">खरपतवारनाशक 🌿</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="products-grid" id="productsGrid"></div>
+</main>
+
+<footer>
+  <span id="footerText1">🌾 किसान डिजिटल सेवाएं</span> •
+  <span id="footerText2">AgriTech India द्वारा संचालित</span>
+</footer>
+
+<!-- DETAIL PAGE -->
+<div class="detail-page" id="detailPage">
+  <div class="dp-header">
+    <button class="dp-back-btn" onclick="closeDetailPage()">←</button>
+    <div class="dp-header-name" id="dpHeaderName">—</div>
+    <div class="dp-header-cat" id="dpHeaderCat">—</div>
+  </div>
+  <div class="dp-body" id="dpBody"></div>
+</div>
+
+<div class="dp-buy-bar" id="dpBuyBar">
+  <div class="dp-buy-price">
+    <div class="dp-buy-price-label" id="dpBuyLabel">चयनित पैकेज</div>
+    <div class="dp-buy-price-val" id="dpBuyPriceVal">₹—</div>
+  </div>
+  <button class="dp-buy-btn" id="dpBuyBtn" onclick="openQtyFromDetail()">🛒 <span id="dpBuyBtnText">खरीदें</span></button>
+</div>
+
+<!-- QTY SHEET -->
+<div class="qty-overlay" id="qtyOverlay" onclick="closeSheetOnBg(event)">
+  <div class="qty-sheet" id="qtySheet">
+    <div class="sheet-handle"></div>
+    <button class="sheet-back-btn" onclick="closeSheetWithAnimation()">← वापस जाएँ</button>
+    <div class="sheet-product-preview">
+      <div class="sheet-thumb" id="sheetThumb">🌾</div>
+      <div>
+        <div class="sheet-product-name" id="sheetName">—</div>
+        <div class="sheet-product-price" id="sheetBasePrice">—</div>
+      </div>
+    </div>
+    <div class="sheet-question" id="sheetQuestion">🛒 कितनी मात्रा चाहिए?</div>
+    <div class="sheet-hint" id="sheetHint">पैकेज साइज़ चुनें और संख्या बताएं</div>
+    <div class="pkg-options" id="pkgOptions"></div>
+    <div class="qty-stepper-row">
+      <div class="qty-label" id="qtyLabel">संख्या:</div>
+      <div class="qty-stepper">
+        <button class="qty-step-btn" onclick="changeQty(-1)">−</button>
+        <div class="qty-num" id="qtyNum">1</div>
+        <button class="qty-step-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+    <div class="sheet-total-row">
+      <div class="sheet-total-label" id="totalLabel">कुल राशि:</div>
+      <div class="sheet-total-amt" id="sheetTotal">₹0</div>
+    </div>
+    <button class="sheet-add-btn" onclick="confirmAddToCart()">
+      <span>🛒</span><span id="addBtnText">सूची में जोड़ें</span>
+    </button>
+  </div>
+</div>
+
+<!-- CART PANEL -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCartOnBg(event)">
+  <div class="cart-panel">
+    <div class="cart-header">
+      <div class="cart-header-title">🛒 <span id="cartTitle">खरीदने की सूची</span></div>
+      <button class="cart-close-btn" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items-list" id="cartItemsList">
+      <div class="cart-empty" id="cartEmpty">
+        <div class="cart-empty-icon">🛒</div>
+        <div class="cart-empty-text" id="cartEmptyText">अभी कोई दवाई नहीं जोड़ी</div>
+        <div class="cart-empty-sub">कोई भी दवाई चुनकर 'खरीदें' दबाएं</div>
+      </div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+      <div class="cart-subtotal">
+        <span id="subtotalLabel">कुल:</span>
+        <span id="cartSubtotal">₹0</span>
+      </div>
+      <button class="checkout-btn" onclick="checkoutOrder()">✅ <span id="checkoutLabel">ऑर्डर करें</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<!-- ORDER SUMMARY FULL-SCREEN PAGE -->
+<div class="order-page" id="orderPage">
+  <!-- Header -->
+  <div class="op-header">
+    <div class="op-header-leaf" onclick="closeOrderPage()" title="वापस जाएं">🌿</div>
+    <div class="op-header-center">
+      <div class="op-header-cart-row">
+        <span class="op-header-cart-icon">🛒</span>
+        <span class="op-header-title">मेरी खरीदारी</span>
+      </div>
+      <div class="op-header-shop">🏪 अनुराग खाजड़</div>
+    </div>
+    <button class="op-header-close" onclick="closeOrderPage()">✕</button>
+  </div>
+
+  <!-- Body -->
+  <div class="op-body" id="opBody">
+    <!-- Stats Bar -->
+    <div class="op-stats" id="opStats">
+      <div class="op-stats-title">📦 चुने गए आइटम</div>
+      <div class="op-stat-chip">🗂️ <span id="opCatCount">0</span> श्रेणियाँ</div>
+      <div class="op-stat-chip">💊 <span id="opItemCount">0</span> आइटम</div>
+    </div>
+
+    <!-- Medicine list + wheat illustration -->
+    <div class="op-content-wrap">
+      <div class="op-medicines-col" id="opMedicinesList">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="op-wheat-col">
+        <div class="wheat-svg-wrap">
+          <svg width="110" height="260" viewBox="0 0 110 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Stem -->
+            <path d="M55 240 Q52 200 55 160 Q58 120 55 80 Q53 50 55 20" stroke="#4caf50" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <!-- Main wheat head -->
+            <ellipse cx="55" cy="22" rx="10" ry="20" fill="#8bc34a" opacity="0.9"/>
+            <!-- Grains on stem -->
+            <ellipse cx="42" cy="55" rx="9" ry="15" fill="#66bb6a" transform="rotate(-30 42 55)" opacity="0.85"/>
+            <ellipse cx="68" cy="65" rx="9" ry="15" fill="#66bb6a" transform="rotate(30 68 65)" opacity="0.85"/>
+            <ellipse cx="40" cy="90" rx="8" ry="14" fill="#81c784" transform="rotate(-25 40 90)" opacity="0.8"/>
+            <ellipse cx="70" cy="98" rx="8" ry="14" fill="#81c784" transform="rotate(25 70 98)" opacity="0.8"/>
+            <ellipse cx="43" cy="125" rx="7" ry="13" fill="#a5d6a7" transform="rotate(-20 43 125)" opacity="0.75"/>
+            <ellipse cx="67" cy="132" rx="7" ry="13" fill="#a5d6a7" transform="rotate(20 67 132)" opacity="0.75"/>
+            <ellipse cx="46" cy="158" rx="6" ry="11" fill="#c8e6c9" transform="rotate(-15 46 158)" opacity="0.7"/>
+            <ellipse cx="64" cy="163" rx="6" ry="11" fill="#c8e6c9" transform="rotate(15 64 163)" opacity="0.7"/>
+            <!-- Small awns on grain head -->
+            <line x1="55" y1="8" x2="50" y2="-5" stroke="#33691e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="55" y1="8" x2="55" y2="-6" stroke="#33691e" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="55" y1="8" x2="60" y2="-5" stroke="#33691e" stroke-width="1.5" stroke-linecap="round"/>
+            <!-- Soil/ground -->
+            <ellipse cx="55" cy="248" rx="30" ry="8" fill="#795548" opacity="0.3"/>
+            <path d="M25 244 Q40 238 55 240 Q70 238 85 244" stroke="#795548" stroke-width="2" fill="none" opacity="0.4"/>
+            <!-- Small leaf -->
+            <path d="M55 180 Q35 168 30 155 Q45 162 55 180Z" fill="#66bb6a" opacity="0.7"/>
+            <path d="M55 195 Q75 183 80 170 Q65 177 55 195Z" fill="#66bb6a" opacity="0.7"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivery Address -->
+    <div class="op-delivery-section" id="opDeliverySection">
+      <div class="op-delivery-header" onclick="toggleDeliveryForm()">
+        <span style="font-size:1.3rem">🚚</span>
+        <div class="op-delivery-header-text">डिलीवरी के लिए अपना पता लिखें ✏️</div>
+        <span class="op-delivery-arrow" id="opDeliveryArrow">▼</span>
+      </div>
+      <div class="op-address-form" id="opAddressForm">
+        <div class="op-address-saved-badge" id="opAddressSavedBadge" style="display:none">
+          ✅ <span id="opSavedAddressText">पता सेव है</span>
+        </div>
+        <div class="op-form-field">
+          <label class="op-form-label">📍 किसान का पूरा पता</label>
+          <textarea class="op-form-textarea" id="addrFull"
+            placeholder="जैसे: गांव, गली, घर नंबर, नजदीकी स्थान"
+            oninput="onAddressInput()"></textarea>
+        </div>
+        <button class="op-address-save-btn" onclick="saveAddress()">💾 पता सेव करें</button>
+      </div>
+    </div>
+
+    <!-- Address warning (shown when payment clicked without address) -->
+    <div class="addr-warning" id="addrWarning">⚠️ कृपया पहले अपना पता लिखें</div>
+
+    <!-- Payment Section — now opens Summary Page -->
+    <div class="op-payment-section payment-locked" id="opPaymentSection">
+      <div class="op-payment-header" onclick="openSummaryPage()">
+        <span class="op-payment-icon">💰</span>
+        <div class="op-payment-text">भुगतान करने के लिए क्लिक करें</div>
+        <span style="font-size:1.2rem">→</span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="op-footer">SpraySelect © 2025 • सभी मूल्य GST सहित</div>
+  </div>
+</div>
+
+<!-- ORDER SUMMARY PAGE (Premium Full-screen Checkout) -->
+<div class="summary-page" id="summaryPage">
+
+  <!-- Premium Sticky Header -->
+  <div class="sum-header">
+    <div class="sum-header-top">
+      <button class="sum-back-btn" onclick="closeSummaryPage()">← वापस</button>
+      <div class="sum-header-title">📋 ऑर्डर सारांश</div>
+      <button class="sum-header-close" onclick="closeSummaryPage()">✕</button>
+    </div>
+    <!-- Order info banner -->
+    <div class="sum-success-banner">
+      <div class="sum-check-circle">✔️</div>
+      <div class="sum-success-text">
+        <div class="sum-success-title">ऑर्डर की पुष्टि करें</div>
+        <div class="sum-meta-row">
+          <span class="sum-meta-chip">🆔 <span id="sumOrderId">—</span></span>
+          <span class="sum-meta-chip">📅 <span id="sumDate">—</span></span>
+          <span class="sum-meta-chip">🚚 3–5 दिन</span>
+        </div>
+        <div class="sum-addr-line" id="sumAddrLine">पता लोड हो रहा है...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scrollable Body -->
+  <div class="sum-body" id="sumBody">
+
+    <!-- ④ Charges Breakdown Card -->
+    <div class="sum-card" style="animation-delay:0.24s">
+      <div class="sum-card-header">
+        <div class="sum-card-icon-wrap">🧾</div>
+        <div class="sum-card-title">मूल्य विवरण</div>
+      </div>
+      <div class="sum-charge-row" style="background:linear-gradient(to right,#f4fbf4,#fff);border-bottom:2px solid #e0f0e0;">
+        <div class="sum-charge-label" style="font-size:0.95rem;font-weight:900;color:var(--g2);">🛒 कुल आइटम</div>
+        <div class="sum-charge-val" id="sumItemCount" style="font-size:1.05rem;font-weight:900;color:var(--g2);background:var(--g-pale);border:1.5px solid var(--g-border);border-radius:20px;padding:4px 14px;">0</div>
+      </div>
+      <div class="sum-charge-row">
+        <div class="sum-charge-label">📦 उप-योग</div>
+        <div class="sum-charge-val" id="sumSubtotal">₹0</div>
+      </div>
+      <div class="sum-charge-row">
+        <div class="sum-charge-label">📊 GST (5%)</div>
+        <div class="sum-charge-val" id="sumGst">₹0</div>
+      </div>
+      <div class="sum-charge-row">
+        <div class="sum-charge-label">🚚 डिलीवरी शुल्क</div>
+        <div class="sum-charge-val" id="sumDelivery">₹100</div>
+      </div>
+    </div>
+
+    <!-- Spacer for sticky footer -->
+    <span id="sumTotal" style="display:none">0</span>
+    <div style="height:10px"></div>
+
+  </div><!-- end sum-body -->
+
+  <!-- Sticky Bottom CTA -->
+  <div class="sum-sticky-footer" id="sumStickyFooter">
+    <div class="sum-footer-row">
+      <div class="sum-footer-amount">
+        <div class="sum-footer-label">कुल देय राशि</div>
+        <div class="sum-footer-total" id="sumFooterTotal">₹0</div>
+      </div>
+      <button class="sum-pay-btn" onclick="openSumPaySheet()">
+        ✅ ऑर्डर करें &nbsp;→
+      </button>
+    </div>
+    <div class="sum-secure-badge">🔒 सुरक्षित भुगतान &nbsp;•&nbsp; GST सहित &nbsp;•&nbsp; अनुराग खाजड़</div>
+  </div>
+
+</div>
+
+<!-- Payment Sheet Modal -->
+<div class="payment-overlay" id="paymentOverlay" onclick="closePaymentOnBg(event)">
+  <div class="payment-sheet">
+    <div class="payment-sheet-handle"></div>
+    <div class="payment-sheet-header">
+      <div class="payment-sheet-title">💳 भुगतान का तरीका चुनें</div>
+      <button class="payment-close" onclick="closePaymentSheet()">✕</button>
+    </div>
+    <div class="payment-total-box">
+      <div>
+        <div class="payment-total-label">कुल देय राशि</div>
+        <div class="payment-total-amt" id="paymentSheetTotal">₹0</div>
+      </div>
+      <span style="font-size:2.5rem">🧾</span>
+    </div>
+    <div class="payment-methods">
+      <div class="payment-method-title">भुगतान विधि</div>
+      <button class="payment-method-btn" onclick="selectPayment('upi')">
+        <span class="payment-method-icon">📱</span>
+        <div>
+          <div class="payment-method-name">UPI / QR कोड</div>
+          <div class="payment-method-desc">Google Pay, PhonePe, Paytm</div>
+        </div>
+      </button>
+      <button class="payment-method-btn" onclick="selectPayment('cash')">
+        <span class="payment-method-icon">💵</span>
+        <div>
+          <div class="payment-method-name">नकद भुगतान (Cash on Delivery)</div>
+          <div class="payment-method-desc">डिलीवरी पर नकद दें</div>
+        </div>
+      </button>
+      <button class="payment-method-btn" onclick="selectPayment('bank')">
+        <span class="payment-method-icon">🏦</span>
+        <div>
+          <div class="payment-method-name">बैंक ट्रांसफर / NEFT</div>
+          <div class="payment-method-desc">सीधे खाते में भुगतान</div>
+        </div>
+      </button>
+    </div>
+    <button class="payment-confirm-btn" id="paymentConfirmBtn" onclick="confirmPayment()">✅ ₹<span id="payBtnAmt">0</span> का ऑर्डर करें</button>
+  </div>
+</div>
+<script>
+/* ═══════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════ */
+const products = [
+  {
+    id:1, nameHi:'JEEVAN (जीवन)', nameEn:'JEEVAN (Life)',
+    category:'keetnashak', categoryHi:'कीटनाशक', categoryEn:'Insecticide',
+    emoji:'🧴', basePrice:680, unit:'1 L',
+    dosageHi:'200 मि.ली. / 1 एकड़', dosageEn:'200 ml / 1 acre',
+    descHi:'JEEVAN एक उच्च-शक्ति वाला कीटनाशक है जो सभी प्रकार के हानिकारक कीटों को नष्ट करता है। यह फसल को कीटों के प्रकोप से सुरक्षित रखता है और उपज को बढ़ाता है।',
+    descEn:'JEEVAN is a high-potency insecticide that eliminates all types of harmful pests. It protects crops from infestation and boosts yield significantly.',
+    manufacturer:'Dudani Pesticides Pvt. Ltd.', madeIn:'India',
+    shelfLife:'2 वर्ष / 2 Years',
+    mixingHi:'1 मि.ली. प्रति लीटर पानी', mixingEn:'1 ml per litre of water',
+    frequencyHi:'हर 15 दिन में', frequencyEn:'Every 15 days',
+    mixingStepsHi:['15 लीटर पानी की टंकी भरें','1 मि.ली. JEEVAN डालें','अच्छी तरह मिलाएं','सुबह या शाम छिड़काव करें'],
+    mixingStepsEn:['Fill 15 litre spray tank','Add 1 ml JEEVAN','Mix thoroughly','Spray in morning or evening'],
+    cropsHi:['मूंग','धान','गेहूं','सोयाबीन','मक्का','कपास'],
+    cropsEn:['Moong','Rice','Wheat','Soybean','Maize','Cotton'],
+    ingredients:[{nameHi:'Imidacloprid',nameEn:'Imidacloprid',pct:'17.8',unit:'%'},{nameHi:'Cypermethrin',nameEn:'Cypermethrin',pct:'5.0',unit:'%'},{nameHi:'Inert matter',nameEn:'Inert matter',pct:'77.2',unit:'%'}],
+    warningHi:'⚠️ बच्चों और पालतू जानवरों से दूर रखें। छिड़काव के समय मास्क और दस्ताने पहनें।',
+    warningEn:'⚠️ Keep away from children and pets. Wear mask and gloves while spraying.',
+    packages:[{labelHi:'250 मि.ली.',labelEn:'250 ml',pricePerUnit:180},{labelHi:'500 मि.ली.',labelEn:'500 ml',pricePerUnit:350},{labelHi:'1 लीटर',labelEn:'1 Litre',pricePerUnit:680},{labelHi:'5 लीटर',labelEn:'5 Litres',pricePerUnit:3100}]
+  },
+  {
+    id:2, nameHi:'GHATAK (घातक)', nameEn:'GHATAK (Lethal)',
+    category:'urvarak', categoryHi:'उर्वरक', categoryEn:'Fertilizer',
+    emoji:'🪣', basePrice:520, unit:'1L',
+    dosageHi:'200 मि.ली. / 1 एकड़', dosageEn:'200 ml / 1 acre',
+    descHi:'GHATAK एक शक्तिशाली तरल उर्वरक है जो पौधों को त्वरित पोषण प्रदान करता है।',
+    descEn:'GHATAK is a powerful liquid fertilizer that provides rapid nutrition to plants.',
+    manufacturer:'Dudani Pesticides Pvt. Ltd.', madeIn:'India',
+    shelfLife:'3 वर्ष / 3 Years',
+    mixingHi:'2 मि.ली. प्रति लीटर पानी', mixingEn:'2 ml per litre of water',
+    frequencyHi:'हर 20 दिन में', frequencyEn:'Every 20 days',
+    mixingStepsHi:['15 लीटर पानी की टंकी भरें','2 मि.ली. GHATAK डालें','धीरे-धीरे मिलाएं','फसल की जड़ों के पास छिड़काव करें'],
+    mixingStepsEn:['Fill 15 litre spray tank','Add 2 ml GHATAK','Mix slowly','Spray near crop roots'],
+    cropsHi:['धान','गेहूं','मक्का','टमाटर','बैंगन'],
+    cropsEn:['Rice','Wheat','Maize','Tomato','Brinjal'],
+    ingredients:[{nameHi:'Nitrogen (N)',nameEn:'Nitrogen (N)',pct:'12',unit:'%'},{nameHi:'Phosphorus (P)',nameEn:'Phosphorus (P)',pct:'8',unit:'%'},{nameHi:'Potash (K)',nameEn:'Potash (K)',pct:'6',unit:'%'}],
+    warningHi:'⚠️ आँखों में न पड़े। उपयोग के बाद हाथ धोएं।',
+    warningEn:'⚠️ Avoid contact with eyes. Wash hands after use.',
+    packages:[{labelHi:'250 मि.ली.',labelEn:'250 ml',pricePerUnit:140},{labelHi:'500 मि.ली.',labelEn:'500 ml',pricePerUnit:270},{labelHi:'1 लीटर',labelEn:'1 Litre',pricePerUnit:520},{labelHi:'5 लीटर',labelEn:'5 Litres',pricePerUnit:2400}]
+  },
+  {
+    id:3, nameHi:'DANGER (डेंजर)', nameEn:'DANGER',
+    category:'urvarak', categoryHi:'उर्वरक', categoryEn:'Fertilizer',
+    emoji:'🟢', basePrice:520, unit:'1L',
+    dosageHi:'200 मि.ली. / 1 एकड़', dosageEn:'200 ml / 1 acre',
+    descHi:'DANGER एक विशेष सूक्ष्म पोषक तत्व उर्वरक है जो पौधों में जड़ों की वृद्धि और फल-फूल बनाने की क्षमता को बढ़ाता है।',
+    descEn:'DANGER is a specialized micronutrient fertilizer that enhances root growth and fruit/flower formation in plants.',
+    manufacturer:'Dudani Pesticides Pvt. Ltd.', madeIn:'India',
+    shelfLife:'3 वर्ष / 3 Years',
+    mixingHi:'2 मि.ली. प्रति लीटर पानी', mixingEn:'2 ml per litre of water',
+    frequencyHi:'हर 25 दिन में', frequencyEn:'Every 25 days',
+    mixingStepsHi:['15 लीटर पानी भरें','2 मि.ली. DANGER मिलाएं','अच्छी तरह हिलाएं','पत्तियों पर समान रूप से छिड़काव करें'],
+    mixingStepsEn:['Fill 15 litres water','Mix 2 ml DANGER','Shake well','Spray evenly on leaves'],
+    cropsHi:['सोयाबीन','मूंग','अरहर','चना','सरसों'],
+    cropsEn:['Soybean','Moong','Pigeonpea','Chickpea','Mustard'],
+    ingredients:[{nameHi:'Zinc (Zn)',nameEn:'Zinc (Zn)',pct:'5',unit:'%'},{nameHi:'Boron (B)',nameEn:'Boron (B)',pct:'2',unit:'%'},{nameHi:'Iron (Fe)',nameEn:'Iron (Fe)',pct:'3',unit:'%'}],
+    warningHi:'⚠️ खाने-पीने की चीज़ों से दूर रखें। ठंडी और सूखी जगह पर रखें।',
+    warningEn:'⚠️ Keep away from food and beverages. Store in a cool, dry place.',
+    packages:[{labelHi:'250 मि.ली.',labelEn:'250 ml',pricePerUnit:140},{labelHi:'500 मि.ली.',labelEn:'500 ml',pricePerUnit:270},{labelHi:'1 लीटर',labelEn:'1 Litre',pricePerUnit:520},{labelHi:'5 लीटर',labelEn:'5 Litres',pricePerUnit:2400}]
+  },
+  {
+    id:4, nameHi:'SHAKTI (शक्ति)', nameEn:'SHAKTI (Power)',
+    category:'fungicide', categoryHi:'फफूंदनाशक', categoryEn:'Fungicide',
+    emoji:'🧪', basePrice:620, unit:'1L',
+    dosageHi:'150 मि.ली. / 1 एकड़', dosageEn:'150 ml / 1 acre',
+    descHi:'SHAKTI एक प्रभावी फफूंदनाशक है जो पत्तियों पर लगने वाले ब्लास्ट, झुलसा और अन्य फफूंद रोगों को रोकता है।',
+    descEn:'SHAKTI is an effective fungicide that controls blast, blight and other fungal diseases on leaves.',
+    manufacturer:'Dudani Pesticides Pvt. Ltd.', madeIn:'India',
+    shelfLife:'2 वर्ष / 2 Years',
+    mixingHi:'1.5 मि.ली. प्रति लीटर पानी', mixingEn:'1.5 ml per litre of water',
+    frequencyHi:'हर 10-14 दिन में', frequencyEn:'Every 10–14 days',
+    mixingStepsHi:['15 लीटर पानी भरें','1.5 मि.ली. SHAKTI डालें','अच्छी तरह मिलाएं','पत्तियों के ऊपर और नीचे छिड़काव करें'],
+    mixingStepsEn:['Fill 15 litres water','Add 1.5 ml SHAKTI','Mix thoroughly','Spray on top and bottom of leaves'],
+    cropsHi:['धान','टमाटर','आलू','मिर्च','करेला'],
+    cropsEn:['Rice','Tomato','Potato','Chilli','Bitter gourd'],
+    ingredients:[{nameHi:'Hexaconazole',nameEn:'Hexaconazole',pct:'5',unit:'%'},{nameHi:'Mancozeb',nameEn:'Mancozeb',pct:'50',unit:'%'},{nameHi:'Inert matter',nameEn:'Inert matter',pct:'45',unit:'%'}],
+    warningHi:'⚠️ श्वास नली में न जाए। छिड़काव के दौरान धूम्रपान न करें।',
+    warningEn:'⚠️ Avoid inhalation. Do not smoke during spraying.',
+    packages:[{labelHi:'250 मि.ली.',labelEn:'250 ml',pricePerUnit:165},{labelHi:'500 मि.ली.',labelEn:'500 ml',pricePerUnit:320},{labelHi:'1 लीटर',labelEn:'1 Litre',pricePerUnit:620}]
+  },
+  {
+    id:5, nameHi:'VIKAS (विकास)', nameEn:'VIKAS (Growth)',
+    category:'herbicide', categoryHi:'खरपतवारनाशक', categoryEn:'Herbicide',
+    emoji:'🌿', basePrice:480, unit:'1L',
+    dosageHi:'300 मि.ली. / 1 एकड़', dosageEn:'300 ml / 1 acre',
+    descHi:'VIKAS एक चयनात्मक खरपतवारनाशक है जो बिना फसल को नुकसान पहुँचाए अनावश्यक घास-फूस और चौड़ी पत्ती वाले खरपतवारों को नष्ट करता है।',
+    descEn:'VIKAS is a selective herbicide that destroys unwanted weeds and broad-leaf plants without harming the crop.',
+    manufacturer:'Dudani Pesticides Pvt. Ltd.', madeIn:'India',
+    shelfLife:'2 वर्ष / 2 Years',
+    mixingHi:'3 मि.ली. प्रति लीटर पानी', mixingEn:'3 ml per litre of water',
+    frequencyHi:'एक बार (बुवाई के बाद)', frequencyEn:'Once (post-sowing)',
+    mixingStepsHi:['15 लीटर पानी भरें','3 मि.ली. VIKAS डालें','हल्के से हिलाएं','खरपतवार वाली जगह छिड़काव करें'],
+    mixingStepsEn:['Fill 15 litres water','Add 3 ml VIKAS','Shake gently','Spray on weed-infested areas'],
+    cropsHi:['गेहूं','धान','मक्का','ज्वार','बाजरा'],
+    cropsEn:['Wheat','Rice','Maize','Jowar','Bajra'],
+    ingredients:[{nameHi:'Pendimethalin',nameEn:'Pendimethalin',pct:'30',unit:'%'},{nameHi:'2,4-D Amine',nameEn:'2,4-D Amine',pct:'20',unit:'%'},{nameHi:'Inert matter',nameEn:'Inert matter',pct:'50',unit:'%'}],
+    warningHi:'⚠️ फसल पर सीधे न डालें। तेज़ हवा में छिड़काव न करें।',
+    warningEn:'⚠️ Do not apply directly on crops. Avoid spraying in strong wind.',
+    packages:[{labelHi:'500 मि.ली.',labelEn:'500 ml',pricePerUnit:260},{labelHi:'1 लीटर',labelEn:'1 Litre',pricePerUnit:480},{labelHi:'5 लीटर',labelEn:'5 Litres',pricePerUnit:2200}]
+  },
+  {
+    id:6, nameHi:'SURAKSHA (सुरक्षा)', nameEn:'SURAKSHA (Protection)',
+    category:'keetnashak', categoryHi:'कीटनाशक', categoryEn:'Insecticide',
+    emoji:'🛡️', basePrice:750, unit:'1L',
+    dosageHi:'200 मि.ली. / 1 एकड़', dosageEn:'200 ml / 1 acre',
+    descHi:'SURAKSHA एक व्यापक-स्पेक्ट्रम कीटनाशक है जो चूसने वाले और चबाने वाले दोनों प्रकार के कीटों पर प्रभावी है।',
+    descEn:'SURAKSHA is a broad-spectrum insecticide effective against both sucking and chewing pests.',
+    manufacturer:'Dudani Pesticides Pvt. Ltd.', madeIn:'India',
+    shelfLife:'2 वर्ष / 2 Years',
+    mixingHi:'2 मि.ली. प्रति लीटर पानी', mixingEn:'2 ml per litre of water',
+    frequencyHi:'हर 12-15 दिन में', frequencyEn:'Every 12–15 days',
+    mixingStepsHi:['15 लीटर पानी भरें','2 मि.ली. SURAKSHA डालें','अच्छी तरह मिलाएं','पूरी फसल पर समान रूप से छिड़काव करें'],
+    mixingStepsEn:['Fill 15 litres water','Add 2 ml SURAKSHA','Mix well','Spray evenly on entire crop'],
+    cropsHi:['कपास','मूंग','अरहर','सोयाबीन','टमाटर'],
+    cropsEn:['Cotton','Moong','Pigeonpea','Soybean','Tomato'],
+    ingredients:[{nameHi:'Chlorpyrifos',nameEn:'Chlorpyrifos',pct:'20',unit:'%'},{nameHi:'Lambda-cyhalothrin',nameEn:'Lambda-cyhalothrin',pct:'5',unit:'%'},{nameHi:'Inert matter',nameEn:'Inert matter',pct:'75',unit:'%'}],
+    warningHi:'⚠️ मछली पालन वाले क्षेत्र में उपयोग न करें। त्वचा पर लगने पर तुरंत धोएं।',
+    warningEn:'⚠️ Do not use near fish ponds. Wash immediately if skin contact occurs.',
+    packages:[{labelHi:'250 मि.ली.',labelEn:'250 ml',pricePerUnit:200},{labelHi:'500 मि.ली.',labelEn:'500 ml',pricePerUnit:390},{labelHi:'1 लीटर',labelEn:'1 Litre',pricePerUnit:750},{labelHi:'5 लीटर',labelEn:'5 Litres',pricePerUnit:3400}]
+  }
+];
+
+let currentLang='hi', currentFilter='all', likedProducts=new Set(), cart=[];
+let sheetProductId=null, sheetPkgIndex=0, sheetQty=1;
+let detailProductId=null, detailSelectedPkg=0;
+let activeSprayId = null;
+
+const T={
+  hi:{langLabel:'हिंदी',searchPlaceholder:'दवाइयाँ खोजें',cartLabel:'सूची देखें',cartTitle:'खरीदने की सूची',cartEmpty:'अभी कोई दवाई नहीं जोड़ी',subtotal:'कुल:',checkout:'ऑर्डर करें',tabAll:'सभी दवाइयाँ',tabKeetnashak:'कीटनाशक 🐛',tabUrvarak:'उर्वरक 🌱',tabFungicide:'फफूंदनाशक 🍄',tabHerbicide:'खरपतवारनाशक 🌿',buyBtn:'🛒 खरीदें',noProduct:'कोई दवाई नहीं मिली',noProductSub:'खोज शब्द बदलकर देखें',sheetQuestion:'🛒 कितनी मात्रा चाहिए?',sheetHint:'पैकेज साइज़ चुनें और संख्या बताएं',qtyLabel:'संख्या:',totalLabel:'कुल राशि:',addBtn:'सूची में जोड़ें',addedToast:'सूची में जोड़ा!',orderSuccess:'का ऑर्डर दर्ज हो गया!',voiceUnsupported:'⚠️ यह ब्राउज़र वॉइस नहीं समझता',share:'शेयर किया:',detailBuyBtn:'खरीदें',tabOverview:'जानकारी',tabDosage:'मात्रा & मिश्रण',tabIngredients:'सामग्री',tabPackages:'पैकेज',dropdownHeader:'📋 स्प्रे की सूची',headerBtn:'📋 स्प्रे सूची'},
+  en:{langLabel:'English',searchPlaceholder:'Search medicines',cartLabel:'View List',cartTitle:'Purchase List',cartEmpty:'No items added yet',subtotal:'Total:',checkout:'Place Order',tabAll:'All',tabKeetnashak:'Insecticide 🐛',tabUrvarak:'Fertilizer 🌱',tabFungicide:'Fungicide 🍄',tabHerbicide:'Herbicide 🌿',buyBtn:'🛒 Buy Now',noProduct:'No product found',noProductSub:'Try a different search',sheetQuestion:'🛒 How much do you need?',sheetHint:'Choose package size and quantity',qtyLabel:'Qty:',totalLabel:'Total Amount:',addBtn:'Add to List',addedToast:'added to list!',orderSuccess:'order placed!',voiceUnsupported:'⚠️ Voice not supported',share:'Shared:',detailBuyBtn:'Buy Now',tabOverview:'Overview',tabDosage:'Dosage & Mixing',tabIngredients:'Ingredients',tabPackages:'Packages',dropdownHeader:'📋 Spray List',headerBtn:'📋 Spray List'}
+};
+
+/* ═══ SVG BOTTLE ═══ */
+function getProductSVG(p, size=130, h=160){
+  const colors={keetnashak:{body:'#4caf50',label:'#1a4a1e',cap:'#2e7d32',liquid:'#81c784'},urvarak:{body:'#2196f3',label:'#0d47a1',cap:'#1565c0',liquid:'#90caf9'},fungicide:{body:'#ff9800',label:'#e65100',cap:'#f57c00',liquid:'#ffcc02'},herbicide:{body:'#9c27b0',label:'#4a148c',cap:'#7b1fa2',liquid:'#ce93d8'}};
+  const c=colors[p.category]||colors.keetnashak;
+  const shortName=p.nameEn.split(' ')[0];
+  return `<svg width="${size}" height="${h}" viewBox="0 0 140 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="70" cy="162" rx="42" ry="7" fill="rgba(0,0,0,0.08)"/>
+    <rect x="28" y="50" width="84" height="108" rx="14" fill="${c.body}"/>
+    <rect x="28" y="90" width="84" height="68" rx="14" fill="${c.liquid}" opacity="0.5"/>
+    <rect x="36" y="72" width="68" height="66" rx="8" fill="white" opacity="0.93"/>
+    <text x="70" y="100" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" font-weight="900" fill="${c.label}">${shortName}</text>
+    <text x="70" y="114" text-anchor="middle" font-family="Arial,sans-serif" font-size="6.5" fill="#666">Dudani Pesticides</text>
+    <text x="70" y="133" text-anchor="middle" font-size="18">${p.emoji}</text>
+    <rect x="50" y="34" width="40" height="20" rx="6" fill="${c.cap}"/>
+    <rect x="44" y="18" width="52" height="22" rx="8" fill="${c.cap}"/>
+    <rect x="50" y="20" width="14" height="8" rx="4" fill="rgba(255,255,255,0.3)"/>
+    <circle cx="104" cy="64" r="11" fill="white" opacity="0.82"/>
+    <text x="104" y="68" text-anchor="middle" font-size="9" fill="${c.label}">🌿</text>
+  </svg>`;
+}
+
+/* ═══ RENDER PRODUCTS ═══ */
+let renderTimer = null;
+function renderProducts(query=''){
+  clearTimeout(renderTimer);
+  renderTimer = setTimeout(()=>_doRender(query), 0);
+}
+
+function _doRender(query=''){
+  const grid = document.getElementById('productsGrid');
+  const q = query.trim().toLowerCase();
+
+  let filtered = products.filter(p=>{
+    const matchCat = currentFilter==='all' || p.category===currentFilter;
+    const matchSearch = !q ||
+      p.nameHi.toLowerCase().includes(q) ||
+      p.nameEn.toLowerCase().includes(q) ||
+      p.categoryHi.includes(q) ||
+      p.categoryEn.toLowerCase().includes(q) ||
+      (p.cropsHi && p.cropsHi.some(c=>c.includes(q))) ||
+      (p.cropsEn && p.cropsEn.some(c=>c.toLowerCase().includes(q)));
+    return matchCat && matchSearch;
+  });
+
+  if(q) {
+    filtered.sort((a,b)=>{
+      const aName = currentLang==='hi'?a.nameHi:a.nameEn;
+      const bName = currentLang==='hi'?b.nameHi:b.nameEn;
+      return (aName.toLowerCase().includes(q)?0:1) - (bName.toLowerCase().includes(q)?0:1);
+    });
+  }
+
+  if(filtered.length===0){
+    grid.innerHTML=`<div class="empty-state">
+      <div class="empty-state-icon">🔍</div>
+      <div class="empty-state-text">${T[currentLang].noProduct}</div>
+      <div class="empty-state-sub">${T[currentLang].noProductSub}</div>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map((p,i)=>{
+    const liked = likedProducts.has(p.id);
+    const cat = currentLang==='hi'?p.categoryHi:p.categoryEn;
+    const dosage = currentLang==='hi'?p.dosageHi:p.dosageEn;
+    return `<div class="product-card" id="card-${p.id}" style="animation-delay:${Math.min(i*0.05,0.3)}s">
+      <div class="product-img-wrap">${getProductSVG(p)}</div>
+      <div class="product-body">
+        <div class="product-name-row">
+          <div class="product-name">${currentLang==='hi'?p.nameHi:p.nameEn}</div>
+          <div class="name-icons">
+            <button class="icon-btn ${liked?'liked':''}" onclick="toggleLike(${p.id},this)" title="पसंद">${liked?'❤️':'🤍'}</button>
+            <button class="icon-btn" onclick="shareProduct(${p.id})" title="शेयर">↗️</button>
+          </div>
+        </div>
+        <div class="card-meta-row">
+          <div class="category-tag">${p.emoji} ${cat}</div>
+          <button class="detail-link" onclick="openDetailPage(${p.id})">🔍 ${currentLang==='hi'?'जानकारी':'Details'}</button>
+        </div>
+        <div class="price-row">💰 ₹${p.basePrice} <span class="price-unit">/ ${p.unit}</span></div>
+        <div class="dosage-row">💧 ${dosage}</div>
+        <button class="details-btn" onclick="openQtySheetFromCard(${p.id})">${T[currentLang].buyBtn}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══ DETAIL PAGE ═══ */
+function openDetailPage(productId){
+  const p = products.find(x=>x.id===productId);
+  if(!p) return;
+  detailProductId = productId; detailSelectedPkg = 0;
+  const L = currentLang;
+  const name = L==='hi'?p.nameHi:p.nameEn;
+  const cat = L==='hi'?p.categoryHi:p.categoryEn;
+  document.getElementById('dpHeaderName').textContent = name;
+  document.getElementById('dpHeaderCat').textContent = cat;
+
+  const desc=L==='hi'?p.descHi:p.descEn;
+  const dosage=L==='hi'?p.dosageHi:p.dosageEn;
+  const mixing=L==='hi'?p.mixingHi:p.mixingEn;
+  const freq=L==='hi'?p.frequencyHi:p.frequencyEn;
+  const crops=L==='hi'?p.cropsHi:p.cropsEn;
+  const warn=L==='hi'?p.warningHi:p.warningEn;
+  const mixSteps=L==='hi'?p.mixingStepsHi:p.mixingStepsEn;
+  const t=T[L];
+
+  document.getElementById('dpBody').innerHTML=`
+    <div class="dp-hero">
+      <div class="dp-hero-bottle">${getProductSVG(p,82,105)}</div>
+      <div class="dp-hero-info">
+        <div class="dp-hero-name">${name}</div>
+        <div class="dp-hero-mfr">${p.manufacturer}</div>
+        <div class="dp-hero-badges">
+          <span class="dp-badge">${L==='hi'?'निर्मित':'Made in'}: ${p.madeIn}</span>
+          <span class="dp-badge">${L==='hi'?'शेल्फ लाइफ':'Shelf Life'}: ${p.shelfLife}</span>
+          <span class="dp-badge orange">${cat}</span>
+        </div>
+      </div>
+    </div>
+    <div class="dp-tabs">
+      <button class="dp-tab active" onclick="switchTab('overview',this)">📋 ${t.tabOverview}</button>
+      <button class="dp-tab" onclick="switchTab('dosage',this)">💧 ${t.tabDosage}</button>
+      <button class="dp-tab" onclick="switchTab('ingredients',this)">🧬 ${t.tabIngredients}</button>
+      <button class="dp-tab" onclick="switchTab('packages',this)">📦 ${t.tabPackages}</button>
+    </div>
+
+    <div class="dp-panel active" id="tab-overview">
+      <div class="dp-section">
+        <div class="dp-section-title">${L==='hi'?'📋 विवरण':'📋 Description'}</div>
+        <div class="dp-desc">${desc}</div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">${L==='hi'?'📊 मुख्य जानकारी':'📊 Key Info'}</div>
+        <div class="dp-info-grid">
+          <div class="dp-info-cell"><div class="dp-info-cell-label">${L==='hi'?'मूल्य':'Price'}</div><div class="dp-info-cell-val">₹${p.basePrice} / ${p.unit}</div></div>
+          <div class="dp-info-cell"><div class="dp-info-cell-label">${L==='hi'?'श्रेणी':'Category'}</div><div class="dp-info-cell-val">${cat}</div></div>
+          <div class="dp-info-cell"><div class="dp-info-cell-label">${L==='hi'?'निर्माता':'Manufacturer'}</div><div class="dp-info-cell-val" style="font-size:0.78rem">${p.manufacturer}</div></div>
+          <div class="dp-info-cell"><div class="dp-info-cell-label">${L==='hi'?'शेल्फ लाइफ':'Shelf Life'}</div><div class="dp-info-cell-val">${p.shelfLife}</div></div>
+        </div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">${L==='hi'?'🌾 उपयुक्त फसलें':'🌾 Suitable Crops'}</div>
+        <div class="dp-crops">${crops.map(c=>`<span class="dp-crop-chip">🌱 ${c}</span>`).join('')}</div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">${L==='hi'?'⚠️ सावधानियाँ':'⚠️ Precautions'}</div>
+        <div class="dp-warning">${warn}</div>
+      </div>
+    </div>
+
+    <div class="dp-panel" id="tab-dosage">
+      <div class="dp-section">
+        <div class="dp-section-title">${L==='hi'?'💧 अनुशंसित मात्रा':'💧 Recommended Dosage'}</div>
+        <div class="dosage-card"><div class="dosage-icon">🧪</div><div><div class="dosage-text-big">${dosage}</div><div class="dosage-text-sub">${L==='hi'?'प्रति एकड़':'Per acre'}</div></div></div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">${L==='hi'?'🔄 छिड़काव आवृत्ति':'🔄 Spray Frequency'}</div>
+        <div class="dp-info-grid">
+          <div class="dp-info-cell"><div class="dp-info-cell-label">${L==='hi'?'कब करें':'Frequency'}</div><div class="dp-info-cell-val">${freq}</div></div>
+          <div class="dp-info-cell"><div class="dp-info-cell-label">${L==='hi'?'मिश्रण दर':'Mixing Rate'}</div><div class="dp-info-cell-val">${mixing}</div></div>
+        </div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">${L==='hi'?'📝 मिश्रण विधि':'📝 Mixing Method'}</div>
+        <div class="mixing-steps">${mixSteps.map((s,i)=>`<div class="mixing-step"><div class="mixing-step-num">${i+1}</div><div class="mixing-step-text">${s}</div></div>`).join('')}</div>
+      </div>
+    </div>
+
+    <div class="dp-panel" id="tab-ingredients">
+      <div class="dp-section">
+        <div class="dp-section-title">${L==='hi'?'🧬 रासायनिक संरचना':'🧬 Chemical Composition'}</div>
+        <div class="ingredients-list">${p.ingredients.map(ing=>{
+          const nm=L==='hi'?ing.nameHi:ing.nameEn;
+          const pctNum=parseFloat(ing.pct)||0;
+          const isInert=nm.toLowerCase().includes('inert');
+          return `<div class="ingredient-row">
+            <div class="ingredient-icon">${isInert?'⚗️':'🔬'}</div>
+            <div class="ingredient-name">${nm}</div>
+            <div class="ingredient-pct">${ing.pct}${ing.unit}</div>
+          </div>${!isInert?`<div style="margin:-3px 0 4px;"><div style="height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden;"><div style="height:100%;background:linear-gradient(90deg,#4caf50,#f59332);border-radius:3px;width:${Math.min(pctNum*2,100)}%;"></div></div></div>`:''}`;
+        }).join('')}</div>
+      </div>
+    </div>
+
+    <div class="dp-panel" id="tab-packages">
+      <div class="dp-section">
+        <div class="dp-section-title">${L==='hi'?'📦 पैकेज व मूल्य':'📦 Packages & Pricing'}</div>
+        <div style="background:#fff;border-radius:10px;border:1.5px solid #eaeee9;overflow:hidden;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="background:var(--g-pale);">
+              <th style="padding:9px 12px;text-align:left;font-size:0.78rem;font-weight:800;color:var(--g2);">${L==='hi'?'पैकेज':'Package'}</th>
+              <th style="padding:9px 12px;text-align:right;font-size:0.78rem;font-weight:800;color:var(--g2);">${L==='hi'?'मूल्य':'Price'}</th>
+              <th style="padding:9px 12px;text-align:right;font-size:0.78rem;font-weight:800;color:var(--g2);">${L==='hi'?'प्रति 100 मि.ली.':'Per 100ml'}</th>
+            </tr></thead>
+            <tbody>${p.packages.map(pkg=>{
+              const lbl=L==='hi'?pkg.labelHi:pkg.labelEn;
+              const ml=pkg.labelEn.includes('Litre')?parseInt(pkg.labelEn)*1000:parseInt(pkg.labelEn);
+              const per100=(pkg.pricePerUnit/(ml/100)).toFixed(1);
+              return `<tr style="border-top:1px solid #f3f3f3;"><td style="padding:9px 12px;font-size:0.85rem;font-weight:700;">${lbl}</td><td style="padding:9px 12px;text-align:right;font-size:0.85rem;font-weight:900;color:var(--o2);">₹${pkg.pricePerUnit}</td><td style="padding:9px 12px;text-align:right;font-size:0.8rem;font-weight:700;color:var(--t3);">₹${per100}</td></tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+
+  updateDetailBuyBar();
+  document.getElementById('detailPage').classList.add('open');
+  document.getElementById('dpBuyBar').classList.add('show');
+  document.getElementById('dpBody').scrollTop = 0;
+}
+
+function closeDetailPage(){
+  document.getElementById('detailPage').classList.remove('open');
+  document.getElementById('dpBuyBar').classList.remove('show');
+  detailProductId=null;
+}
+
+function switchTab(tabId, btn){
+  document.querySelectorAll('.dp-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.dp-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+tabId).classList.add('active');
+}
+
+function updateDetailBuyBar(){
+  const p=products.find(x=>x.id===detailProductId);
+  if(!p) return;
+  const pkg=p.packages[detailSelectedPkg];
+  const L=currentLang;
+  document.getElementById('dpBuyLabel').textContent=(L==='hi'?pkg.labelHi:pkg.labelEn);
+  document.getElementById('dpBuyPriceVal').textContent='₹'+pkg.pricePerUnit;
+  document.getElementById('dpBuyBtnText').textContent=T[L].detailBuyBtn;
+}
+
+function openQtyFromDetail(){
+  if(!detailProductId) return;
+  openQtySheet(detailProductId, detailSelectedPkg);
+}
+
+/* ═══ QTY SHEET ═══ */
+function openQtySheetFromCard(productId){
+  openQtySheet(productId, 0);
+}
+
+function openQtySheet(productId, preselectedPkgIndex=0){
+  const p=products.find(x=>x.id===productId);
+  if(!p) return;
+  sheetProductId=productId; sheetPkgIndex=preselectedPkgIndex; sheetQty=1;
+  const name=currentLang==='hi'?p.nameHi:p.nameEn;
+  const t=T[currentLang];
+  document.getElementById('sheetName').textContent=name;
+  document.getElementById('sheetBasePrice').textContent=`₹${p.basePrice} / ${p.unit}`;
+  document.getElementById('sheetThumb').innerHTML=`<span style="font-size:2.2rem">${p.emoji}</span>`;
+  document.getElementById('sheetQuestion').textContent=t.sheetQuestion;
+  document.getElementById('sheetHint').textContent=t.sheetHint;
+  document.getElementById('qtyLabel').textContent=t.qtyLabel;
+  document.getElementById('totalLabel').textContent=t.totalLabel;
+  document.getElementById('addBtnText').textContent=t.addBtn;
+  document.getElementById('pkgOptions').innerHTML=p.packages.map((pkg,i)=>{
+    const label=currentLang==='hi'?pkg.labelHi:pkg.labelEn;
+    return `<div class="pkg-option ${i===preselectedPkgIndex?'selected':''}" onclick="selectPkg(${i},this)">
+      <div class="pkg-radio"><div class="pkg-radio-dot"></div></div>
+      <div class="pkg-info"><div class="pkg-label">${label}</div><div class="pkg-desc">${currentLang==='hi'?p.dosageHi:p.dosageEn}</div></div>
+      <div class="pkg-price">₹${pkg.pricePerUnit}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('qtyNum').textContent=sheetQty;
+  updateSheetTotal();
+  document.getElementById('qtyOverlay').classList.add('show');
+}
+
+function selectPkg(index, el){
+  sheetPkgIndex=index;
+  document.querySelectorAll('.pkg-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  updateSheetTotal();
+}
+
+function changeQty(delta){
+  sheetQty=Math.max(1,sheetQty+delta);
+  document.getElementById('qtyNum').textContent=sheetQty;
+  updateSheetTotal();
+}
+
+function updateSheetTotal(){
+  const p=products.find(x=>x.id===sheetProductId);
+  if(!p) return;
+  document.getElementById('sheetTotal').textContent=`₹${p.packages[sheetPkgIndex].pricePerUnit*sheetQty}`;
+}
+
+function closeSheetOnBg(e){ if(e.target===document.getElementById('qtyOverlay')) closeSheetWithAnimation(); }
+
+function closeSheetWithAnimation(){
+  const sheet = document.getElementById('qtySheet');
+  sheet.classList.add('closing');
+  setTimeout(()=>{
+    document.getElementById('qtyOverlay').classList.remove('show');
+    sheet.classList.remove('closing');
+  }, 270);
+}
+
+function closeQtySheet(){ closeSheetWithAnimation(); }
+
+
+/* ═══ CART — Enhanced with localStorage ═══ */
+function saveCartToStorage(){ try{ localStorage.setItem('sprayCart', JSON.stringify(cart)); }catch(e){} }
+function loadCartFromStorage(){ try{ const d=localStorage.getItem('sprayCart'); if(d) cart=JSON.parse(d); }catch(e){} }
+
+function confirmAddToCart(){
+  const p=products.find(x=>x.id===sheetProductId);
+  if(!p) return;
+  const pkg=p.packages[sheetPkgIndex];
+  const existingIdx=cart.findIndex(c=>c.productId===p.id&&c.pkgIndex===sheetPkgIndex);
+  const name=p.nameHi; // always store Hindi name for order page
+  const nameEn=p.nameEn;
+  const pkgLabelHi=pkg.labelHi; const pkgLabelEn=pkg.labelEn;
+  const dosageHi=p.dosageHi; const dosageEn=p.dosageEn;
+  const category=p.category; const categoryHi=p.categoryHi;
+  if(existingIdx>=0){ cart[existingIdx].qty+=sheetQty; }
+  else {
+    cart.push({
+      productId:p.id, productName:name, productNameEn:nameEn,
+      emoji:p.emoji, pkgIndex:sheetPkgIndex,
+      pkgLabelHi, pkgLabelEn,
+      dosageHi, dosageEn,
+      pricePerUnit:pkg.pricePerUnit, qty:sheetQty,
+      category, categoryHi
+    });
+  }
+  closeQtySheet();
+  saveCartToStorage();
+  updateCartBadge();
+  showToast(`✅ ${name} (${pkgLabelHi} × ${sheetQty}) सूची में जोड़ा!`);
+}
+
+function updateCartBadge(){
+  const totalQty=cart.reduce((s,c)=>s+c.qty,0);
+  const badge=document.getElementById('cartBadge');
+  badge.textContent=totalQty;
+  if(totalQty>0){badge.classList.add('visible','pop');setTimeout(()=>badge.classList.remove('pop'),350);}
+  else badge.classList.remove('visible');
+}
+
+function openCart(){ openOrderPage(); }
+function closeCart(){ document.getElementById('cartOverlay').classList.remove('show'); }
+function closeCartOnBg(e){ if(e.target===document.getElementById('cartOverlay')) closeCart(); }
+
+function renderCartItems(){
+  const list=document.getElementById('cartItemsList');
+  const footer=document.getElementById('cartFooter');
+  const emptyDiv=document.getElementById('cartEmpty');
+  if(cart.length===0){
+    emptyDiv.style.display='flex'; footer.style.display='none';
+    list.innerHTML=''; list.appendChild(emptyDiv); return;
+  }
+  emptyDiv.style.display='none'; footer.style.display='block';
+  list.innerHTML=cart.map((item,i)=>`
+    <div class="cart-item">
+      <div class="cart-item-thumb"><span style="font-size:1.8rem">${item.emoji}</span></div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.productName}</div>
+        <div class="cart-item-pkg">${item.pkgLabelHi||item.pkgLabel} — ₹${item.pricePerUnit}</div>
+      </div>
+      <div class="cart-item-right">
+        <div class="cart-item-price">₹${item.pricePerUnit*item.qty}</div>
+        <div class="mini-stepper">
+          <button class="mini-step" onclick="cartChangeQty(${i},-1)">−</button>
+          <div class="mini-num">${item.qty}</div>
+          <button class="mini-step" onclick="cartChangeQty(${i},1)">+</button>
+        </div>
+      </div>
+    </div>`).join('');
+  const subtotal=cart.reduce((s,c)=>s+c.pricePerUnit*c.qty,0);
+  document.getElementById('cartSubtotal').textContent=`₹${subtotal}`;
+}
+
+function cartChangeQty(index, delta){
+  cart[index].qty=Math.max(0,cart[index].qty+delta);
+  if(cart[index].qty===0) cart.splice(index,1);
+  saveCartToStorage(); updateCartBadge(); renderCartItems();
+}
+
+function checkoutOrder(){
+  if(cart.length===0) return;
+  const subtotal=cart.reduce((s,c)=>s+c.pricePerUnit*c.qty,0);
+  cart=[]; saveCartToStorage(); updateCartBadge(); closeCart();
+  showToast(`✅ ₹${subtotal} का ऑर्डर दर्ज हो गया!`);
+}
+
+/* ═══ ORDER SUMMARY PAGE ═══ */
+const STRIP_COLORS = ['#4caf50','#e07020','#e53935','#2196f3','#9c27b0','#ff9800','#00bcd4','#8bc34a'];
+
+function openOrderPage(){
+  renderOrderPage();
+  document.getElementById('orderPage').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeOrderPage(){
+  document.getElementById('orderPage').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function renderOrderPage(){
+  const container = document.getElementById('opMedicinesList');
+  const cats = [...new Set(cart.map(c=>c.category))];
+  const totalItems = cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('opCatCount').textContent = cats.length;
+  document.getElementById('opItemCount').textContent = totalItems;
+
+  if(cart.length===0){
+    container.innerHTML=`<div class="op-empty">
+      <div class="op-empty-icon">🛒</div>
+      <div class="op-empty-text">अभी कोई दवाई नहीं जोड़ी</div>
+      <div class="op-empty-sub">कोई भी दवाई चुनकर सूची में जोड़ें</div>
+      <button class="op-empty-btn" onclick="closeOrderPage()">🌾 दवाइयाँ देखें</button>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = cart.map((item,i)=>{
+    const color = STRIP_COLORS[i % STRIP_COLORS.length];
+    const p = products.find(x=>x.id===item.productId);
+    const dosage = item.dosageHi || (p ? p.dosageHi : '');
+    const total = item.pricePerUnit * item.qty;
+    return `<div class="op-med-card" id="opcard-${i}">
+      <div class="op-med-strip" style="background:${color}"></div>
+      <div class="op-med-body">
+        <div class="op-med-name">${item.productName} <span style="font-weight:600;font-size:0.82rem;color:#888">${item.productNameEn||''}</span></div>
+        <div class="op-med-dosage">💧 ${dosage}</div>
+        <div class="op-med-pkg">📦 ${item.pkgLabelHi||item.pkgLabel} — ₹${item.pricePerUnit}/यूनिट</div>
+        <div class="op-med-controls">
+          <button class="op-qty-btn" onclick="opChangeQty(${i},1)">+ मात्रा बढ़ाएँ</button>
+          <button class="op-qty-btn minus" onclick="opChangeQty(${i},-1)">- मात्रा घटाएँ</button>
+          <div class="op-qty-display">मात्रा ${item.qty}</div>
+        </div>
+      </div>
+      <div class="op-med-right">
+        <div>
+          <div class="op-med-price">₹${total}</div>
+          <div class="op-med-total">कुल राशि</div>
+        </div>
+        <button class="op-remove-btn" onclick="opRemoveItem(${i})" title="हटाएं">❌</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Load saved address
+  loadSavedAddress();
+}
+
+function opChangeQty(index, delta){
+  if(!cart[index]) return;
+  cart[index].qty = Math.max(1, cart[index].qty + delta);
+  saveCartToStorage();
+  updateCartBadge();
+  renderOrderPage();
+}
+
+function opRemoveItem(index){
+  const card = document.getElementById(`opcard-${index}`);
+  if(card){
+    card.classList.add('removing');
+    setTimeout(()=>{
+      cart.splice(index,1);
+      saveCartToStorage();
+      updateCartBadge();
+      renderOrderPage();
+    }, 280);
+  }
+}
+
+/* ═══ DELIVERY ADDRESS ═══ */
+function toggleDeliveryForm(){
+  const sec = document.getElementById('opDeliverySection');
+  sec.classList.toggle('expanded');
+}
+
+function onAddressInput(){
+  const val = document.getElementById('addrFull').value.trim();
+  updatePaymentLockState(val.length > 0);
+  if(val.length > 0){
+    document.getElementById('addrWarning').classList.remove('show');
+  }
+}
+
+function updatePaymentLockState(hasAddress){
+  const paySection = document.getElementById('opPaymentSection');
+  if(hasAddress){
+    paySection.classList.remove('payment-locked');
+    paySection.classList.add('payment-unlocked');
+    paySection.querySelector('.op-payment-header').onclick = openSummaryPage;
+  } else {
+    paySection.classList.add('payment-locked');
+    paySection.classList.remove('payment-unlocked');
+    paySection.querySelector('.op-payment-header').onclick = showAddressWarning;
+  }
+}
+
+function showAddressWarning(){
+  const w = document.getElementById('addrWarning');
+  w.classList.add('show');
+  // Expand address section to prompt user
+  const sec = document.getElementById('opDeliverySection');
+  if(!sec.classList.contains('expanded')) sec.classList.add('expanded');
+  // Scroll to address
+  sec.scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('addrFull').focus();
+}
+
+function saveAddress(){
+  const full = document.getElementById('addrFull').value.trim();
+  if(!full){
+    showToast('⚠️ कृपया पहले अपना पता लिखें');
+    document.getElementById('addrFull').focus();
+    return;
+  }
+  try{ localStorage.setItem('sprayAddress', JSON.stringify({full})); }catch(e){}
+  window._lastSavedAddr = full;
+  const badge = document.getElementById('opAddressSavedBadge');
+  document.getElementById('opSavedAddressText').textContent = full.substring(0,60)+(full.length>60?'…':'');
+  badge.style.display='flex';
+  showToast('✅ पता सेव हो गया');
+  updatePaymentLockState(true);
+}
+
+function loadSavedAddress(){
+  try{
+    const d = localStorage.getItem('sprayAddress');
+    const fullEl = document.getElementById('addrFull');
+    if(d){
+      const addr = JSON.parse(d);
+      if(fullEl && addr.full){
+        fullEl.value = addr.full;
+        window._lastSavedAddr = addr.full;
+        const badge = document.getElementById('opAddressSavedBadge');
+        document.getElementById('opSavedAddressText').textContent = addr.full.substring(0,60)+(addr.full.length>60?'…':'');
+        badge.style.display='flex';
+        updatePaymentLockState(true);
+      }
+    } else if(fullEl && fullEl.value.trim()){
+      // Pre-filled default address in HTML — treat as saved
+      const val = fullEl.value.trim();
+      window._lastSavedAddr = val;
+      const badge = document.getElementById('opAddressSavedBadge');
+      document.getElementById('opSavedAddressText').textContent = val.substring(0,60)+(val.length>60?'…':'');
+      badge.style.display='flex';
+      updatePaymentLockState(true);
+    }
+  }catch(e){}
+}
+
+/* ═══ ORDER SUMMARY PAGE ═══ */
+const SUM_PLATFORM_FEE = 0;
+const SUM_DELIVERY_FEE = 100;
+const GST_RATE = 0.05;
+
+function openSummaryPage(){
+  if(cart.length===0){ showToast('⚠️ पहले दवाइयाँ सूची में जोड़ें'); return; }
+  const addr = document.getElementById('addrFull') ? document.getElementById('addrFull').value.trim() : '';
+  if(!addr){
+    showAddressWarning();
+    return;
+  }
+  renderSummaryPage(addr);
+  window._lastSavedAddr = addr;
+  document.getElementById('summaryPage').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeSummaryPage(){
+  document.getElementById('summaryPage').classList.remove('open');
+  // Only restore overflow if order page is also closed
+  const orderPageOpen = document.getElementById('orderPage').classList.contains('open');
+  if(!orderPageOpen) document.body.style.overflow='';
+}
+
+function renderSummaryPage(addr){
+  // Generate order ID
+  const orderId = 'AK-' + Date.now().toString().slice(-6);
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('hi-IN', {day:'2-digit', month:'short', year:'numeric'});
+
+  document.getElementById('sumOrderId').textContent = orderId;
+  document.getElementById('sumDate').textContent = dateStr;
+  document.getElementById('sumAddrLine').textContent = '📍 ' + (addr.length > 55 ? addr.substring(0,55)+'…' : addr);
+
+  // Populate customer card
+  const custDateEl = document.getElementById('sumCustomerDate');
+  const custOrderEl = document.getElementById('sumCustomerOrderId');
+  if(custDateEl) custDateEl.textContent = dateStr;
+  if(custOrderEl) custOrderEl.textContent = orderId;
+
+  // Fill delivery address card
+  const addrEl = document.getElementById('sumDeliveryAddrFull');
+  if(addrEl) addrEl.textContent = addr;
+
+  // Medicine list
+  const totalItems = cart.reduce((s,c)=>s+c.qty,0);
+  const sumItemCountEl = document.getElementById('sumItemCount');
+  if(sumItemCountEl) sumItemCountEl.textContent = totalItems;
+
+  const sumMedListEl = document.getElementById('sumMedList');
+  if(sumMedListEl) sumMedListEl.innerHTML = cart.map((item,i)=>{
+    const color = STRIP_COLORS[i % STRIP_COLORS.length];
+    const lineTotal = item.pricePerUnit * item.qty;
+    return `<div class="sum-med-row">
+      <div class="sum-med-stripe" style="background:${color}"></div>
+      <div class="sum-med-info">
+        <div class="sum-med-name">${item.emoji} ${item.productName}</div>
+        <div class="sum-med-sub">${item.productNameEn||''} • ${item.pkgLabelHi||item.pkgLabel}</div>
+        <span class="sum-med-qty-tag">📦 मात्रा: ${item.qty}</span>
+      </div>
+      <div class="sum-med-price-col">
+        <div class="sum-med-unit-price">₹${item.pricePerUnit}/इकाई</div>
+        <div class="sum-med-total-price">₹${lineTotal}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Charges
+  const subtotal = cart.reduce((s,c)=>s+c.pricePerUnit*c.qty,0);
+  const gst = Math.round(subtotal * GST_RATE);
+  const delivery = SUM_DELIVERY_FEE;
+  const platform = SUM_PLATFORM_FEE;
+  const grandTotal = subtotal + gst + delivery + platform;
+
+  document.getElementById('sumSubtotal').textContent = `₹${subtotal}`;
+  document.getElementById('sumGst').textContent = `₹${gst}`;
+  document.getElementById('sumDelivery').textContent = `₹${delivery}`;
+  const sumPlatformEl = document.getElementById('sumPlatform');
+  if(sumPlatformEl) sumPlatformEl.textContent = `₹${platform}`;
+  // Grand total card
+  document.getElementById('sumTotal').textContent = `${grandTotal}`;
+  const breakSubEl = document.getElementById('sumBreakSubtotal');
+  const breakGstEl = document.getElementById('sumBreakGst');
+  const breakDelEl = document.getElementById('sumBreakDelivery');
+  if(breakSubEl) breakSubEl.textContent = `₹${subtotal}`;
+  if(breakGstEl) breakGstEl.textContent = `₹${gst}`;
+  if(breakDelEl) breakDelEl.textContent = `₹${delivery}`;
+
+  // Sticky footer total
+  const footerTotalEl = document.getElementById('sumFooterTotal');
+  if(footerTotalEl) footerTotalEl.textContent = `₹${grandTotal}`;
+
+  // Store for payment
+  window._sumGrandTotal = grandTotal;
+
+  // Default payment selection
+  window._sumPayMethod = 'upi';
+}
+
+/* ═══ SUMMARY PAGE PAYMENT ═══ */
+function selectSumPayment(method, el) {
+  window._sumPayMethod = method;
+  document.querySelectorAll('.sum-pay-option').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+
+/* ═══ SUM PAY SHEET ═══ */
+let _sumSelectedPay = 'cash';
+
+function openSumPaySheet() {
+  if(cart.length === 0){ showToast('⚠️ कोई आइटम नहीं है'); return; }
+  const total = window._sumGrandTotal || cart.reduce((s,c)=>s+c.pricePerUnit*c.qty,0);
+  document.getElementById('sumPaySheetTotal').textContent = '₹' + total;
+  document.getElementById('sumPayBtnAmt').textContent = total;
+  const overlay = document.getElementById('sumPayOverlay');
+  overlay.style.display = 'flex';
+  document.querySelectorAll('.sum-pay-method').forEach(el => {
+    el.style.borderColor = '#e0e0e0';
+    el.style.background = '#fff';
+    el.querySelector('.sum-pay-dot').style.display = 'none';
+    el.querySelector('.sum-pay-radio').style.borderColor = '#ccc';
+  });
+  _sumSelectedPay = 'cash';
+}
+
+function closeSumPaySheet(e) {
+  // Called from X button (no event) or from overlay click
+  if(e && e.target && e.target !== document.getElementById('sumPayOverlay')) return;
+  document.getElementById('sumPayOverlay').style.display = 'none';
+}
+
+function selectSumPay(method, el) {
+  _sumSelectedPay = method;
+  document.querySelectorAll('.sum-pay-method').forEach(d => {
+    d.style.borderColor = '#e0e0e0';
+    d.style.background = '#fff';
+    d.querySelector('.sum-pay-dot').style.display = 'none';
+    d.querySelector('.sum-pay-radio').style.borderColor = '#ccc';
+  });
+  el.style.borderColor = '#4caf50';
+  el.style.background = '#f0faf0';
+  el.querySelector('.sum-pay-dot').style.display = 'block';
+  el.querySelector('.sum-pay-radio').style.borderColor = '#4caf50';
+
+  // Recalculate total: remove delivery charge when "Pay in Shop" is selected
+  const subtotal = cart.reduce((s,c)=>s+c.pricePerUnit*c.qty,0);
+  const gst = Math.round(subtotal * GST_RATE);
+  const delivery = (method === 'shop') ? 0 : SUM_DELIVERY_FEE;
+  const platform = SUM_PLATFORM_FEE;
+  const grandTotal = subtotal + gst + delivery + platform;
+
+  // Update delivery row
+  const deliveryEl = document.getElementById('sumDelivery');
+  if (deliveryEl) deliveryEl.textContent = (method === 'shop') ? '₹0 (मुफ़्त)' : `₹${SUM_DELIVERY_FEE}`;
+  const breakDelEl = document.getElementById('sumBreakDelivery');
+  if (breakDelEl) breakDelEl.textContent = (method === 'shop') ? '₹0' : `₹${SUM_DELIVERY_FEE}`;
+
+  // Update grand total displays
+  const sumTotalEl = document.getElementById('sumTotal');
+  if (sumTotalEl) sumTotalEl.textContent = `${grandTotal}`;
+  const footerTotalEl = document.getElementById('sumFooterTotal');
+  if (footerTotalEl) footerTotalEl.textContent = `₹${grandTotal}`;
+
+  // Update pay sheet amounts
+  const sheetTotalEl = document.getElementById('sumPaySheetTotal');
+  if (sheetTotalEl) sheetTotalEl.textContent = '₹' + grandTotal;
+  const btnAmtEl = document.getElementById('sumPayBtnAmt');
+  if (btnAmtEl) btnAmtEl.textContent = grandTotal;
+
+  window._sumGrandTotal = grandTotal;
+}
+
+/* ══════════════════════════════════════
+   ORDER HISTORY — Save order to localStorage
+══════════════════════════════════════ */
+function saveOrderToHistory(orderId, items, total, payMethod, deliveryAddr) {
+  try {
+    const userName  = localStorage.getItem('userLoginName')  || '';
+    const userPhone = localStorage.getItem('userLoginPhone') || '';
+    const now = new Date();
+    const order = {
+      orderId,
+      items,           // [{name, qty, price}]
+      total,
+      payMethod,
+      deliveryAddr,
+      userName,
+      userPhone,
+      date: now.toLocaleDateString('hi-IN', { day:'2-digit', month:'long', year:'numeric' }),
+      time: now.toLocaleTimeString('hi-IN', { hour:'2-digit', minute:'2-digit' }),
+      timestamp: now.getTime(),
+      status: payMethod === 'shop' ? 'दुकान पर भुगतान' : 'डिलीवरी में'
+    };
+    const existing = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+    existing.unshift(order); // newest first
+    localStorage.setItem('orderHistory', JSON.stringify(existing));
+  } catch(e) {
+    console.error('Order save failed:', e);
+  }
+}
+
+function confirmSumPay() {
+  const total = window._sumGrandTotal || cart.reduce((s,c)=>s+c.pricePerUnit*c.qty,0);
+  const names = { upi:'UPI', shop:'दुकान पर भुगतान', bank:'बैंक ट्रांसफर' };
+  const payMethod = _sumSelectedPay || 'shop';
+  const payName = names[payMethod] || 'दुकान पर भुगतान';
+
+  // Cart items collect करो
+  const orderItems = cart.map(c => ({
+    name: currentLang==='hi' ? (c.productName || c.nameHi || '') : (c.productNameEn || c.nameEn || c.productName || ''),
+    qty: c.qty,
+    price: c.pricePerUnit * c.qty
+  }));
+
+  const deliveryAddr = (document.getElementById('addrFull') ? document.getElementById('addrFull').value.trim() : '') || window._lastSavedAddr || '';
+
+  // Generate order ID here so we save the same ID shown on bill
+  const confirmedOrderId = 'AG' + Date.now().toString().slice(-6);
+
+  // ── Save order to history ──
+  saveOrderToHistory(confirmedOrderId, orderItems, total, payMethod, deliveryAddr);
+
+  document.getElementById('sumPayOverlay').style.display = 'none';
+  closeSummaryPage();
+  cart = [];
+  window._sumGrandTotal = null;
+  saveCartToStorage();
+  updateCartBadge();
+  closeCart();
+  document.body.style.overflow = '';
+
+  if(payMethod === 'shop') {
+    // दुकान पर भुगतान: सीधे बिल दिखाएं
+    openShopBillPage(total, orderItems, confirmedOrderId);
+  } else {
+    // Delivery tracking page खोलो
+    openDeliveryPage(total, payName, orderItems, deliveryAddr, confirmedOrderId);
+  }
+}
+
+/* ══════════════════════════════════════
+   SHOP BILL PAGE — Pay in Shop
+══════════════════════════════════════ */
+function openShopBillPage(total, items, orderId) {
+  orderId = orderId || ('AG' + Date.now().toString().slice(-6));
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('hi-IN', { day:'2-digit', month:'long', year:'numeric' });
+  const timeStr = now.toLocaleTimeString('hi-IN', { hour:'2-digit', minute:'2-digit' });
+
+  const itemsHTML = items.map((item, i) =>
+    `<tr>
+      <td style="padding:10px 8px;font-size:0.88rem;font-weight:700;color:#111;border-bottom:1px solid #f0f0f0;">${i+1}. ${item.name}</td>
+      <td style="padding:10px 8px;text-align:center;font-size:0.85rem;color:#555;border-bottom:1px solid #f0f0f0;">×${item.qty}</td>
+      <td style="padding:10px 8px;text-align:right;font-size:0.92rem;font-weight:900;color:#1a5222;border-bottom:1px solid #f0f0f0;">₹${item.price}</td>
+    </tr>`
+  ).join('');
+
+  const page = document.getElementById('deliveryTrackingPage');
+  page.innerHTML = `
+    <div style="min-height:100vh;background:#f3f7f2;font-family:'Noto Sans Devanagari',sans-serif;">
+
+      <!-- Header -->
+      <div style="background:linear-gradient(135deg,#0d3318,#1a4a1e,#2e6b35);padding:16px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,0.3);">
+        <button onclick="closeDeliveryPage()" style="background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">← वापस</button>
+        <div>
+          <div style="font-size:1rem;font-weight:900;color:#fff;">🧾 बिल / रसीद</div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">Order #${orderId}</div>
+        </div>
+      </div>
+
+      <div style="padding:16px;max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:14px;">
+
+        <!-- Success Banner -->
+        <div style="background:linear-gradient(135deg,#1a5222,#2e6b35);border-radius:18px;padding:22px 20px;text-align:center;animation:bounceIn 0.6s ease;">
+          <div style="font-size:3rem;margin-bottom:8px;">🏪</div>
+          <div style="font-size:1.15rem;font-weight:900;color:#fff;margin-bottom:4px;">ऑर्डर दर्ज हो गया!</div>
+          <div style="font-size:0.82rem;color:rgba(255,255,255,0.8);">दुकान पर आकर सामान लें और भुगतान करें</div>
+        </div>
+
+        <!-- Bill Card -->
+        <div style="background:#fff;border-radius:18px;padding:0;box-shadow:0 2px 12px rgba(0,0,0,0.10);overflow:hidden;">
+
+          <!-- Bill Header -->
+          <div style="background:#f9f9f9;border-bottom:2px dashed #e0e0e0;padding:16px 18px;text-align:center;">
+            <div style="font-size:1.2rem;font-weight:900;color:#0d3318;letter-spacing:0.5px;">अनुराग खाजड़ - स्प्रे स्टोर</div>
+            <div style="font-size:0.75rem;color:#888;margin-top:4px;">📅 ${dateStr} &nbsp;|&nbsp; 🕐 ${timeStr}</div>
+            <div style="font-size:0.72rem;color:#aaa;margin-top:2px;">Order #${orderId}</div>
+          </div>
+
+          <!-- Items Table -->
+          <div style="padding:0 4px;">
+            <table style="width:100%;border-collapse:collapse;">
+              <thead>
+                <tr style="background:#f3f7f2;">
+                  <th style="padding:10px 8px;text-align:left;font-size:0.78rem;font-weight:900;color:#555;letter-spacing:0.3px;">सामान</th>
+                  <th style="padding:10px 8px;text-align:center;font-size:0.78rem;font-weight:900;color:#555;letter-spacing:0.3px;">मात्रा</th>
+                  <th style="padding:10px 8px;text-align:right;font-size:0.78rem;font-weight:900;color:#555;letter-spacing:0.3px;">राशि</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHTML}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Total -->
+          <div style="border-top:2px dashed #e0e0e0;margin:0 12px;"></div>
+          <div style="padding:14px 18px;display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:1rem;font-weight:900;color:#111;">कुल देय राशि</div>
+            <div style="font-size:1.5rem;font-weight:900;color:#1a5222;">₹${total}</div>
+          </div>
+
+          <!-- Payment note -->
+          <div style="background:#fff8e1;margin:0 12px 14px;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:8px;font-size:0.8rem;font-weight:700;color:#7a5500;">
+            🏪 दुकान पर आकर यह बिल दिखाएं और ₹${total} का भुगतान करें
+          </div>
+        </div>
+
+        <!-- Print / Share Buttons -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:30px;">
+          <button onclick="window.print()" style="background:#fff;border:2px solid #1a5222;border-radius:14px;padding:14px;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.82rem;font-weight:800;color:#1a5222;cursor:pointer;">
+            🖨️ बिल प्रिंट करें
+          </button>
+          <button onclick="shareShopBill('${orderId}',${total})" style="background:linear-gradient(135deg,#25d366,#1da851);border:none;border-radius:14px;padding:14px;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.82rem;font-weight:800;color:#fff;cursor:pointer;">
+            📤 WhatsApp पर भेजें
+          </button>
+        </div>
+
+      </div>
+    </div>
+  `;
+
+  page.style.display = 'block';
+  page.style.position = 'fixed';
+  page.style.inset = '0';
+  page.style.zIndex = '1000';
+  page.style.overflowY = 'auto';
+  document.body.style.overflow = 'hidden';
+}
+
+function shareShopBill(orderId, total) {
+  const msg = `🧾 *बिल - अनुराग खाजड़ स्प्रे स्टोर*\nOrder #${orderId}\nकुल राशि: ₹${total}\nदुकान पर आकर भुगतान करें।`;
+  const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+/* ══════════════════════════════════════
+   DELIVERY TRACKING PAGE
+══════════════════════════════════════ */
+function openDeliveryPage(total, payMethod, items, addr, orderId) {
+  addr = addr || 'पता उपलब्ध नहीं';
+  orderId = orderId || ('AG' + Date.now().toString().slice(-6));
+
+  // Items list HTML
+  const itemsHTML = items.map(i =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;">
+      <div>
+        <div style="font-size:0.88rem;font-weight:800;color:#111;">${i.name}</div>
+        <div style="font-size:0.75rem;color:#888;">x${i.qty}</div>
+      </div>
+      <div style="font-size:0.92rem;font-weight:900;color:#1a5222;">₹${i.price}</div>
+    </div>`
+  ).join('');
+
+  const page = document.getElementById('deliveryTrackingPage');
+  page.innerHTML = `
+    <div style="min-height:100vh;background:#f3f7f2;font-family:'Noto Sans Devanagari',sans-serif;">
+
+      <!-- Header -->
+      <div style="background:linear-gradient(135deg,#0d3318,#1a4a1e,#2e6b35);padding:16px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,0.3);">
+        <button onclick="closeDeliveryPage()" style="background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">← वापस</button>
+        <div>
+          <div style="font-size:1rem;font-weight:900;color:#fff;">🚚 ऑर्डर ट्रैकिंग</div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">Order #${orderId}</div>
+        </div>
+      </div>
+
+      <div style="padding:16px;max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:14px;">
+
+        <!-- Success Banner -->
+        <div style="background:linear-gradient(135deg,#1a5222,#2e6b35);border-radius:18px;padding:22px 20px;text-align:center;animation:bounceIn 0.6s ease;">
+          <div style="font-size:3.5rem;margin-bottom:8px;">🎉</div>
+          <div style="font-size:1.2rem;font-weight:900;color:#fff;margin-bottom:4px;">ऑर्डर सफलतापूर्वक दर्ज!</div>
+          <div style="font-size:0.82rem;color:rgba(255,255,255,0.8);">आपका ऑर्डर तैयार किया जा रहा है</div>
+          <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px 16px;margin-top:14px;display:inline-block;">
+            <span style="font-size:1.6rem;font-weight:900;color:#f9cc4a;">₹${total}</span>
+            <span style="font-size:0.75rem;color:rgba(255,255,255,0.8);margin-left:6px;">${payMethod}</span>
+          </div>
+        </div>
+
+        <!-- Live Tracking Map -->
+        <div style="background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+          <div style="padding:14px 16px 10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f0f0f0;">
+            <span style="font-size:1.2rem;">📍</span>
+            <div>
+              <div style="font-size:0.9rem;font-weight:900;color:#111;">लाइव डिलीवरी ट्रैकिंग</div>
+              <div style="font-size:0.72rem;color:#4caf50;font-weight:700;">● डिलीवरी बॉय रास्ते में है</div>
+            </div>
+          </div>
+          <!-- Google Maps Embed (Pipariya, Madhya Pradesh) -->
+          <div style="position:relative;height:220px;">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3668.0!2d78.3511!3d22.7609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3963f2a3a3a3a3a3%3A0x2155716d572d4f0!2sPipariya%2C+Madhya+Pradesh!5e0!3m2!1sen!2sin!4v1"
+              width="100%" height="220" style="border:0;display:block;" allowfullscreen="" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            <!-- Moving Bike Animation Overlay -->
+            <div id="bikeMarker" style="position:absolute;top:50%;left:30%;transform:translate(-50%,-50%);font-size:2rem;z-index:10;animation:bikeDrive 4s linear infinite;">🛵</div>
+            <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;font-size:0.72rem;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;">
+              📱 Google Maps पर देखें
+            </div>
+          </div>
+          <!-- Open in Google Maps Button -->
+          <div style="padding:10px 16px;">
+            <button onclick="openGoogleMaps()" style="width:100%;background:#4285f4;color:#fff;border:none;border-radius:10px;padding:12px;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.88rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+              🗺️ Google Maps में लाइव ट्रैक करें
+            </button>
+          </div>
+        </div>
+
+        <!-- Delivery Status Steps (Swiggy/Zomato style) -->
+        <div style="background:#fff;border-radius:18px;padding:18px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+          <div style="font-size:0.9rem;font-weight:900;color:#111;margin-bottom:16px;">📦 डिलीवरी स्थिति</div>
+
+          ${buildStatusSteps()}
+
+          <!-- Estimated Time -->
+          <div style="background:linear-gradient(135deg,#fff3e0,#fff8f0);border:2px solid #f59332;border-radius:12px;padding:12px 14px;margin-top:14px;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.8rem;">⏱️</span>
+            <div>
+              <div style="font-size:0.75rem;font-weight:700;color:#bf4d00;">अनुमानित डिलीवरी समय</div>
+              <div style="font-size:1.1rem;font-weight:900;color:#0d3318;" id="deliveryCountdown">2-3 घंटे में</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delivery Boy Info (Rapido/Swiggy style) -->
+        <div style="background:#fff;border-radius:18px;padding:18px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+          <div style="font-size:0.9rem;font-weight:900;color:#111;margin-bottom:14px;">🧑 डिलीवरी बॉय</div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1a5222,#4caf50);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;">👨‍🌾</div>
+            <div style="flex:1;">
+              <div style="font-size:1rem;font-weight:900;color:#111;">रामेश्वर यादव</div>
+              <div style="font-size:0.75rem;color:#888;margin-top:2px;">⭐ 4.8 रेटिंग • 250+ डिलीवरी</div>
+              <div style="font-size:0.72rem;color:#4caf50;font-weight:700;margin-top:2px;">● ऑनलाइन</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <button onclick="callDeliveryBoy()" style="background:#25d366;color:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:1.2rem;cursor:pointer;">📞</button>
+              <button onclick="whatsappDeliveryBoy()" style="background:#25d366;color:#fff;border:none;border-radius:10px;padding:10px 14px;font-size:1rem;cursor:pointer;font-weight:800;">💬</button>
+            </div>
+          </div>
+        </div>
+           <!-- OTP Confirmation Box for Delivery Boy -->
+        <div style="background:#fff;border-radius:18px;padding:18px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);border:2px solid #f9cc4a;">
+          <div style="font-size:0.9rem;font-weight:900;color:#111;margin-bottom:12px;">🔐 डिलीवरी OTP</div>
+          <div style="background:linear-gradient(135deg,#0d3318,#1a5222);border-radius:14px;padding:16px;text-align:center;margin-bottom:12px;">
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);margin-bottom:6px;">डिलीवरी बॉय को यह OTP बताएं</div>
+            <div id="deliveryPageOTP" style="font-size:2.4rem;font-weight:900;color:#f9cc4a;letter-spacing:12px;">7489</div>
+          </div>
+          <div style="background:#fff8e1;border-radius:10px;padding:10px 14px;font-size:0.78rem;color:#7a5500;font-weight:700;display:flex;align-items:center;gap:8px;">
+            ⚠️ OTP सिर्फ डिलीवरी बॉय को बताएं, किसी और को नहीं।
+          </div>
+        </div>
+        <!-- Order Items Summary -->
+        <div style="background:#fff;border-radius:18px;padding:18px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+          <div style="font-size:0.9rem;font-weight:900;color:#111;margin-bottom:4px;">🛒 ऑर्डर की गई दवाइयाँ</div>
+          ${itemsHTML}
+          <div style="display:flex;justify-content:space-between;padding-top:12px;margin-top:4px;">
+            <div style="font-size:0.9rem;font-weight:900;color:#111;">कुल राशि</div>
+            <div style="font-size:1rem;font-weight:900;color:#1a5222;">₹${total}</div>
+          </div>
+        </div>
+
+        <!-- Delivery Address -->
+        <div style="background:#fff;border-radius:18px;padding:18px 16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+          <div style="font-size:0.9rem;font-weight:900;color:#111;margin-bottom:10px;">🏠 डिलीवरी पता</div>
+          <div style="background:#f3f7f2;border-radius:10px;padding:12px;font-size:0.85rem;font-weight:600;color:#444;line-height:1.6;">
+            📍 ${addr}
+          </div>
+        </div>
+
+        <!-- Help Buttons -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:30px;">
+          <button onclick="showToast('📞 कस्टमर केयर: 1800-XXX-XXXX')" style="background:#fff;border:2px solid #1a5222;border-radius:14px;padding:14px;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.82rem;font-weight:800;color:#1a5222;cursor:pointer;">
+            📞 सहायता लें
+          </button>
+          <button onclick="cancelOrder('${orderId}')" style="background:#fff;border:2px solid #e53935;border-radius:14px;padding:14px;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.82rem;font-weight:800;color:#e53935;cursor:pointer;">
+            ❌ ऑर्डर रद्द करें
+          </button>
+        </div>
+
+      </div>
+    </div>
+    <!-- OTP Confirmation Box for Delivery Boy -->
+        <div style="...">
+          
+        </div>
+
+        <!-- Order Items Summary -->
+        <div style="...">
+        
+        </div>
+  `;
+
+  page.style.display = 'block';
+  if(window._deliveryOTP) { const el=document.getElementById('deliveryPageOTP'); if(el) el.textContent=window._deliveryOTP; }
+  page.style.position = 'fixed';
+  page.style.inset = '0';
+  page.style.zIndex = '2000';
+  page.style.overflowY = 'auto';
+  page.style.background = '#f3f7f2';
+  document.body.style.overflow = 'hidden';
+
+  // Bike animation start
+  startBikeAnimation();
+}
+
+function buildStatusSteps() {
+  const steps = [
+    { icon: '✅', label: 'ऑर्डर दर्ज हो गया', sub: 'अभी-अभी', done: true },
+    { icon: '📦', label: 'पैकिंग हो रही है', sub: '5-10 मिनट में', done: true, active: true },
+    { icon: '🛵', label: 'डिलीवरी के लिए निकला', sub: '30 मिनट में', done: false },
+    { icon: '🏠', label: 'डिलीवर हो गया', sub: '2-3 घंटे में', done: false },
+  ];
+  return `<div style="display:flex;flex-direction:column;gap:0;">
+    ${steps.map((s, i) => `
+      <div style="display:flex;gap:14px;align-items:flex-start;${i < steps.length-1 ? 'padding-bottom:16px;' : ''}">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+          <div style="width:40px;height:40px;border-radius:50%;background:${s.done ? (s.active ? '#f59332' : '#1a5222') : '#e8e8e8'};display:flex;align-items:center;justify-content:center;font-size:1.1rem;${s.active ? 'box-shadow:0 0 0 4px rgba(245,147,50,0.25);animation:pulse 1.5s infinite;' : ''}">
+            ${s.icon}
+          </div>
+          ${i < steps.length-1 ? `<div style="width:2px;flex:1;min-height:20px;background:${s.done && !s.active ? '#1a5222' : '#e8e8e8'};margin-top:4px;"></div>` : ''}
+        </div>
+        <div style="padding-top:8px;">
+          <div style="font-size:0.9rem;font-weight:${s.done ? '900' : '700'};color:${s.done ? '#111' : '#aaa'};">${s.label}</div>
+          <div style="font-size:0.72rem;color:${s.active ? '#f59332' : '#aaa'};font-weight:700;">${s.sub}</div>
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function closeDeliveryPage() {
+  // Clear cart and saved address so returning user starts fresh
+  try {
+    localStorage.removeItem('sprayCart');
+    localStorage.removeItem('sprayAddress');
+  } catch(e) {}
+  cart = [];
+  window.location.href = 'crop.html';
+}
+
+function openGoogleMaps() {
+  // Pipariya, Madhya Pradesh coordinates
+  const lat = 22.7609;
+  const lng = 78.3511;
+  window.open(`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`, '_blank');
+}
+
+function callDeliveryBoy() {
+  // यहाँ असली नंबर डालें
+  window.location.href = 'tel:+919876543210';
+}
+
+function whatsappDeliveryBoy() {
+  const msg = encodeURIComponent('नमस्ते, मेरा ऑर्डर कब तक आएगा?');
+  window.open(`https://wa.me/919876543210?text=${msg}`, '_blank');
+}
+
+function cancelOrder(orderId) {
+  if(confirm(`क्या आप Order #${orderId} रद्द करना चाहते हैं?`)) {
+    closeDeliveryPage();
+    showToast('❌ ऑर्डर रद्द कर दिया गया');
+  }
+}
+
+function startBikeAnimation() {
+  // Bike marker को map पर animate करो
+  const bike = document.getElementById('bikeMarker');
+  if(!bike) return;
+  let pos = 20;
+  let dir = 1;
+  setInterval(() => {
+    pos += dir * 0.5;
+    if(pos > 70 || pos < 10) dir *= -1;
+    if(bike) bike.style.left = pos + '%';
+  }, 50);
+}
+
+/* ═══ PAYMENT ═══ */
+function openPaymentSheet(){
+  if(cart.length===0){ showToast('⚠️ पहले दवाइयाँ सूची में जोड़ें'); return; }
+  const grandTotal = window._sumGrandTotal || cart.reduce((s,c)=>s+c.pricePerUnit*c.qty,0);
+  document.getElementById('paymentSheetTotal').textContent=`₹${grandTotal}`;
+  document.getElementById('payBtnAmt').textContent=grandTotal;
+  document.getElementById('paymentOverlay').classList.add('show');
+}
+function closePaymentSheet(){ document.getElementById('paymentOverlay').classList.remove('show'); }
+function closePaymentOnBg(e){ if(e.target===document.getElementById('paymentOverlay')) closePaymentSheet(); }
+
+let selectedPayMethod = null;
+function selectPayment(method){
+  selectedPayMethod = method;
+  document.querySelectorAll('.payment-method-btn').forEach(b=>b.style.borderColor='');
+  event.currentTarget.style.borderColor='var(--g5)';
+  event.currentTarget.style.background='#f0fdf4';
+}
+
+function confirmPayment(){
+  if(cart.length===0){ showToast('⚠️ कोई आइटम नहीं है'); return; }
+  const grandTotal = window._sumGrandTotal || cart.reduce((s,c)=>s+c.pricePerUnit*c.qty,0);
+  const method = selectedPayMethod || 'cash';
+  const methodNames = {upi:'UPI', cash:'नकद (COD)', bank:'बैंक ट्रांसफर'};
+  closePaymentSheet();
+  closeSummaryPage();
+  cart=[];
+  window._sumGrandTotal = null;
+  saveCartToStorage();
+  updateCartBadge();
+  closeOrderPage();
+  showToast(`✅ ₹${grandTotal} का ऑर्डर ${methodNames[method]||''} से दर्ज हो गया! 🎉`);
+}
+
+/* ═══ FILTER / SEARCH / LANG ═══ */
+function filterCategory(cat, btn){
+  currentFilter=cat;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(document.getElementById('searchInput').value);
+}
+
+function searchProducts(val){ renderProducts(val); }
+
+function toggleLike(id, btn){
+  if(likedProducts.has(id)){likedProducts.delete(id);btn.textContent='🤍';btn.classList.remove('liked');}
+  else{likedProducts.add(id);btn.textContent='❤️';btn.classList.add('liked');}
+}
+
+function shareProduct(id){
+  const p=products.find(x=>x.id===id);
+  showToast(`🔗 ${T[currentLang].share} ${currentLang==='hi'?p.nameHi:p.nameEn}`);
+}
+
+function toggleLang(){
+  currentLang=currentLang==='hi'?'en':'hi';
+  const L=currentLang, t=T[L];
+  document.getElementById('langLabel').textContent=t.langLabel;
+  document.getElementById('headerTitle').childNodes[0].textContent=t.headerBtn+' ';
+  document.getElementById('searchInput').placeholder=t.searchPlaceholder;
+  document.getElementById('cartLabel').textContent=t.cartLabel;
+  document.getElementById('cartTitle').textContent=t.cartTitle;
+  document.getElementById('cartEmptyText').textContent=t.cartEmpty;
+  document.getElementById('subtotalLabel').textContent=t.subtotal;
+  document.getElementById('checkoutLabel').textContent=t.checkout;
+  document.getElementById('tab-all').textContent=t.tabAll;
+  document.getElementById('tab-keetnashak').textContent=t.tabKeetnashak;
+  document.getElementById('tab-urvarak').textContent=t.tabUrvarak;
+  document.getElementById('tab-fungicide').textContent=t.tabFungicide;
+  document.getElementById('tab-herbicide').textContent=t.tabHerbicide;
+  document.getElementById('footerText1').textContent=L==='hi'?'🌾 किसान डिजिटल सेवाएं':'🌾 Farmer Digital Services';
+  document.getElementById('footerText2').textContent=L==='hi'?'AgriTech India द्वारा संचालित':'Powered by AgriTech India';
+  renderProducts(document.getElementById('searchInput').value);
+  if(document.getElementById('cartOverlay').classList.contains('show')) renderCartItems();
+  if(detailProductId) openDetailPage(detailProductId);
+}
+
+/* ═══ MIC ═══ */
+function toggleMic(){
+  const btn=document.getElementById('micBtn'), input=document.getElementById('searchInput');
+  if('webkitSpeechRecognition' in window||'SpeechRecognition' in window){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition, rec=new SR();
+    rec.lang=currentLang==='hi'?'hi-IN':'en-IN'; rec.interimResults=false;
+    btn.classList.add('listening');
+    rec.onresult=e=>{const text=e.results[0][0].transcript;input.value=text;searchProducts(text);btn.classList.remove('listening');showToast(`🎙️ "${text}"`)};
+    rec.onerror=rec.onend=()=>btn.classList.remove('listening');
+    rec.start();
+  } else showToast(T[currentLang].voiceUnsupported);
+}
+
+/* ═══ TOAST ═══ */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+/* ═══ SPRAY DROPDOWN ═══ */
+function buildSprayDropdown(){
+  const L=currentLang;
+  document.getElementById('sprayDropdownHeader').textContent=T[L].dropdownHeader;
+  document.getElementById('sprayDropdownItems').innerHTML=products.map((p,i)=>{
+    const num = i+1;
+    const label = L==='hi' ? `स्प्रे ${num}` : `Spray ${num}`;
+    const isActive = activeSprayId===p.id;
+    return `<div class="spray-dropdown-item${isActive?' active-spray':''}" onclick="sprayDropdownClick(${p.id})">
+      <div class="spray-num-circle">${num}</div>
+      <div class="spray-item-label">${label}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSprayDropdown(){
+  const panel=document.getElementById('sprayDropdown');
+  const btn=document.getElementById('headerTitle');
+  const isOpen=panel.classList.contains('open');
+  if(!isOpen) buildSprayDropdown();
+  panel.classList.toggle('open');
+  btn.classList.toggle('open', !isOpen);
+}
+
+function sprayDropdownClick(productId){
+  document.getElementById('sprayDropdown').classList.remove('open');
+  document.getElementById('headerTitle').classList.remove('open');
+  activeSprayId = productId;
+}
+
+document.addEventListener('click', function(e){
+  const wrap=document.querySelector('.spray-dropdown-wrap');
+  if(wrap && !wrap.contains(e.target)){
+    document.getElementById('sprayDropdown').classList.remove('open');
+    document.getElementById('headerTitle').classList.remove('open');
+  }
+});
+
+document.getElementById('qtyOverlay').addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+
+// Initialize: load cart from localStorage then render
+loadCartFromStorage();
+updateCartBadge();
+renderProducts();
+
+// On load: force-close order/summary panels so user always starts on product list
+document.getElementById('orderPage').classList.remove('open');
+document.getElementById('summaryPage').classList.remove('open');
+document.body.style.overflow = '';
+// Also hide delivery tracking page just in case
+const dtp = document.getElementById('deliveryTrackingPage');
+if(dtp) { dtp.style.display='none'; dtp.innerHTML=''; }
+</script>
+</body>
+<!-- ══ DELIVERY TRACKING PAGE ══ -->
+<div id="deliveryTrackingPage" style="display:none;"></div>
+
+<style>
+@keyframes bounceIn {
+  0%{transform:scale(0.7);opacity:0}
+  60%{transform:scale(1.05)}
+  100%{transform:scale(1);opacity:1}
+}
+@keyframes pulse {
+  0%,100%{box-shadow:0 0 0 4px rgba(245,147,50,0.25)}
+  50%{box-shadow:0 0 0 8px rgba(245,147,50,0.1)}
+}
+@keyframes bikeDrive {
+  0%{transform:translate(-50%,-50%) scaleX(1)}
+  49%{transform:translate(-50%,-50%) scaleX(1)}
+  50%{transform:translate(-50%,-50%) scaleX(-1)}
+  100%{transform:translate(-50%,-50%) scaleX(-1)}
+}
+</style>
+
+<!-- ══ NEW SUMMARY PAYMENT SHEET ══ -->
+<div id="sumPayOverlay" onclick="closeSumPaySheet(event)" style="
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.55); z-index:1300;
+  align-items:flex-end; justify-content:center;">
+
+  <div onclick="event.stopPropagation()" style="
+    background:#fff; border-radius:24px 24px 0 0;
+    width:100%; max-width:520px;
+    padding-bottom:env(safe-area-inset-bottom,20px);
+    animation:sheetUp 0.32s cubic-bezier(0.34,1.1,0.64,1);
+    max-height:90vh; overflow-y:auto;">
+
+    <!-- Handle -->
+    <div style="width:40px;height:4px;background:#dde;border-radius:2px;margin:14px auto 0;"></div>
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 10px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.4rem;">💳</span>
+        <span style="font-size:1.05rem;font-weight:900;color:#111;font-family:'Noto Sans Devanagari',sans-serif;">भुगतान का तरीका चुनें</span>
+      </div>
+      <button onclick="closeSumPaySheet()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#888;padding:4px 8px;">✕</button>
+    </div>
+
+    <!-- Total Box -->
+    <div style="
+      margin:0 16px 16px;
+      background:linear-gradient(135deg,#0d3318,#1a5222);
+      border-radius:16px; padding:18px 20px;
+      display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.7);font-family:'Noto Sans Devanagari',sans-serif;">कुल देय राशि</div>
+        <div id="sumPaySheetTotal" style="font-size:1.9rem;font-weight:900;color:#fff;letter-spacing:-1px;font-family:'Noto Sans Devanagari',sans-serif;">₹0</div>
+      </div>
+      <span style="font-size:2.8rem;opacity:0.6;">🧾</span>
+    </div>
+
+    <!-- Payment Method Label -->
+    <div style="padding:0 20px 10px;font-size:0.82rem;font-weight:900;color:#666;font-family:'Noto Sans Devanagari',sans-serif;letter-spacing:0.3px;">भुगतान विधि</div>
+
+    <!-- Methods -->
+    <div style="padding:0 16px;display:flex;flex-direction:column;gap:10px;">
+
+      <!-- UPI -->
+      <div onclick="selectSumPay('upi',this)" class="sum-pay-method" style="
+        display:flex;align-items:center;gap:14px;
+        border:2px solid #e0e0e0;border-radius:14px;
+        padding:16px;cursor:pointer;
+        transition:all 0.18s ease;background:#fff;">
+        <span style="font-size:1.8rem;">🔷</span>
+        <div style="flex:1;">
+          <div style="font-size:0.95rem;font-weight:900;color:#111;font-family:'Noto Sans Devanagari',sans-serif;">UPI / QR कोड</div>
+          <div style="font-size:0.75rem;color:#888;font-weight:600;">Google Pay, PhonePe, Paytm</div>
+        </div>
+        <div class="sum-pay-radio" style="width:22px;height:22px;border-radius:50%;border:2.5px solid #ccc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div class="sum-pay-dot" style="width:11px;height:11px;border-radius:50%;background:#4caf50;display:none;"></div>
+        </div>
+      </div>
+
+      <!-- Pay in Shop -->
+      <div onclick="selectSumPay('shop',this)" class="sum-pay-method" style="
+        display:flex;align-items:center;gap:14px;
+        border:2px solid #e0e0e0;border-radius:14px;
+        padding:16px;cursor:pointer;
+        transition:all 0.18s ease;background:#fff;">
+        <span style="font-size:1.8rem;">🏪</span>
+        <div style="flex:1;">
+          <div style="font-size:0.95rem;font-weight:900;color:#111;font-family:'Noto Sans Devanagari',sans-serif;">दुकान पर भुगतान (Pay in Shop)</div>
+          <div style="font-size:0.75rem;color:#888;font-weight:600;">दुकान पर आकर नकद दें</div>
+        </div>
+        <div class="sum-pay-radio" style="width:22px;height:22px;border-radius:50%;border:2.5px solid #ccc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div class="sum-pay-dot" style="width:11px;height:11px;border-radius:50%;background:#4caf50;display:none;"></div>
+        </div>
+      </div>
+
+      <!-- Bank -->
+      <div onclick="selectSumPay('bank',this)" class="sum-pay-method" style="
+        display:flex;align-items:center;gap:14px;
+        border:2px solid #e0e0e0;border-radius:14px;
+        padding:16px;cursor:pointer;
+        transition:all 0.18s ease;background:#fff;">
+        <span style="font-size:1.8rem;">🏦</span>
+        <div style="flex:1;">
+          <div style="font-size:0.95rem;font-weight:900;color:#111;font-family:'Noto Sans Devanagari',sans-serif;">बैंक ट्रांसफर / NEFT</div>
+          <div style="font-size:0.75rem;color:#888;font-weight:600;">सीधे खाते में भुगतान</div>
+        </div>
+        <div class="sum-pay-radio" style="width:22px;height:22px;border-radius:50%;border:2.5px solid #ccc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div class="sum-pay-dot" style="width:11px;height:11px;border-radius:50%;background:#4caf50;display:none;"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Confirm Button -->
+    <div style="padding:20px 16px 10px;">
+      <button onclick="confirmSumPay()" style="
+        width:100%;
+        background:linear-gradient(135deg,#f9cc4a,#f0a800);
+        color:#5a3e00;border:none;border-radius:16px;
+        padding:18px;
+        font-family:'Noto Sans Devanagari',sans-serif;
+        font-size:1.05rem;font-weight:900;cursor:pointer;
+        box-shadow:0 4px 20px rgba(249,204,74,0.4);">
+        ✅ ₹<span id="sumPayBtnAmt">0</span> का ऑर्डर करें
+      </button>
+    </div>
+
+  </div>
+</div>
+</html>

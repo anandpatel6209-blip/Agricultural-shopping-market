@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>मेरी फसलें - अनुराग खाजड़</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --white: #ffffff;
+      --off-white: #f7f9f4;
+      --cream: #fdf6ec;
+      --green-dark: #1a4a1e;
+      --green-mid: #2e6b35;
+      --green-light: #3d8b46;
+      --green-accent: #4caf50;
+      --green-pale: #e8f5e9;
+      --green-border: #a5d6a7;
+      --orange-accent: #e67e22;
+      --orange-light: #f39c12;
+      --orange-pale: #fef3e2;
+      --text-dark: #1a1a1a;
+      --text-mid: #333;
+      --text-muted: #777;
+      --moong-bg: #f0f9f0;
+      --moong-border: #a5d6a7;
+      --dhaan-bg: #fffbf0;
+      --dhaan-border: #f0c040;
+      --gehun-bg: #fff8f0;
+      --gehun-border: #f0a060;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --shadow-hover: 0 6px 24px rgba(0,0,0,0.15);
+    }
+
+    body {
+      font-family: 'Noto Sans Devanagari', 'Baloo 2', sans-serif;
+      background: var(--off-white);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ══════════ HEADER ══════════ */
+    header {
+      background: var(--green-dark);
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+
+    .header-tractor {
+      font-size: 2rem;
+      filter: drop-shadow(0 1px 4px rgba(255,255,255,0.2));
+      flex-shrink: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .lang-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.1);
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 6px 14px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .lang-pill:hover { background: rgba(255,255,255,0.18); }
+
+    .profile-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .profile-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--orange-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    /* ══════════ MAIN ══════════ */
+    main {
+      flex: 1;
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+    }
+
+    /* Section heading */
+    .section-heading {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .section-divider {
+      height: 3px;
+      background: linear-gradient(90deg, var(--green-accent) 0%, var(--green-border) 60%, transparent 100%);
+      border-radius: 2px;
+      margin-bottom: 22px;
+    }
+
+    /* ══════════ CROP CARD ══════════ */
+    .crop-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 12px;
+      border: 2.5px solid;
+      padding: 18px 20px 18px 16px;
+      margin-bottom: 16px;
+      gap: 16px;
+      transition: transform 0.18s, box-shadow 0.18s;
+      animation: slideIn 0.4s ease both;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .crop-card:nth-child(1) { animation-delay: 0.05s; }
+    .crop-card:nth-child(2) { animation-delay: 0.12s; }
+    .crop-card:nth-child(3) { animation-delay: 0.19s; }
+
+    .crop-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .crop-card.moong {
+      background: var(--moong-bg);
+      border-color: var(--moong-border);
+    }
+
+    .crop-card.dhaan {
+      background: var(--dhaan-bg);
+      border-color: var(--dhaan-border);
+    }
+
+    .crop-card.gehun {
+      background: var(--gehun-bg);
+      border-color: var(--gehun-border);
+    }
+
+    .crop-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .crop-number {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .moong .crop-number { background: var(--green-mid); }
+    .dhaan .crop-number { background: #b8860b; }
+    .gehun .crop-number { background: #c0550a; }
+
+    .crop-icon-wrap {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .crop-info { flex: 1; min-width: 0; }
+
+    .crop-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .crop-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .tag {
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 2px 0;
+    }
+
+    .tag-dot {
+      font-size: 0.8rem;
+      color: #999;
+    }
+
+    .moong .tag { color: var(--orange-accent); }
+    .dhaan .tag { color: #8B6914; }
+    .gehun .tag { color: #b03a0a; }
+
+    /* Medicine Button */
+    .medicine-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border: 2.5px solid var(--text-dark);
+      border-radius: 10px;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .medicine-btn:hover {
+      background: var(--text-dark);
+      color: #fff;
+      transform: translateX(2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    }
+
+    .medicine-btn .arrow-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: var(--text-dark);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: background 0.18s;
+      flex-shrink: 0;
+    }
+
+    .medicine-btn:hover .arrow-icon {
+      background: #fff;
+      color: var(--text-dark);
+    }
+
+
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--green-dark);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: all 0.35s ease;
+      z-index: 9999;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ══════════ FOOTER ══════════ */
+    footer {
+      background: var(--green-dark);
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+      padding: 16px 20px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* ══════════ VOICE MODAL ══════════ */
+    .voice-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .voice-overlay.show { display: flex; }
+
+    .voice-modal {
+      background: #fff;
+      border-radius: 20px;
+      padding: 36px 40px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 320px;
+      width: 90%;
+    }
+
+    .voice-ripple {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--green-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 16px;
+      position: relative;
+    }
+
+    .voice-ripple::before, .voice-ripple::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid var(--green-mid);
+      animation: ripple 1.5s infinite;
+    }
+
+    .voice-ripple::before { width: 100px; height: 100px; animation-delay: 0s; }
+    .voice-ripple::after { width: 120px; height: 120px; animation-delay: 0.4s; }
+
+    @keyframes ripple {
+      0% { transform: scale(0.8); opacity: 0.8; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+
+    .voice-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .voice-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .voice-cancel {
+      background: #f0f0f0;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text-mid);
+    }
+
+    /* ══════════ PROFILE MODAL ══════════ */
+    .profile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+
+    .profile-overlay.show { display: flex; }
+
+    .profile-dropdown {
+      background: #fff;
+      border-radius: 0 0 0 16px;
+      padding: 24px;
+      width: 260px;
+      box-shadow: -4px 4px 24px rgba(0,0,0,0.2);
+      animation: slideDown 0.25s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .profile-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+
+    .profile-phone {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .profile-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      transition: color 0.15s;
+    }
+
+    .profile-menu-item:last-child { border-bottom: none; }
+    .profile-menu-item:hover { color: var(--green-mid); }
+
+
+
+
+
+    /* ══════════ CROP SEARCH BAR ══════════ */
+    .crop-search-wrap {
+      position: relative;
+      margin-bottom: 22px;
+    }
+
+    .crop-search-inner {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 2.5px solid var(--green-border);
+      border-radius: 14px;
+      height: 52px;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .crop-search-inner:focus-within {
+      border-color: var(--green-accent);
+      box-shadow: 0 0 0 3px rgba(76,175,80,0.15);
+    }
+
+    .crop-search-icon {
+      padding: 0 14px 0 16px;
+      font-size: 1.15rem;
+      color: var(--green-mid);
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    #cropSearchInput {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1.05rem;
+      font-family: 'Noto Sans Devanagari', 'Baloo 2', sans-serif;
+      font-weight: 600;
+      color: var(--text-dark);
+      background: transparent;
+      padding: 0;
+      min-width: 0;
+    }
+
+    #cropSearchInput::placeholder {
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    .crop-search-clear {
+      background: none;
+      border: none;
+      width: 40px;
+      height: 52px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #bbb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: color 0.2s;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    .crop-search-clear.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .crop-search-clear:hover { color: #e74c3c; }
+
+    .crop-mic-btn {
+      background: var(--green-dark);
+      border: none;
+      width: 48px;
+      height: 52px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-shrink: 0;
+      transition: background 0.2s;
+      border-radius: 0 11px 11px 0;
+    }
+
+    .crop-mic-btn:hover { background: var(--green-mid); }
+
+    .crop-mic-btn.listening {
+      background: #c0392b;
+      animation: micPulse 0.8s infinite;
+    }
+
+    @keyframes micPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Crop cards filter animation */
+    .crop-card {
+      transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.3s ease, margin-bottom 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
+    }
+
+    .crop-card.cs-hidden {
+      opacity: 0;
+      transform: scale(0.97) translateY(-6px);
+      max-height: 0 !important;
+      margin-bottom: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      pointer-events: none;
+    }
+
+    .crop-card.cs-visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    /* No crop found message */
+    #cropNotFound {
+      display: none;
+      text-align: center;
+      padding: 36px 20px;
+      color: var(--text-muted);
+      font-size: 1rem;
+      font-weight: 600;
+      border: 2px dashed var(--green-border);
+      border-radius: 14px;
+      background: var(--green-pale);
+      animation: fadeIn 0.3s ease;
+    }
+
+    #cropNotFound.show { display: block; }
+
+    #cropNotFound .nf-emoji {
+      font-size: 2.2rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    #cropNotFound .nf-hint {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+        .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .header-shop-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .header-shop-name {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.5px;
+      font-family: 'Noto Sans Devanagari', 'Baloo 2', sans-serif;
+      white-space: nowrap;
+    }
+
+    .header-shop-sub {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--green-border);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ══════════ ADVISER & COMPLAINT MODALS ══════════ */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 18px;
+      padding: 30px 28px 26px;
+      width: 92%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      animation: slideDown 0.25s ease;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: none; border: none;
+      font-size: 1.4rem; cursor: pointer;
+      color: #aaa; line-height: 1;
+    }
+    .modal-close:hover { color: #333; }
+
+    .modal-icon {
+      font-size: 2.4rem;
+      margin-bottom: 10px;
+      display: block;
+      text-align: center;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--text-dark);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .modal-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .modal-field {
+      width: 100%;
+      border: 2px solid var(--green-border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      background: var(--off-white);
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .modal-field:focus { border-color: var(--green-accent); }
+
+    textarea.modal-field {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .modal-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.12s;
+    }
+    .modal-btn:active { transform: scale(0.97); }
+    .modal-btn.green { background: var(--green-mid); color: #fff; }
+    .modal-btn.orange { background: var(--orange-accent); color: #fff; }
+    .modal-btn:hover { opacity: 0.88; }
+
+    .adviser-slots {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .slot-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 2px solid var(--green-border);
+      background: var(--green-pale);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .slot-chip.selected, .slot-chip:hover {
+      background: var(--green-mid);
+      color: #fff;
+      border-color: var(--green-mid);
+    }
+  
+    @media (max-width: 600px) {
+      header { height: 60px; padding: 0 12px; gap: 8px; }
+      .search-bar { height: 42px; }
+      .mic-btn { width: 42px; height: 42px; }
+      .header-actions { gap: 10px; }
+      .lang-pill { padding: 5px 10px; font-size: 0.82rem; }
+      main { padding: 18px 12px 30px; }
+      .section-heading { font-size: 1.4rem; }
+      .crop-card { flex-direction: column; align-items: flex-start; }
+      .medicine-btn { width: 100%; justify-content: center; }
+      .medicine-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header>
+  <div class="header-brand">
+    <div class="header-tractor">🚜</div>
+    <div class="header-shop-info">
+      <span class="header-shop-name" id="shopName" data-hi="अनुराग खाजड़" data-en="Anurag Khajad">अनुराग खाजड़</span>
+      <span class="header-shop-sub" id="shopSub" data-hi="कृषि भंडार" data-en="Agri Store">कृषि भंडार</span>
+    </div>
+  </div>
+
+  <div class="header-actions">
+    <div class="lang-pill" onclick="toggleLang()">
+      🌐 <span id="langLabel">हिंदी</span>
+    </div>
+    <div class="profile-btn" onclick="toggleProfile()">
+      <div class="profile-avatar">👤</div>
+      <span id="profileLabel">प्रोफाइल</span>
+    </div>
+  </div>
+
+</header>
+
+<!-- ══════════ MAIN ══════════ -->
+<main>
+  <div class="section-heading" id="sectionTitle">मेरी फसलें</div>
+  <div class="section-divider"></div>
+
+  <!-- ══ CROP SEARCH BAR ══ -->
+  <div class="crop-search-wrap">
+    <div class="crop-search-inner">
+      <span class="crop-search-icon">🌾</span>
+      <input
+        type="text"
+        id="cropSearchInput"
+        placeholder="फसल खोजें — मूंग, धान, गेहूं / Moong, Rice, Wheat"
+        oninput="cropSearch(this.value)"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="crop-search-clear" id="cropSearchClear" onclick="clearCropSearch()" title="साफ करें">✕</button>
+      <button class="crop-mic-btn" id="cropMicBtn" onclick="toggleCropVoice()" title="आवाज़ से खोजें">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="2" width="6" height="11" rx="3"/>
+          <path d="M5 10a7 7 0 0 0 14 0"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="9" y1="22" x2="15" y2="22"/>
+        </svg>
+      </button>
+    </div>
+    <div id="cropNotFound">
+      <span class="nf-emoji">🔍</span>
+      <span id="cropNotFoundMsg">कोई फसल नहीं मिली</span>
+      <div class="nf-hint" id="cropNotFoundHint">मूंग, धान या गेहूं टाइप करें</div>
+    </div>
+  </div>
+
+  <!-- ── CROP 1: मूंग ── -->
+  <div class="crop-card moong" id="card-moong">
+    <div class="crop-left">
+      <div class="crop-number">1</div>
+      <div class="crop-icon-wrap">
+        <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="23" cy="23" r="23" fill="#c8e6c9"/>
+          <!-- Sprout stem -->
+          <path d="M23 34 Q23 26 23 20" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Left leaf -->
+          <path d="M23 24 Q16 20 14 14 Q20 16 23 22" fill="#43a047" opacity="0.9"/>
+          <!-- Right leaf -->
+          <path d="M23 22 Q30 18 33 12 Q27 14 23 20" fill="#66bb6a"/>
+          <!-- Seed dots -->
+          <circle cx="18" cy="31" r="3.5" fill="#8bc34a"/>
+          <circle cx="23" cy="33" r="3.5" fill="#7cb342"/>
+          <circle cx="28" cy="31" r="3.5" fill="#8bc34a"/>
+        </svg>
+      </div>
+      <div class="crop-info">
+        <div class="crop-name" data-hi="मूंग(Moong)" data-en="Moong Bean">मूंग(Moong)</div>
+        <div class="crop-tags">
+          <span class="tag" data-hi="गर्मी की फसल" data-en="Summer Crop">गर्मी की फसल</span>
+          <span class="tag-dot">•</span>
+          <span class="tag" data-hi="फलीदार" data-en="Legume">फलीदार</span>
+          <span class="tag-dot">•</span>
+          <span class="tag" data-hi="अल्प अवधि" data-en="Short Duration">अल्प अवधि</span>
+        </div>
+      </div>
+    </div>
+    <button class="medicine-btn" onclick="window.location.href='spray.html'">
+      <span data-hi="मूंग के लिए दवाइयाँ" data-en="Medicines for Moong">मूंग के लिए दवाइयाँ</span>
+      <div class="arrow-icon">➤</div>
+    </button>
+  </div>
+
+
+
+  <!-- ── CROP 2: धान ── -->
+  <div class="crop-card dhaan" id="card-dhaan">
+    <div class="crop-left">
+      <div class="crop-number">2</div>
+      <div class="crop-icon-wrap">
+        <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="23" cy="23" r="23" fill="#fff8e1"/>
+          <!-- Stalk -->
+          <path d="M23 36 L23 16" stroke="#8d6e28" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Rice grains on left -->
+          <ellipse cx="17" cy="22" rx="4" ry="2.5" fill="#d4aa40" transform="rotate(-30 17 22)"/>
+          <ellipse cx="16" cy="18" rx="4" ry="2.5" fill="#c9a235" transform="rotate(-40 16 18)"/>
+          <ellipse cx="19" cy="15" rx="4" ry="2.5" fill="#d4aa40" transform="rotate(-20 19 15)"/>
+          <!-- Rice grains on right -->
+          <ellipse cx="29" cy="22" rx="4" ry="2.5" fill="#c9a235" transform="rotate(30 29 22)"/>
+          <ellipse cx="30" cy="18" rx="4" ry="2.5" fill="#d4aa40" transform="rotate(40 30 18)"/>
+          <ellipse cx="27" cy="15" rx="4" ry="2.5" fill="#c9a235" transform="rotate(20 27 15)"/>
+          <!-- Top grain -->
+          <ellipse cx="23" cy="13" rx="4" ry="2.5" fill="#e0bb50"/>
+          <!-- Water ripples -->
+          <path d="M13 38 Q18 36 23 38 Q28 40 33 38" stroke="#90caf9" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="crop-info">
+        <div class="crop-name" data-hi="धान (Dhaan)" data-en="Rice (Dhaan)">धान (Dhaan)</div>
+        <div class="crop-tags">
+          <span class="tag" data-hi="बारिश की फसल" data-en="Rainy Season Crop">बारिश की फसल</span>
+          <span class="tag-dot">•</span>
+          <span class="tag" data-hi="अनाज" data-en="Grain">अनाज</span>
+          <span class="tag-dot">•</span>
+          <span class="tag" data-hi="जल गहन" data-en="Water Intensive">जल गहन</span>
+        </div>
+      </div>
+    </div>
+    <button class="medicine-btn" onclick="togglePanel('dhaan')">
+      <span data-hi="धान के लिए दवाइयाँ" data-en="Medicines for Rice">धान के लिए दवाइयाँ</span>
+      <div class="arrow-icon">➤</div>
+    </button>
+  </div>
+
+
+
+  <!-- ── CROP 3: गेहूं ── -->
+  <div class="crop-card gehun" id="card-gehun">
+    <div class="crop-left">
+      <div class="crop-number">3</div>
+      <div class="crop-icon-wrap">
+        <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="23" cy="23" r="23" fill="#fff3e0"/>
+          <!-- Wheat stalk -->
+          <path d="M23 37 L23 14" stroke="#a1670a" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Wheat ear grains -->
+          <ellipse cx="20" cy="25" rx="3.5" ry="2" fill="#e8960a" transform="rotate(-15 20 25)"/>
+          <ellipse cx="26" cy="25" rx="3.5" ry="2" fill="#d4850a" transform="rotate(15 26 25)"/>
+          <ellipse cx="20" cy="21" rx="3.5" ry="2" fill="#d4850a" transform="rotate(-20 20 21)"/>
+          <ellipse cx="26" cy="21" rx="3.5" ry="2" fill="#e8960a" transform="rotate(20 26 21)"/>
+          <ellipse cx="21" cy="17" rx="3.5" ry="2" fill="#e8960a" transform="rotate(-10 21 17)"/>
+          <ellipse cx="25" cy="17" rx="3.5" ry="2" fill="#d4850a" transform="rotate(10 25 17)"/>
+          <!-- Top awns -->
+          <path d="M21 14 L19 10" stroke="#a1670a" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M23 13 L23 9" stroke="#a1670a" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M25 14 L27 10" stroke="#a1670a" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Leaves -->
+          <path d="M23 30 Q16 28 13 24" stroke="#5d8a2a" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <path d="M23 33 Q30 31 32 26" stroke="#4a7a1e" stroke-width="2" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="crop-info">
+        <div class="crop-name" data-hi="गेहूं (Hehun)" data-en="Wheat (Gehun)">गेहूं (Hehun)</div>
+        <div class="crop-tags">
+          <span class="tag" data-hi="रसर्दी की फसल" data-en="Winter Crop">रसर्दी की फसल</span>
+          <span class="tag-dot">•</span>
+          <span class="tag" data-hi="गेहूं" data-en="Wheat">गेहूं</span>
+          <span class="tag-dot">•</span>
+          <span class="tag" data-hi="शीत ऋतु" data-en="Cold Season">शीत ऋतु</span>
+        </div>
+      </div>
+    </div>
+    <button class="medicine-btn" onclick="togglePanel('gehun')">
+      <span data-hi="गेहूं के लिए दवाइयाँ" data-en="Medicines for Wheat">गेहूं के लिए दवाइयाँ</span>
+      <div class="arrow-icon">➤</div>
+    </button>
+  </div>
+
+
+
+
+</main>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <span>🌾 <span data-hi="किसान डिजिटल सेवाएं" data-en="Farmer Digital Services">किसान डिजिटल सेवाएं</span></span>
+  •
+  <span data-hi="AgriTech India द्वारा संचालित" data-en="Powered by AgriTech India">AgriTech India द्वारा संचालित</span>
+</footer>
+
+<!-- ══════════ VOICE MODAL ══════════ -->
+<div class="voice-overlay" id="voiceOverlay" onclick="closeVoice(event)">
+  <div class="voice-modal">
+    <div class="voice-ripple">🎙️</div>
+    <div class="voice-text" id="voiceText">सुन रहा हूँ...</div>
+    <div class="voice-sub" id="voiceSub">बोलें: "मूंग", "धान", या "गेहूं"</div>
+    <button class="voice-cancel" onclick="closeVoiceModal()">रद्द करें</button>
+  </div>
+</div>
+
+<!-- ══════════ PROFILE DROPDOWN ══════════ -->
+<div class="profile-overlay" id="profileOverlay" onclick="closeProfile(event)">
+  <div class="profile-dropdown">
+    <div class="profile-avatar" style="width:52px;height:52px;font-size:1.6rem;margin-bottom:10px;">👤</div>
+    <div class="profile-name" id="profileName" data-hi="अनुराग खाजड़" data-en="Anurag Khajad">अनुराग खाजड़</div>
+    <div class="profile-phone">+91 98765 43210</div>
+    <div class="profile-menu-item" onclick="openMyOrders()">📦 <span data-hi="मेरे ऑर्डर" data-en="My Orders">मेरे ऑर्डर</span></div>
+    <div class="profile-menu-item" onclick="openMyOrders()">🕒 <span data-hi="पुराने ऑर्डर" data-en="Old Orders">पुराने ऑर्डर</span></div>
+    <div class="profile-menu-item" onclick="openNotifications()">🔔 <span data-hi="सूचनाएं" data-en="Notifications">सूचनाएं</span></div>
+    <div class="profile-menu-item" onclick="openAdviser()">🧑‍🌾 <span data-hi="सलाहकार से बात करें" data-en="Talk to Adviser">सलाहकार से बात करें</span></div>
+    <div class="profile-menu-item" onclick="openComplaint()">📢 <span data-hi="शिकायत दर्ज करें" data-en="File a Complaint">शिकायत दर्ज करें</span></div>
+    <div class="profile-menu-item" onclick="openSettings()">⚙️ <span data-hi="सेटिंग्स" data-en="Settings">सेटिंग्स</span></div>
+    <div class="profile-menu-item" style="color:#c0392b;" onclick="confirmLogout()">🚪 <span data-hi="लॉगआउट" data-en="Logout">लॉगआउट</span></div>
+  </div>
+</div>
+
+<!-- ══════════ NOTIFICATIONS MODAL ══════════ -->
+<div class="modal-overlay" id="notifOverlay" onclick="closeModalOnBg(event,'notifOverlay')">
+  <div class="modal-box" style="max-height:80vh;overflow-y:auto;">
+    <button class="modal-close" onclick="closeNotifications()">✕</button>
+    <span class="modal-icon">🔔</span>
+    <div class="modal-title">सूचनाएं</div>
+    <div id="notifList" style="width:100%;text-align:left;margin-top:8px;"></div>
+  </div>
+</div>
+
+<!-- ══════════ SETTINGS MODAL ══════════ -->
+<div class="modal-overlay" id="settingsOverlay" onclick="closeModalOnBg(event,'settingsOverlay')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeSettings()">✕</button>
+    <span class="modal-icon">⚙️</span>
+    <div class="modal-title">सेटिंग्स</div>
+
+    <div style="width:100%;text-align:left;margin-top:10px;display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Name -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:700;color:#555;display:block;margin-bottom:4px;">👤 नाम बदलें</label>
+        <input id="settingsName" class="modal-field" type="text" placeholder="आपका नाम" style="width:100%;box-sizing:border-box;">
+      </div>
+
+      <!-- Phone (read-only) -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:700;color:#555;display:block;margin-bottom:4px;">📱 मोबाइल नंबर</label>
+        <input id="settingsPhone" class="modal-field" type="text" placeholder="मोबाइल नंबर" readonly style="width:100%;box-sizing:border-box;background:#f5f5f5;color:#888;">
+      </div>
+
+      <!-- Language toggle -->
+      <div>
+        <label style="font-size:0.78rem;font-weight:700;color:#555;display:block;margin-bottom:8px;">🌐 भाषा / Language</label>
+        <div style="display:flex;gap:10px;">
+          <button id="settingsLangHi" onclick="setLangFromSettings('hi')"
+            style="flex:1;padding:9px;border-radius:8px;border:2px solid #2e6b35;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.88rem;font-weight:800;cursor:pointer;background:#2e6b35;color:#fff;">
+            हिंदी
+          </button>
+          <button id="settingsLangEn" onclick="setLangFromSettings('en')"
+            style="flex:1;padding:9px;border-radius:8px;border:2px solid #ccc;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.88rem;font-weight:800;cursor:pointer;background:#fff;color:#555;">
+            English
+          </button>
+        </div>
+      </div>
+
+      <button class="modal-btn green" onclick="saveSettings()" style="margin-top:4px;">✅ सेव करें</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ LOGOUT CONFIRM MODAL ══════════ -->
+<div class="modal-overlay" id="logoutOverlay" onclick="closeModalOnBg(event,'logoutOverlay')">
+  <div class="modal-box">
+    <span class="modal-icon">🚪</span>
+    <div class="modal-title" style="color:#c0392b;">लॉगआउट करें?</div>
+    <div class="modal-desc">क्या आप वाकई लॉगआउट करना चाहते हैं? आपका कार्ट और सत्र डेटा हट जाएगा।</div>
+    <div style="display:flex;gap:10px;width:100%;margin-top:8px;">
+      <button onclick="closeLogout()"
+        style="flex:1;padding:11px;border-radius:10px;border:2px solid #ccc;background:#fff;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;color:#555;">
+        रद्द करें
+      </button>
+      <button onclick="doLogout()"
+        style="flex:1;padding:11px;border-radius:10px;border:none;background:#c0392b;color:#fff;font-family:'Noto Sans Devanagari',sans-serif;font-size:0.9rem;font-weight:800;cursor:pointer;">
+        हाँ, लॉगआउट
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ADVISER MODAL ══════════ -->
+<div class="modal-overlay" id="adviserOverlay" onclick="closeModalOnBg(event,'adviserOverlay')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAdviser()">✕</button>
+    <span class="modal-icon">🧑‍🌾</span>
+    <div class="modal-title" data-hi="सलाहकार से बात करें" data-en="Talk to Adviser">सलाहकार से बात करें</div>
+    <div class="modal-desc" data-hi="अपनी फसल की समस्या बताएं और कृषि विशेषज्ञ से सलाह लें।" data-en="Share your crop problem and get advice from an agricultural expert.">अपनी फसल की समस्या बताएं और कृषि विशेषज्ञ से सलाह लें।</div>
+    <select class="modal-field" id="adviserCrop">
+      <option value="" data-hi="फसल चुनें..." data-en="Select crop...">फसल चुनें...</option>
+      <option value="moong" data-hi="मूंग" data-en="Moong">मूंग</option>
+      <option value="dhaan" data-hi="धान" data-en="Dhaan / Rice">धान</option>
+      <option value="gehun" data-hi="गेहूं" data-en="Gehun / Wheat">गेहूं</option>
+    </select>
+    <textarea class="modal-field" id="adviserMsg" placeholder="अपनी समस्या लिखें..." rows="3"></textarea>
+    <div style="font-size:0.82rem;font-weight:700;color:var(--text-muted);margin-bottom:8px;" data-hi="समय चुनें:" data-en="Choose a slot:">समय चुनें:</div>
+    <div class="adviser-slots" id="adviserSlots">
+      <div class="slot-chip" onclick="selectSlot(this)">9:00 AM</div>
+      <div class="slot-chip" onclick="selectSlot(this)">11:00 AM</div>
+      <div class="slot-chip" onclick="selectSlot(this)">2:00 PM</div>
+      <div class="slot-chip" onclick="selectSlot(this)">4:00 PM</div>
+    </div>
+    <button class="modal-btn green" onclick="submitAdviser()" data-hi="सलाह बुक करें 📅" data-en="Book Advice 📅">सलाह बुक करें 📅</button>
+  </div>
+</div>
+
+<!-- ══════════ COMPLAINT MODAL ══════════ -->
+<div class="modal-overlay" id="complaintOverlay" onclick="closeModalOnBg(event,'complaintOverlay')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeComplaint()">✕</button>
+    <span class="modal-icon">📢</span>
+    <div class="modal-title" data-hi="शिकायत दर्ज करें" data-en="File a Complaint">शिकायत दर्ज करें</div>
+    <div class="modal-desc" data-hi="आपकी समस्या हमारे लिए महत्वपूर्ण है। हम 24 घंटे में संपर्क करेंगे।" data-en="Your issue matters to us. We will reach out within 24 hours.">आपकी समस्या हमारे लिए महत्वपूर्ण है। हम 24 घंटे में संपर्क करेंगे।</div>
+    <select class="modal-field" id="complaintType">
+      <option value="" data-hi="शिकायत का प्रकार..." data-en="Complaint type...">शिकायत का प्रकार...</option>
+      <option value="product" data-hi="उत्पाद की गुणवत्ता" data-en="Product Quality">उत्पाद की गुणवत्ता</option>
+      <option value="delivery" data-hi="डिलीवरी में देरी" data-en="Delivery Delay">डिलीवरी में देरी</option>
+      <option value="payment" data-hi="भुगतान समस्या" data-en="Payment Issue">भुगतान समस्या</option>
+      <option value="other" data-hi="अन्य" data-en="Other">अन्य</option>
+    </select>
+    <textarea class="modal-field" id="complaintMsg" placeholder="शिकायत विस्तार से लिखें..." rows="3"></textarea>
+    <button class="modal-btn orange" onclick="submitComplaint()" data-hi="शिकायत भेजें 📤" data-en="Submit Complaint 📤">शिकायत भेजें 📤</button>
+  </div>
+</div>
+
+<!-- ══════════ TOAST ══════════ -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── State ──
+  let currentLang = 'hi';
+  let voiceTimer = null;
+
+  // ── Load user login data from localStorage ──
+  (function loadUserProfile() {
+    const savedName  = localStorage.getItem('userLoginName');
+    const savedPhone = localStorage.getItem('userLoginPhone');
+
+    if (savedName) {
+      // Update profile label in header button
+      const profileLabel = document.getElementById('profileLabel');
+      if (profileLabel) profileLabel.textContent = savedName;
+
+      // Update profile name in dropdown
+      const profileNameEl = document.getElementById('profileName');
+      if (profileNameEl) {
+        profileNameEl.textContent = savedName;
+        // Update data attributes so language toggle keeps the custom name
+        profileNameEl.setAttribute('data-hi', savedName);
+        profileNameEl.setAttribute('data-en', savedName);
+      }
+
+      // Show first letter of name in all avatar circles
+      document.querySelectorAll('.profile-avatar').forEach(function(el) {
+        el.textContent = savedName.charAt(0).toUpperCase();
+        el.style.fontSize = '1.4rem';
+        el.style.fontWeight = '900';
+      });
+    }
+
+    if (savedPhone) {
+      const phoneEl = document.querySelector('.profile-phone');
+      if (phoneEl) phoneEl.textContent = '+91 ' + savedPhone;
+    }
+  })();
+
+  const cropData = {
+    moong: { hi: 'मूंग', en: 'Moong' },
+    dhaan: { hi: 'धान', en: 'Dhaan' },
+    gehun: { hi: 'गेहूं', en: 'Gehun' }
+  };
+
+  const allCrops = ['moong', 'dhaan', 'gehun'];
+
+  // ── Language Toggle ──
+  function toggleLang() {
+    currentLang = currentLang === 'hi' ? 'en' : 'hi';
+    document.getElementById('langLabel').textContent = currentLang === 'hi' ? 'हिंदी' : 'English';
+    document.getElementById('profileLabel').textContent = currentLang === 'hi' ? 'प्रोफाइल' : 'Profile';
+    document.getElementById('sectionTitle').textContent = currentLang === 'hi' ? 'मेरी फसलें' : 'My Crops';
+    document.getElementById('cropSearchInput').placeholder = currentLang === 'hi'
+      ? 'फसल खोजें — मूंग, धान, गेहूं'
+      : 'Search crops — Moong, Rice, Wheat';
+    document.getElementById('voiceSub').textContent = currentLang === 'hi'
+      ? 'बोलें: "मूंग", "धान", या "गेहूं"'
+      : 'Say: "Moong", "Dhaan", or "Gehun"';
+    document.getElementById('cropNotFoundMsg').textContent = currentLang === 'hi' ? 'कोई फसल नहीं मिली' : 'No crop found';
+    document.getElementById('cropNotFoundHint').textContent = currentLang === 'hi' ? 'मूंग, धान या गेहूं टाइप करें' : 'Try: Moong, Dhaan or Wheat';
+
+    // Update shop name & subtitle in header
+    const shopName = document.getElementById('shopName');
+    const shopSub = document.getElementById('shopSub');
+    shopName.textContent = shopName.getAttribute('data-' + currentLang);
+    shopSub.textContent = shopSub.getAttribute('data-' + currentLang);
+
+    // Update profile name in dropdown
+    const profileName = document.getElementById('profileName');
+    profileName.textContent = profileName.getAttribute('data-' + currentLang);
+
+    // Update all [data-hi] / [data-en] elements
+    document.querySelectorAll('[data-hi]').forEach(el => {
+      el.textContent = el.getAttribute('data-' + currentLang) || el.textContent;
+    });
+  }
+
+  // ── Medicine Button — navigates to next page ──
+  function togglePanel(crop) {
+    // Placeholder: next page will handle medicine details
+  }
+
+  function selectMedicine(el, crop) {}
+  function addToCart(crop) {}
+  function showConsult(crop) {}
+
+// ── Toast ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // ══════════════════════════════════════════════
+  // ── CROP SECTION SEARCH BAR (main feature) ──
+  // ══════════════════════════════════════════════
+
+  // Extended keyword map — Hindi, English, common misspellings, phonetic variants
+  const cropKeywords = {
+    moong: [
+      'मूंग','मुंग','मूँग','मुँग','muung','mung','moong','moong bean',
+      'green gram','greengram','bean','फलीदार','मूग'
+    ],
+    dhaan: [
+      'धान','धाण','dhaan','dhan','dhaaN','rice','chawal','चावल',
+      'paddy','dhaen','dheen','rais'
+    ],
+    gehun: [
+      'गेहूं','गेहुं','गेहूँ','गेहु','gehun','gehoon','gehun','wheat',
+      'hehun','gehu','gahun','wheet','गेहूँ'
+    ]
+  };
+
+  function normalise(str) {
+    return str.trim().toLowerCase()
+      .replace(/ं/g, 'ं')   // normalise anusvara
+      .replace(/ँ/g, 'ँ');   // normalise chandrabindu
+  }
+
+  function cropMatches(cropKey, query) {
+    const q = normalise(query);
+    if (!q) return true;
+    return cropKeywords[cropKey].some(kw => {
+      const k = normalise(kw);
+      return k.includes(q) || q.includes(k);
+    });
+  }
+
+  function cropSearch(val) {
+    const clearBtn = document.getElementById('cropSearchClear');
+    const notFound = document.getElementById('cropNotFound');
+    const q = val.trim();
+
+    // Toggle clear button
+    if (q) {
+      clearBtn.classList.add('visible');
+    } else {
+      clearBtn.classList.remove('visible');
+    }
+
+    // Empty → restore all
+    if (!q) {
+      notFound.classList.remove('show');
+      allCrops.forEach((c, i) => {
+        const card = document.getElementById('card-' + c);
+        card.classList.remove('cs-hidden');
+        card.classList.add('cs-visible');
+        card.querySelector('.crop-number').textContent = i + 1;
+      });
+      return;
+    }
+
+    // Filter
+    const matched = allCrops.filter(c => cropMatches(c, q));
+    const unmatched = allCrops.filter(c => !cropMatches(c, q));
+
+    unmatched.forEach(c => {
+      const card = document.getElementById('card-' + c);
+      card.classList.add('cs-hidden');
+      card.classList.remove('cs-visible');
+    });
+
+    if (matched.length === 0) {
+      notFound.classList.add('show');
+    } else {
+      notFound.classList.remove('show');
+      matched.forEach((c, i) => {
+        const card = document.getElementById('card-' + c);
+        card.classList.remove('cs-hidden');
+        card.classList.add('cs-visible');
+        card.querySelector('.crop-number').textContent = i + 1;
+      });
+    }
+  }
+
+  function clearCropSearch() {
+    const input = document.getElementById('cropSearchInput');
+    input.value = '';
+    input.focus();
+    cropSearch('');
+  }
+
+  // ── Crop Search Bar Mic ──
+  let cropVoiceTimer = null;
+
+  function toggleCropVoice() {
+    const btn = document.getElementById('cropMicBtn');
+    const input = document.getElementById('cropSearchInput');
+
+    // Use Web Speech API if available
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const rec = new SR();
+      rec.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+
+      btn.classList.add('listening');
+
+      rec.onresult = (e) => {
+        const spoken = e.results[0][0].transcript;
+        input.value = spoken;
+        cropSearch(spoken);
+        document.getElementById('cropSearchClear').classList.add('visible');
+        btn.classList.remove('listening');
+        showToast(`🎙️ "${spoken}"`);
+      };
+
+      rec.onerror = rec.onend = () => btn.classList.remove('listening');
+      rec.start();
+    } else {
+      // Fallback: simulate
+      btn.classList.add('listening');
+      const crops = ['moong', 'dhaan', 'gehun'];
+      cropVoiceTimer = setTimeout(() => {
+        const pick = crops[Math.floor(Math.random() * crops.length)];
+        const name = cropData[pick][currentLang];
+        input.value = name;
+        cropSearch(name);
+        document.getElementById('cropSearchClear').classList.add('visible');
+        btn.classList.remove('listening');
+        showToast(`🎙️ "${name}" ${currentLang === 'hi' ? 'सुना!' : 'heard!'}`);
+      }, 1800);
+    }
+  }
+
+  // ── Voice ──
+  function toggleVoice() {
+    document.getElementById('voiceOverlay').classList.add('show');
+    document.getElementById('micBtn').classList.add('listening');
+
+    // Simulate voice recognition
+    const crops = ['moong', 'dhaan', 'gehun'];
+    voiceTimer = setTimeout(() => {
+      const randomCrop = crops[Math.floor(Math.random() * crops.length)];
+      const name = cropData[randomCrop][currentLang];
+      document.getElementById('voiceText').textContent = `"${name}" — ${currentLang === 'hi' ? 'सुना!' : 'Heard!'}`;
+      setTimeout(() => {
+        closeVoiceModal();
+        selectCrop(randomCrop);
+        showToast(currentLang === 'hi' ? `🎙️ "${name}" खोजा गया` : `🎙️ Searched for "${name}"`);
+      }, 900);
+    }, 2200);
+  }
+
+  function closeVoiceModal() {
+    document.getElementById('voiceOverlay').classList.remove('show');
+    document.getElementById('micBtn').classList.remove('listening');
+    document.getElementById('voiceText').textContent = currentLang === 'hi' ? 'सुन रहा हूँ...' : 'Listening...';
+    if (voiceTimer) clearTimeout(voiceTimer);
+  }
+
+  function closeVoice(e) {
+    if (e.target === document.getElementById('voiceOverlay')) closeVoiceModal();
+  }
+
+  // ── Profile ──
+  function toggleProfile() {
+    document.getElementById('profileOverlay').classList.toggle('show');
+  }
+
+  function closeProfile(e) {
+    if (e.target === document.getElementById('profileOverlay')) {
+      document.getElementById('profileOverlay').classList.remove('show');
+    }
+  }
+
+
+  function closeProfileMenu() {
+    document.getElementById('profileOverlay').classList.remove('show');
+  }
+
+  function openAdviser() {
+    closeProfileMenu();
+    document.getElementById('adviserOverlay').classList.add('show');
+    syncModalLang();
+  }
+  function closeAdviser() {
+    document.getElementById('adviserOverlay').classList.remove('show');
+  }
+  function selectSlot(el) {
+    document.querySelectorAll('.slot-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+  function submitAdviser() {
+    const crop = document.getElementById('adviserCrop').value;
+    const msg = document.getElementById('adviserMsg').value.trim();
+    const slot = document.querySelector('.slot-chip.selected');
+    if (!crop || !msg || !slot) {
+      showToast(currentLang === 'hi' ? '⚠️ कृपया सभी जानकारी भरें' : '⚠️ Please fill all details');
+      return;
+    }
+    closeAdviser();
+    showToast(currentLang === 'hi' ? `✅ सलाह ${slot.textContent} के लिए बुक हुई!` : `✅ Advice booked for ${slot.textContent}!`);
+    document.getElementById('adviserMsg').value = '';
+    document.getElementById('adviserCrop').value = '';
+    document.querySelectorAll('.slot-chip').forEach(c => c.classList.remove('selected'));
+  }
+
+  // ── Complaint Modal ──
+  function openComplaint() {
+    closeProfileMenu();
+    document.getElementById('complaintOverlay').classList.add('show');
+    syncModalLang();
+  }
+  function closeComplaint() {
+    document.getElementById('complaintOverlay').classList.remove('show');
+  }
+  function submitComplaint() {
+    const type = document.getElementById('complaintType').value;
+    const msg = document.getElementById('complaintMsg').value.trim();
+    if (!type || !msg) {
+      showToast(currentLang === 'hi' ? '⚠️ कृपया सभी जानकारी भरें' : '⚠️ Please fill all details');
+      return;
+    }
+    closeComplaint();
+    showToast(currentLang === 'hi' ? '✅ शिकायत दर्ज हो गई! हम जल्द संपर्क करेंगे।' : '✅ Complaint submitted! We will contact you soon.');
+    document.getElementById('complaintMsg').value = '';
+    document.getElementById('complaintType').value = '';
+  }
+
+
+  // ── Notifications ──
+  function openNotifications() {
+    closeProfileMenu();
+    const orders = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+    const list = document.getElementById('notifList');
+    if (orders.length === 0) {
+      list.innerHTML = `<div style="text-align:center;padding:24px 0;color:#aaa;font-size:0.9rem;font-weight:600;">🔕 कोई सूचना नहीं</div>`;
+    } else {
+      list.innerHTML = orders.slice(0, 10).map(o => `
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid #f3f3f3;">
+          <div style="font-size:1.4rem;flex-shrink:0;">📦</div>
+          <div>
+            <div style="font-size:0.88rem;font-weight:800;color:#111;">Order #${o.orderId} ${o.status === 'डिलीवरी में' ? 'डिलीवरी पर है' : 'दर्ज हो गया!'}</div>
+            <div style="font-size:0.75rem;color:#888;margin-top:2px;">${o.date} · ${o.time} · ₹${o.total}</div>
+          </div>
+        </div>`).join('');
+    }
+    document.getElementById('notifOverlay').classList.add('show');
+  }
+  function closeNotifications() {
+    document.getElementById('notifOverlay').classList.remove('show');
+  }
+
+  // ── Settings ──
+  function openSettings() {
+    closeProfileMenu();
+    document.getElementById('settingsName').value  = localStorage.getItem('userLoginName')  || '';
+    document.getElementById('settingsPhone').value = localStorage.getItem('userLoginPhone') || '';
+    // highlight active lang button
+    const isHi = currentLang === 'hi';
+    document.getElementById('settingsLangHi').style.background = isHi ? '#2e6b35' : '#fff';
+    document.getElementById('settingsLangHi').style.color      = isHi ? '#fff'    : '#555';
+    document.getElementById('settingsLangHi').style.borderColor= isHi ? '#2e6b35' : '#ccc';
+    document.getElementById('settingsLangEn').style.background = !isHi ? '#2e6b35' : '#fff';
+    document.getElementById('settingsLangEn').style.color      = !isHi ? '#fff'    : '#555';
+    document.getElementById('settingsLangEn').style.borderColor= !isHi ? '#2e6b35' : '#ccc';
+    document.getElementById('settingsOverlay').classList.add('show');
+  }
+  function closeSettings() {
+    document.getElementById('settingsOverlay').classList.remove('show');
+  }
+  function setLangFromSettings(lang) {
+    currentLang = lang;
+    const isHi = lang === 'hi';
+    document.getElementById('settingsLangHi').style.background = isHi ? '#2e6b35' : '#fff';
+    document.getElementById('settingsLangHi').style.color      = isHi ? '#fff'    : '#555';
+    document.getElementById('settingsLangHi').style.borderColor= isHi ? '#2e6b35' : '#ccc';
+    document.getElementById('settingsLangEn').style.background = !isHi ? '#2e6b35' : '#fff';
+    document.getElementById('settingsLangEn').style.color      = !isHi ? '#fff'    : '#555';
+    document.getElementById('settingsLangEn').style.borderColor= !isHi ? '#2e6b35' : '#ccc';
+  }
+  function saveSettings() {
+    const name = document.getElementById('settingsName').value.trim();
+    if (!name) { showToast('⚠️ नाम खाली नहीं हो सकता'); return; }
+    localStorage.setItem('userLoginName', name);
+    // Update UI
+    const profileLabel = document.getElementById('profileLabel');
+    if (profileLabel) profileLabel.textContent = name;
+    const profileNameEl = document.getElementById('profileName');
+    if (profileNameEl) { profileNameEl.textContent = name; profileNameEl.setAttribute('data-hi', name); profileNameEl.setAttribute('data-en', name); }
+    // Apply language switch
+    if (typeof switchLang === 'function') switchLang(currentLang);
+    closeSettings();
+    showToast('✅ सेटिंग्स सेव हो गईं!');
+  }
+
+  // ── Logout ──
+  function confirmLogout() {
+    closeProfileMenu();
+    document.getElementById('logoutOverlay').classList.add('show');
+  }
+  function closeLogout() {
+    document.getElementById('logoutOverlay').classList.remove('show');
+  }
+  function doLogout() {
+    localStorage.removeItem('userLoginName');
+    localStorage.removeItem('userLoginPhone');
+    localStorage.removeItem('sprayCart');
+    localStorage.removeItem('sprayAddress');
+    window.location.href = '../login.html';
+  }
+
+  function closeModalOnBg(e, id) {
+    if (e.target === document.getElementById(id)) {
+      document.getElementById(id).classList.remove('show');
+    }
+  }
+
+  // Sync modal text with current language
+  function syncModalLang() {
+    document.querySelectorAll('.modal-overlay [data-hi]').forEach(el => {
+      const val = el.getAttribute('data-' + currentLang);
+      if (val) el.textContent = val;
+    });
+    // placeholders
+    const adviserMsgPh = currentLang === 'hi' ? 'अपनी समस्या लिखें...' : 'Describe your problem...';
+    const complaintMsgPh = currentLang === 'hi' ? 'शिकायत विस्तार से लिखें...' : 'Describe your complaint in detail...';
+    document.getElementById('adviserMsg').placeholder = adviserMsgPh;
+    document.getElementById('complaintMsg').placeholder = complaintMsgPh;
+  }
+</script>
+
+<!-- ══════════ MY ORDERS PAGE ══════════ -->
+<div id="myOrdersPage" style="
+  display:none; position:fixed; inset:0; background:#f3f7f2;
+  z-index:300; overflow-y:auto; font-family:'Noto Sans Devanagari',sans-serif;
+  animation:slideInRight 0.28s cubic-bezier(0.34,1.1,0.64,1);
+">
+  <style>
+    @keyframes slideInRight { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+    .mo-header { background:linear-gradient(135deg,#0d3318,#1a4a1e,#2e6b35); padding:16px 20px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:10; box-shadow:0 2px 16px rgba(0,0,0,0.3); }
+    .mo-back-btn { background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.3); border-radius:8px; padding:8px 12px; color:#fff; font-family:'Noto Sans Devanagari',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; }
+    .mo-title { font-size:1rem; font-weight:900; color:#fff; }
+    .mo-subtitle { font-size:0.72rem; color:rgba(255,255,255,0.7); }
+    .mo-body { padding:16px; max-width:520px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
+    .mo-card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,0.07); overflow:hidden; }
+    .mo-card-header { background:linear-gradient(135deg,#1a5222,#2e6b35); padding:12px 16px; display:flex; justify-content:space-between; align-items:center; }
+    .mo-order-id { font-size:0.82rem; font-weight:900; color:#fff; }
+    .mo-date { font-size:0.72rem; color:rgba(255,255,255,0.75); }
+    .mo-status-badge { background:rgba(255,255,255,0.2); color:#fff; font-size:0.72rem; font-weight:800; padding:3px 10px; border-radius:20px; border:1px solid rgba(255,255,255,0.3); }
+    .mo-items { padding:12px 16px; border-bottom:1px solid #f0f0f0; }
+    .mo-item-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid #f8f8f8; }
+    .mo-item-row:last-child { border-bottom:none; }
+    .mo-item-name { font-size:0.88rem; font-weight:700; color:#111; }
+    .mo-item-qty { font-size:0.78rem; color:#888; margin-top:2px; }
+    .mo-item-price { font-size:0.9rem; font-weight:900; color:#1a5222; }
+    .mo-footer { padding:12px 16px; display:flex; justify-content:space-between; align-items:center; }
+    .mo-pay-method { font-size:0.78rem; color:#666; font-weight:600; }
+    .mo-total { font-size:1rem; font-weight:900; color:#1a5222; }
+    .mo-empty { text-align:center; padding:60px 20px; }
+    .mo-empty-icon { font-size:3.5rem; margin-bottom:16px; }
+    .mo-empty-title { font-size:1.1rem; font-weight:900; color:#1a5222; margin-bottom:8px; }
+    .mo-empty-sub { font-size:0.88rem; color:#888; font-weight:600; }
+    .mo-shop-btn { background:linear-gradient(135deg,#e8821a,#f0a030); color:#fff; border:none; border-radius:30px; padding:12px 28px; font-family:'Noto Sans Devanagari',sans-serif; font-size:0.92rem; font-weight:900; cursor:pointer; margin-top:20px; }
+    .mo-count-badge { background:rgba(255,255,255,0.25); color:#fff; font-size:0.75rem; font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px; }
+  </style>
+
+  <!-- Header -->
+  <div class="mo-header">
+    <button class="mo-back-btn" onclick="closeMyOrders()">← वापस</button>
+    <div>
+      <div class="mo-title">📦 मेरे ऑर्डर <span class="mo-count-badge" id="moCountBadge">0</span></div>
+      <div class="mo-subtitle" id="moSubtitle">आपके सभी ऑर्डर</div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="mo-body" id="moBody">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<script>
+  function openMyOrders() {
+    closeProfileMenu();
+    renderMyOrders();
+    const page = document.getElementById('myOrdersPage');
+    page.style.display = 'block';
+    // re-trigger animation
+    page.style.animation = 'none';
+    page.offsetHeight; // reflow
+    page.style.animation = 'slideInRight 0.28s cubic-bezier(0.34,1.1,0.64,1)';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMyOrders() {
+    document.getElementById('myOrdersPage').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  function renderMyOrders() {
+    const orders = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+    const body = document.getElementById('moBody');
+    const badge = document.getElementById('moCountBadge');
+    const subtitle = document.getElementById('moSubtitle');
+
+    badge.textContent = orders.length;
+    subtitle.textContent = orders.length > 0
+      ? (currentLang === 'hi' ? `कुल ${orders.length} ऑर्डर` : `${orders.length} orders total`)
+      : (currentLang === 'hi' ? 'अभी कोई ऑर्डर नहीं' : 'No orders yet');
+
+    if (orders.length === 0) {
+      body.innerHTML = `
+        <div class="mo-empty">
+          <div class="mo-empty-icon">🛒</div>
+          <div class="mo-empty-title">अभी कोई ऑर्डर नहीं</div>
+          <div class="mo-empty-sub">दवाइयाँ खरीदने के बाद यहाँ दिखेंगे</div>
+          <button class="mo-shop-btn" onclick="closeMyOrders()">🌿 खरीदारी करें</button>
+        </div>`;
+      return;
+    }
+
+    body.innerHTML = orders.map(order => {
+      const itemsHTML = order.items.map(item => `
+        <div class="mo-item-row">
+          <div>
+            <div class="mo-item-name">${item.name}</div>
+            <div class="mo-item-qty">× ${item.qty}</div>
+          </div>
+          <div class="mo-item-price">₹${item.price}</div>
+        </div>`).join('');
+
+      const payIcons = { upi:'💳', shop:'🏪', bank:'🏦' };
+      const payIcon = payIcons[order.payMethod] || '💰';
+      const addr = order.deliveryAddr ? `<div style="font-size:0.75rem;color:#888;margin-top:4px;">📍 ${order.deliveryAddr}</div>` : '';
+
+      return `
+        <div class="mo-card">
+          <div class="mo-card-header">
+            <div>
+              <div class="mo-order-id">Order #${order.orderId}</div>
+              <div class="mo-date">📅 ${order.date} · ${order.time}</div>
+            </div>
+            <div class="mo-status-badge">${order.status || 'पूर्ण'}</div>
+          </div>
+          <div class="mo-items">${itemsHTML}</div>
+          <div class="mo-footer">
+            <div>
+              <div class="mo-pay-method">${payIcon} ${order.status}</div>
+              ${addr}
+            </div>
+            <div class="mo-total">₹${order.total}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+</script>
+</body>
+</html>
